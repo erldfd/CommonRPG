@@ -1,12 +1,35 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class InputController : MonoBehaviour
 {
+
     // assign the actions asset to this field in the inspector:
     [SerializeField]
-    public InputActionAsset actions;
+    private InputActionAsset actions;
 
+    [Serializable]
+    private struct SInputContainor
+    {
+        [SerializeField]
+        private InputActionAsset Testaction;
+
+        [SerializeField]
+        private Dictionary<string, string> TestMan;
+    }
+
+    [SerializeField]
+    private Dictionary<string, string> TestMan;
+
+    [SerializeField]
+    private List<SInputContainor> inputContainors;
+
+    //[SerializeField]
+    //private string actionMapName = "";
+
+    [SerializeField]
     // private field to store move action reference
     private InputAction moveAction;
 
@@ -14,10 +37,10 @@ public class InputController : MonoBehaviour
     {
         // find the "move" action, and keep the reference to it, for use in Update
         moveAction = actions.FindActionMap("PlayerInput").FindAction("Move");
-
+   
         moveAction.performed += OnMove;
         // for the "jump" action, we add a callback method for when it is performed
-        actions.FindActionMap("PlayerInput").FindAction("PauseAndResume").performed += OnJump;
+        actions.FindActionMap("PlayerInput").FindAction("PauseAndResume").performed += OnPauseAndResume;
     }
 
     void Update()
@@ -27,7 +50,7 @@ public class InputController : MonoBehaviour
         //Debug.Log($"{moveVector}");
     }
 
-    private void OnJump(InputAction.CallbackContext context)
+    private void OnPauseAndResume(InputAction.CallbackContext context)
     {
         // this is the "jump" action callback method
         Debug.Log($"Jump! {context}");

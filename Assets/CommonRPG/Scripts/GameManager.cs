@@ -2,20 +2,13 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    private static GameManager _instance = null;
+    private static GameManager instance = null;
 
     private void Awake()
     {
-        _instance = this;
-        if(_instance == null)
-        {
-            Debug.LogError("GameManager instance is null");
-        }
-        else
-        {
-            DontDestroyOnLoad(gameObject);
-            Debug.Log("GameManager Initialize Succeeded");
-        }
+        instance = this;
+        Debug.Assert(instance);
+        DontDestroyOnLoad(gameObject);
     }
 
     private void Start()

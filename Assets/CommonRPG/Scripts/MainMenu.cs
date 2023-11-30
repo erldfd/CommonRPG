@@ -5,7 +5,7 @@ public class MainMenu : MonoBehaviour
 {
     [SerializeField] 
     private GameManager gameManager = null;
-    AsyncOperation asyncSceneLoadOperation = null;
+    private AsyncOperation asyncSceneLoadOperation = null;
 
     private void Awake()
     {
