@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public abstract class ACharacter : MonoBehaviour
+public abstract class ACharacter : AUnit, IDamageable
 {
     [SerializeField]
     Camera characterCamera = null;
@@ -11,8 +11,6 @@ public abstract class ACharacter : MonoBehaviour
 
     [SerializeField]
     protected MovementComponenet movementComponent = null;
-
-    protected Vector2 movementInput = Vector2.zero;
     public MovementComponenet MovementComp
     {
         get
@@ -25,30 +23,67 @@ public abstract class ACharacter : MonoBehaviour
         }
     }
 
+    protected Vector2 movementInput = Vector2.zero;
+
+    [SerializeField]
+    private InputActionAsset inputActionAsset = null;
+
     [SerializeField]
     protected SpringArm springArm = null;
+
+    public abstract float TakeDamage(float DamageAmount, IDamageable DamageCauser = null);
 
     private void Awake()
     {
         Debug.Assert(MovementComp);
         Debug.Assert(characterCamera);
+        Debug.Assert(inputActionAsset);
     }
 
-    protected void OnMove(InputValue value)
+    private void OnEnable()
     {
-        movementInput = value.Get<Vector2>();
+        inputActionAsset.Enable();
+        inputActionAsset.FindActionMap("PlayerInput").FindAction("Move").performed += OnMove;
+        //inputActionAsset.FindActionMap("PlayerInput").FindAction("Move").started += OnMove;
+        inputActionAsset.FindActionMap("PlayerInput").FindAction("Move").canceled += OnMove;
+
+        inputActionAsset.FindActionMap("PlayerInput").FindAction("PauseAndResume").performed += OnPauseAndResume;
+
+        inputActionAsset.FindActionMap("PlayerInput").FindAction("MoveMouseVertical").performed += OnMoveMouseVertical;
+        inputActionAsset.FindActionMap("PlayerInput").FindAction("MoveMouseHorizontal").performed += OnMoveMouseHorizontal;
+
+        inputActionAsset.FindActionMap("PlayerInput").FindAction("NormalAttack").performed += OnNormalAttack;
+    }
+
+    private void OnDisable()
+    {
+        inputActionAsset.Disable();
+        inputActionAsset.FindActionMap("PlayerInput").FindAction("Move").performed -= OnMove;
+        inputActionAsset.FindActionMap("PlayerInput").FindAction("Move").canceled -= OnMove;
+
+        inputActionAsset.FindActionMap("PlayerInput").FindAction("PauseAndResume").performed -= OnPauseAndResume;
+
+        inputActionAsset.FindActionMap("PlayerInput").FindAction("MoveMouseVertical").performed -= OnMoveMouseVertical;
+        inputActionAsset.FindActionMap("PlayerInput").FindAction("MoveMouseHorizontal").performed -= OnMoveMouseHorizontal;
+
+        inputActionAsset.FindActionMap("PlayerInput").FindAction("NormalAttack").performed -= OnNormalAttack;
+    }
+
+    protected virtual void OnMove(InputAction.CallbackContext context)
+    {
+        movementInput = context.ReadValue<Vector2>();
         SetMovementDirection(movementInput);
         Debug.Log("OnMove");
     }
 
-    protected void OnPauseAndResume(InputValue value)
+    protected virtual void OnPauseAndResume(InputAction.CallbackContext context)
     {
         Debug.Log("PauseAndResume");
     }
 
-    protected void OnMoveMouseVertical(InputValue value)
+    protected virtual void OnMoveMouseVertical(InputAction.CallbackContext context)
     {
-        float inValue = value.Get<float>();
+        float inValue = context.ReadValue<float>();
 
         if (springArm)
         {
@@ -58,11 +93,9 @@ public abstract class ACharacter : MonoBehaviour
         SetMovementDirection(movementInput);
     }
 
-    
-
-    protected void OnMoveMouseHorizontal(InputValue value)
+    protected virtual void OnMoveMouseHorizontal(InputAction.CallbackContext context)
     {
-        float inValue = value.Get<float>();
+        float inValue = context.ReadValue<float>();
 
         if (springArm)
         {
@@ -74,10 +107,25 @@ public abstract class ACharacter : MonoBehaviour
     {
         Transform cameraTransform = characterCamera.transform;
 
-        Vector3 moveDirection = cameraTransform.right * movementInput.x + cameraTransform.forward * movementInput.y;
+        Vector3 moveDirection = cameraTransform.right * newMovementInput.x + cameraTransform.forward * newMovementInput.y;
         moveDirection.y = 0;
         moveDirection.Normalize();
 
         movementComponent.MoveDirection = moveDirection;
+    }
+
+    protected virtual void OnNormalAttack(InputAction.CallbackContext context)
+    {
+        LayerMask layerMask = LayerMask.GetMask("Monster");
+
+        bool isRayHit = Physics.Raycast(transform.position + transform.forward * 2, transform.forward, out RaycastHit hit, 5, layerMask);
+        if (isRayHit) 
+        {
+            IDamageable damageableUnit = hit.transform.GetComponent<IDamageable>();
+            if (damageableUnit != null) 
+            {
+                damageableUnit.TakeDamage(10);
+            }
+        }
     }
 }
