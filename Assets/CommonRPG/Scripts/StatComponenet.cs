@@ -25,6 +25,48 @@ public class StatComponenet : MonoBehaviour
     public UnityEvent<int> OnLevelUpdate = null;
 
     [SerializeField]
+    private float currentHealthPoint = 1;
+    public float CurrentHealthPoint
+    {
+        get
+        {
+            return currentHealthPoint;
+        }
+        set
+        {
+            currentHealthPoint = value;
+            OnCurrentHealthPointUpdate.Invoke(currentHealthPoint);
+        }
+    }
+
+    /// <summary>
+    /// arg : float CurrentHealthPointUpdated
+    /// </summary>
+    [Tooltip("arg : float CurrentHealthPointUpdated")]
+    public UnityEvent<float> OnCurrentHealthPointUpdate = null;
+
+    [SerializeField]
+    private float currentManaPoint = 1;
+    public float CurrentManaPoint
+    {
+        get
+        {
+            return currentManaPoint;
+        }
+        set
+        {
+            currentManaPoint = value;
+            OnCurrentManaPointUpdate.Invoke(currentManaPoint);
+        }
+    }
+
+    /// <summary>
+    /// arg : float CurrentManaPointUpdated
+    /// </summary>
+    [Tooltip("arg : float CurrentManaPointUpdated")]
+    public UnityEvent<float> OnCurrentManaPointUpdate = null;
+
+    [SerializeField]
     private float baseHealthPoint = 1;
     public float BaseHealthPoint
     {

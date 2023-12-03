@@ -13,15 +13,23 @@ public class MonsterBase : AUnit, IDamageable
     protected float deathTime = 0;
     public float TakeDamage(float DamageAmount, IDamageable DamageCauser = null)
     {
-        Debug.Log($"Damage : {DamageAmount}");
-        BeKilled();
+
+        statComponenet.CurrentHealthPoint -= DamageAmount;
+        float currentHpRatio = Mathf.Clamp01(statComponenet.CurrentHealthPoint / statComponenet.TotalHealth);
+        GameManager.SetMonsterHealthBarFillRatio(currentHpRatio);
+        GameManager.SetMonsterInfoUIVisible(true);
+        if (currentHpRatio <= 0) 
+        {
+            BeKilled();
+        }
+
         return DamageAmount;
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        statComponenet.TotalHealth = 5;
     }
 
     // Update is called once per frame

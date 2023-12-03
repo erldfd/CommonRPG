@@ -7,7 +7,12 @@ public class Knight : ACharacter
 {
     public override float TakeDamage(float DamageAmount, IDamageable DamageCauser = null)
     {
-        Debug.Log($"Damage is Taked : {DamageAmount}");
+        statComponenet.CurrentHealthPoint -= DamageAmount;
+        float currentHpRatio = Mathf.Clamp01(statComponenet.CurrentHealthPoint / statComponenet.TotalHealth);
+        GameManager.SetPlayerHealthBarFillRatio(currentHpRatio);
+
+        Debug.Log($"Damage is Taked : {DamageAmount}, CurrentHp : {statComponenet.CurrentHealthPoint}");
+
         return DamageAmount;
     }
 

@@ -26,6 +26,5 @@ public class ProgressBar : MonoBehaviour
     private void Awake()
     {
         Debug.Assert(progressBarImage);
-        FillAmount = 0.8f;
     }
 }

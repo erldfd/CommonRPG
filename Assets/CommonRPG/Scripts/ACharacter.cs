@@ -124,7 +124,7 @@ public abstract class ACharacter : AUnit, IDamageable
             IDamageable damageableUnit = hit.transform.GetComponent<IDamageable>();
             if (damageableUnit != null) 
             {
-                damageableUnit.TakeDamage(10);
+                damageableUnit.TakeDamage(1);
             }
         }
     }
