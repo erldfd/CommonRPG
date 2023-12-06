@@ -1,37 +1,42 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-public class MainMenu : MonoBehaviour
+
+namespace CommonRPG
 {
-    [SerializeField] 
-    private GameManager gameManager = null;
-    private AsyncOperation asyncSceneLoadOperation = null;
-
-    private void Awake()
+    public class MainMenu : MonoBehaviour
     {
-        int gameManagerCount = FindObjectsOfType<GameManager>().Length;
+        [SerializeField]
+        private GameManager gameManager = null;
+        private AsyncOperation asyncSceneLoadOperation = null;
 
-        if (gameManagerCount == 0) 
+        private void Awake()
         {
-            Instantiate(gameManager);
+            int gameManagerCount = FindObjectsOfType<GameManager>().Length;
+
+            if (gameManagerCount == 0)
+            {
+                Instantiate(gameManager);
+            }
+
         }
 
-    }
-
-    public void OnTestGameButtonClicked()
-    {
-        Debug.Log("TestGameButton Clicked");
-
-        asyncSceneLoadOperation = SceneManager.LoadSceneAsync(1);
-        StartCoroutine(CheckSceneLoad());
-    }
-
-    private IEnumerator CheckSceneLoad()
-    {
-        while(asyncSceneLoadOperation.isDone == false)
+        public void OnTestGameButtonClicked()
         {
-            Debug.Log($"SceneLoading : {asyncSceneLoadOperation.progress}");
-            yield return null;
+            Debug.Log("TestGameButton Clicked");
+
+            asyncSceneLoadOperation = SceneManager.LoadSceneAsync(1);
+            StartCoroutine(CheckSceneLoad());
+        }
+
+        private IEnumerator CheckSceneLoad()
+        {
+            while (asyncSceneLoadOperation.isDone == false)
+            {
+                Debug.Log($"SceneLoading : {asyncSceneLoadOperation.progress}");
+                yield return null;
+            }
         }
     }
+
 }
