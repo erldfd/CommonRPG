@@ -12,6 +12,8 @@ namespace CommonRPG
         [SerializeField]
         private WeaponItem knightWeapon = null;
 
+        private bool canCombo = false;
+
         protected override void Awake()
         {
             base.Awake();
@@ -21,7 +23,7 @@ namespace CommonRPG
         protected override void Update()
         {
             base.Update();
-            if (CheckMoveCondition() == false)
+            if (IsMovable() == false)
             {
                 SetMovementDirection(Vector2.zero);
             }
@@ -35,6 +37,8 @@ namespace CommonRPG
             Debug.Assert(knightAnimController);
 
             knightAnimController.OnAttackCheck += EnableCollider;
+            knightAnimController.OnComboCheck += CheckCombo;
+
         }
 
         protected override void OnDisable()
@@ -69,15 +73,15 @@ namespace CommonRPG
             return DamageAmount;
         }
 
-        protected override void OnMove(InputAction.CallbackContext value)
+        protected override void OnMove(InputAction.CallbackContext context)
         {
-            if (CheckMoveCondition() == false)
+            if (IsMovable() == false)
             {
                 SetMovementDirection(Vector2.zero);
                 return;
             }
 
-            base.OnMove(value);
+            base.OnMove(context);
         }
 
         protected override void OnPauseAndResume(InputAction.CallbackContext context)
@@ -85,24 +89,64 @@ namespace CommonRPG
             KnightAnimController knightAnimController = (KnightAnimController)animController;
             Debug.Assert(knightAnimController);
 
-            knightAnimController.PlayNormalAttackAnim(9);
+            knightAnimController.PlayHitAnim();
         }
 
-        private void EnableCollider(int bShouldEnable)
+        protected override void OnNormalAttack(InputAction.CallbackContext context)
         {
-            knightWeapon.EnableCollider(Convert.ToBoolean(bShouldEnable));
+            if (IsAttackPossible() == false) 
+            {
+                return;
+            }
+
+            KnightAnimController knightAnimController = (KnightAnimController)animController;
+            Debug.Assert(knightAnimController);
+
+            if (knightAnimController.IsBeginningAttackAnim == false)
+            {
+                knightAnimController.ComboCount = 0;
+                knightAnimController.PlayNormalAttackAnim(knightAnimController.ComboCount++);
+            }
+            else if (canCombo) 
+            {
+                knightAnimController.ShouldPlayNextComboAttackAnim = true;
+            }
+        }
+
+        private void EnableCollider(bool shouldEnable)
+        {
+            knightWeapon.EnableCollider(shouldEnable);
+        }
+
+        /// <summary>
+        /// check if combo is possible now
+        /// </summary>
+        private void CheckCombo(bool canCombo)
+        {
+            this.canCombo = canCombo;
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <returns>true : movable state</returns>
-        private bool CheckMoveCondition()
+        /// <returns>true means movable state</returns>
+        private bool IsMovable()
         {
             KnightAnimController knightAnimController = (KnightAnimController)animController;
             Debug.Assert(knightAnimController);
-            
-            return (isDead == false && knightAnimController.IsHit == false);
+
+            bool isMovable = (isDead == false && knightAnimController.IsHit == false && knightAnimController.IsBeginningAttackAnim == false);
+            //Debug.Log($"{isDead}, {knightAnimController.IsHit}, {knightAnimController.IsBeginningAttackAnim}, {isMoveable}");
+            return isMovable;
+        }
+
+        private bool IsAttackPossible()
+        {
+            KnightAnimController knightAnimController = (KnightAnimController)animController;
+            Debug.Assert(knightAnimController);
+
+            bool isAttackPossible = (isDead == false && knightAnimController.IsHit == false);
+            return isAttackPossible;
         }
     }
 

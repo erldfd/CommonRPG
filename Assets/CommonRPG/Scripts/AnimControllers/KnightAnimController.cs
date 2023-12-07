@@ -31,9 +31,34 @@ namespace CommonRPG
             }
         }
         /// <summary>
-        /// params : int bIsStartingAttackCheck
+        /// params : bool isCheckingAttack
         /// </summary>
-        public event Action<int> OnAttackCheck = null;
+        public event Action<bool> OnAttackCheck = null;
+        /// <summary>
+        /// bool isCheckingComboInitiate
+        /// </summary>
+        public event Action<bool> OnComboCheck = null;
+
+        private bool isBeginningAttackAnim = false;
+        public bool IsBeginningAttackAnim
+        {
+            get { return isBeginningAttackAnim; }
+            private set { isBeginningAttackAnim = value; }
+        }
+
+        private bool shouldPlayNextComboAttack = false;
+        public bool ShouldPlayNextComboAttackAnim
+        {
+            get { return shouldPlayNextComboAttack; }
+            set { shouldPlayNextComboAttack = value; }
+        }
+
+        private int comboCount = 0;
+        public int ComboCount
+        {
+            get { return comboCount; }
+            set { comboCount = value; }
+        }
 
         public override void PlayHitAnim()
         {
@@ -48,8 +73,24 @@ namespace CommonRPG
 
         public void PlayNormalAttackAnim(int playIndex)
         {
-            animator.Play("Attack01_SwordAndShiled", 0);
-            Debug.Log($"PlayNormalAttack Index : {playIndex}");
+            switch(playIndex)
+            {
+                case 0:
+                    animator.Play("Attack01_SwordAndShiled", 0);
+                    break;
+                case 1:
+                    animator.Play("Attack02_SwordAndShiled", 0);
+                    break;
+                case 2:
+                    animator.Play("Attack03_SwordAndShiled", 0);
+                    break;
+                case 3:
+                    animator.Play("Attack04_SwordAndShiled", 0);
+                    break;
+                default:
+                    Debug.LogWarning($"Wrong Index : {playIndex}");
+                    break;
+            }
         }
 
         public void PlayDeathAnim()
@@ -57,9 +98,40 @@ namespace CommonRPG
             animator.Play("Die01_SwordAndShield", 0);
         }
 
-        public void StartAttackCheck(int bIsStartingAttackCheck)
+        public void StartAttackCheck(int bIsCheckingAttack)
         {
-            OnAttackCheck.Invoke(bIsStartingAttackCheck);
+            OnAttackCheck.Invoke(bIsCheckingAttack != 0);
+            OnComboCheck.Invoke(false);
+        }
+
+        public void StartComboCheck(int bIsCheckingComboInitiate)
+        {
+            OnComboCheck.Invoke(bIsCheckingComboInitiate != 0);
+        }
+
+        public void CheckAttackAnimBegin(int bIsBeginningAttackAnim)
+        {
+            bool isBeginningAttackAnim = (bIsBeginningAttackAnim != 0);
+            this.isBeginningAttackAnim = isBeginningAttackAnim;
+            //Debug.Log($"isBeginningAttackAnim : {isBeginningAttackAnim}");
+            if (isBeginningAttackAnim)
+            {
+                shouldPlayNextComboAttack = false;
+            }
+            else if (shouldPlayNextComboAttack) 
+            {
+                PlayNormalAttackAnim(comboCount++);
+            }
+        }
+        /// <summary>
+        /// this is for initialize animation properties.
+        /// </summary>
+        public void OnAnimStart()
+        {
+            OnAttackCheck.Invoke(false);
+            OnComboCheck.Invoke(false);
+            isBeginningAttackAnim = false;
+            shouldPlayNextComboAttack = false;
         }
     }
 

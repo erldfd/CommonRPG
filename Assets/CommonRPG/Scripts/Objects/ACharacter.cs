@@ -73,7 +73,6 @@ namespace CommonRPG
         protected virtual void OnPauseAndResume(InputAction.CallbackContext context)
         {
             Debug.Log("PauseAndResume");
-            //characterAnimController.PlayHitAnim();
         }
 
         protected virtual void OnMoveMouseVertical(InputAction.CallbackContext context)
