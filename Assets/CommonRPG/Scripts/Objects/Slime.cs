@@ -15,21 +15,26 @@ namespace CommonRPG
             SlimeAnimController slimeAnimController = (SlimeAnimController)animController;
             Debug.Assert(slimeAnimController);
 
-            TimerHandler timerHandler = new TimerHandler();
-            timerHandler.StartTime = 1;
-            timerHandler.Interval = 1;
-            timerHandler.RepeatNumber = 100;
-            timerHandler.Function = () =>
-            {
-                if (isDead || slimeAnimController.IsHit)
-                {
-                    return;
-                }
+            //TimerHandler timerHandler = new TimerHandler();
+            //timerHandler.StartTime = 1;
+            //timerHandler.Interval = 1;
+            //timerHandler.RepeatNumber = 100;
+            //timerHandler.Function = () =>
+            //{
+            //    if (isDead || slimeAnimController.IsHit)
+            //    {
+            //        return;
+            //    }
 
-                slimeAnimController.PlayAttackAnim();
-            };
+            //    slimeAnimController.PlayAttackAnim();
+            //};
 
-            GameManager.SetTimer(timerHandler);
+            //GameManager.SetTimer(timerHandler);
+        }
+
+        protected override void Update()
+        {
+            base.Update();
         }
 
         protected override void OnEnable()

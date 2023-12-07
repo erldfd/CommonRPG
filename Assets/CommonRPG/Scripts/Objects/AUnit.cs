@@ -39,7 +39,6 @@ namespace CommonRPG
 
         protected virtual void Update()
         {
-
         }
 
         protected abstract void OnEnable();

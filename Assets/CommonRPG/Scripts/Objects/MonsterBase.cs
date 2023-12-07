@@ -19,6 +19,8 @@ namespace CommonRPG
         /// how much time elapsed after death
         /// </summary>
         protected float deathTime = 0;
+
+        protected AIController aiController = null;
         public virtual float TakeDamage(float DamageAmount, AUnit DamageCauser = null)
         {
             statComponent.CurrentHealthPoint -= DamageAmount;
@@ -35,10 +37,12 @@ namespace CommonRPG
             return DamageAmount;
         }
 
-        // Start is called before the first frame update
-        void Start()
+        protected override void Awake()
         {
-            statComponent.TotalHealth = 5;
+            base.Awake();
+
+            aiController = GetComponent<AIController>();
+            Debug.Assert(aiController);
         }
 
         // Update is called once per frame
@@ -55,6 +59,8 @@ namespace CommonRPG
                     Destroy(gameObject);
                 }
             }
+
+            animController.CurrentMoveSpeed = aiController.CurrentSpeed;
         }
 
         protected override void OnEnable()
