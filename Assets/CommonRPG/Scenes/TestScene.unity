@@ -1546,6 +1546,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 8189980434977739222, guid: 03e3dd7f1c29c0d429d341124e457061, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 8206070634150816031, guid: 03e3dd7f1c29c0d429d341124e457061, type: 3}
       propertyPath: m_Layer
       value: 7
@@ -2367,6 +2371,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8b96605475433d4fb6a4cd269e288eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tempTargetTransform: {fileID: 1323139174}
+  isAIActivated: 0
+  detectInterval: 1
+  detectRange: 10
+  patrolRadius: 5
   destination: {fileID: 1323139174}
 --- !u!195 &2053975775
 NavMeshAgent:

@@ -11,6 +11,7 @@ namespace CommonRPG
         public float Interval;
         /// <summary>
         /// it except first run. for example, RepeatNumber == 0, Active Once, RepeatNumber == 1, Active Twice.
+        /// if RepeatNumber == -1, repeat infinitely until calling ClearTimer
         /// </summary>
         public int RepeatNumber;
         public float ElapsedTime;
@@ -104,11 +105,15 @@ namespace CommonRPG
                         handler.Function.Invoke();
                     }
                 }
-                else if (handler.RepeatNumber > 0)
+                else if (handler.RepeatNumber > 0 || handler.RepeatNumber == -1)
                 {
                     if (handler.Interval <= handler.ElapsedTime)
                     {
-                        handler.RepeatNumber--;
+                        if (handler.RepeatNumber > 0) 
+                        {
+                            handler.RepeatNumber--;
+                        }
+
                         handler.ElapsedTime = 0;
                         handler.Function.Invoke();
                     }
@@ -118,7 +123,7 @@ namespace CommonRPG
                     node = node.Next;
                     DeactivatedTimerHandlers.Enqueue(handler);
                     ActivatedTimerHandlers.Remove(handler);
-                    Debug.Log($"Activated TimerHander Count : {ActivatedTimerHandlers.Count}, Deactivated TimerHandler Count : {DeactivatedTimerHandlers.Count}");
+
                     continue;
                 }
 
@@ -145,8 +150,6 @@ namespace CommonRPG
             }
 
             ActivatedTimerHandlers.AddLast(timerHandler);
-
-            Debug.Log($"Activated TimerHander Count : {ActivatedTimerHandlers.Count}, Deactivated TimerHandler Count : {DeactivatedTimerHandlers.Count}");
             return timerHandler;
         }
     }
