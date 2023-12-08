@@ -33,6 +33,18 @@ namespace CommonRPG
         private void Start()
         {
             Debug.Log("GameManager Start");
+
+            //TimerHandler handler1 = SetTimer(5, 1, 0, () => 
+            //{   
+            //    Debug.Log("Handler 1 (3, 1, 3)");
+            //    TimerHandler handlerInternal = SetTimer(5, 1, 1, () => 
+            //    { 
+            //        Debug.Log("HandlerInternal");
+            //        TimerHandler handlerInternalInternal = SetTimer(5, 2, 5, () => { Debug.Log("HandlerInternal 2"); }, true);
+                
+            //    }, true);
+
+            //}, true);
         }
 
         private void OnEnable()
@@ -90,9 +102,9 @@ namespace CommonRPG
             instance.inGameUIInstance.SetPauseUIVisible(shouldVisible);
         }
 
-        public static void SetTimer(TimerHandler handler)
+        public static TimerHandler SetTimer(float startTime, float interval, int repeatNumber, Action function, bool isActive)
         {
-            instance.timerManager.SetTimer(handler);
+            return instance.timerManager.SetTimer(startTime, interval, repeatNumber, function, isActive);
         }
     }
 }

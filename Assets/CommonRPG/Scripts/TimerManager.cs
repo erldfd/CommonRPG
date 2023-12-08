@@ -17,6 +17,17 @@ namespace CommonRPG
         public Action Function;
 
         private bool isActive;
+        private int initialRepeatNumber;
+
+        public TimerHandler(float startTime, float interval, int repeatNumber, Action function, bool isActive)
+        {
+            StartTime = startTime;
+            Interval = interval;
+            RepeatNumber = repeatNumber;
+            initialRepeatNumber = repeatNumber;
+            Function = function;
+            this.isActive = isActive;
+        }
 
         public void ClearTimer()
         {
@@ -26,6 +37,7 @@ namespace CommonRPG
             ElapsedTime = 0;
 
             isActive = false;
+            initialRepeatNumber = 0;
         }
 
         public bool IsActive()
@@ -37,13 +49,32 @@ namespace CommonRPG
         {
             isActive = newIsActive;
         }
+
+        public void RestartTimer()
+        {
+            ElapsedTime = 0;
+            RepeatNumber = initialRepeatNumber;
+            isActive = true;
+        }
+
+        public void PauseTimer()
+        {
+            isActive = false;
+        }
+
+        public void ResumeTimer()
+        {
+            isActive = true;
+        }
     }
 
     public class TimerManager : MonoBehaviour
     {
         private TimerManager instance = null;
 
-        private List<TimerHandler> TimerHandleList = new List<TimerHandler>();
+        private LinkedList<TimerHandler> ActivatedTimerHandlers = new LinkedList<TimerHandler>();
+        private Queue<TimerHandler> DeactivatedTimerHandlers = new Queue<TimerHandler>();
+
         private void Awake()
         {
             instance = this;
@@ -52,51 +83,71 @@ namespace CommonRPG
 
         private void FixedUpdate()
         {
-            int timerHandleListCount = TimerHandleList.Count;
-            for (int i = 0; i < timerHandleListCount; ++i)
+            LinkedListNode<TimerHandler> node = ActivatedTimerHandlers.First;
+
+            while (node != null)
             {
-                TimerHandler timerHandler = TimerHandleList[i];
-                if (timerHandler.IsActive() == false)
+                TimerHandler handler = node.Value;
+
+                if (handler.IsActive() == false)
                 {
                     continue;
                 }
 
-                bool isFirstRunEnded = (timerHandler.StartTime == 0);
+                bool isFirstRunEnded = (handler.StartTime == 0);
                 if (isFirstRunEnded == false)
                 {
-                    if (timerHandler.StartTime <= timerHandler.ElapsedTime)
+                    if (handler.StartTime <= handler.ElapsedTime)
                     {
-                        TimerHandleList[i].StartTime = 0;
-                        TimerHandleList[i].ElapsedTime = 0;
-                        TimerHandleList[i].Function.Invoke();
-                        continue;
+                        handler.StartTime = 0;
+                        handler.ElapsedTime = 0;
+                        handler.Function.Invoke();
                     }
                 }
-                else if (timerHandler.RepeatNumber > 0)
+                else if (handler.RepeatNumber > 0)
                 {
-                    if (timerHandler.Interval <= timerHandler.ElapsedTime)
+                    if (handler.Interval <= handler.ElapsedTime)
                     {
-                        TimerHandleList[i].ElapsedTime = 0;
-                        TimerHandleList[i].RepeatNumber--;
-                        TimerHandleList[i].Function.Invoke();
-                        continue;
+                        handler.RepeatNumber--;
+                        handler.ElapsedTime = 0;
+                        handler.Function.Invoke();
                     }
                 }
                 else
                 {
-                    //TimerHandleList.RemoveAt(i);
-                    //TODO : remove or recycle used timerhandle
+                    node = node.Next;
+                    DeactivatedTimerHandlers.Enqueue(handler);
+                    ActivatedTimerHandlers.Remove(handler);
+                    Debug.Log($"Activated TimerHander Count : {ActivatedTimerHandlers.Count}, Deactivated TimerHandler Count : {DeactivatedTimerHandlers.Count}");
                     continue;
                 }
 
-                TimerHandleList[i].ElapsedTime += Time.fixedDeltaTime;
+                handler.ElapsedTime += Time.fixedDeltaTime;
+                node = node.Next;
             }
         }
 
-        public void SetTimer(TimerHandler timerHandler)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns> return value is timerhandler which has been set. </returns>
+        public TimerHandler SetTimer(float startTime, float interval, int repeatNumber, Action function, bool isActive)
         {
-            timerHandler.SetActive(true);
-            TimerHandleList.Add(timerHandler);
+            TimerHandler timerHandler;
+
+            if (DeactivatedTimerHandlers.Count == 0)
+            {
+                timerHandler = new TimerHandler(startTime, interval, repeatNumber, function, isActive);
+            }
+            else
+            {
+                timerHandler = DeactivatedTimerHandlers.Dequeue();
+            }
+
+            ActivatedTimerHandlers.AddLast(timerHandler);
+
+            Debug.Log($"Activated TimerHander Count : {ActivatedTimerHandlers.Count}, Deactivated TimerHandler Count : {DeactivatedTimerHandlers.Count}");
+            return timerHandler;
         }
     }
 }
