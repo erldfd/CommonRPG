@@ -18,6 +18,12 @@ namespace CommonRPG
         {
             base.Awake();
             Debug.Assert(knightWeapon);
+
+            float currentHpRatio = Mathf.Clamp01(statComponent.CurrentHealthPoint / statComponent.TotalHealth);
+            GameManager.SetPlayerHealthBarFillRatio(currentHpRatio);
+            GameManager.SetPlayerLevelText(statComponent.Level);
+            GameManager.SetPlayerManaBarFillRatio(statComponent.CurrentManaPoint / statComponent.TotalMana);
+            GameManager.SetPlayerNameText(base.unitName);
         }
 
         protected override void Update()

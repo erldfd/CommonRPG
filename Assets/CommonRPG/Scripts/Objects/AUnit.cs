@@ -7,6 +7,9 @@ namespace CommonRPG
     public abstract class AUnit : MonoBehaviour
     {
         [SerializeField]
+        protected string unitName = "";
+
+        [SerializeField]
         protected bool isDead = false;
 
         [SerializeField]

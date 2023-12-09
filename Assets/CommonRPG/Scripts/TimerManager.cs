@@ -7,6 +7,9 @@ namespace CommonRPG
 {
     public class TimerHandler
     {
+        /// <summary>
+        /// it means time until starting first run. if StartTime == -1, timemr dont use first run..
+        /// </summary>
         public float StartTime;
         public float Interval;
         /// <summary>
@@ -18,16 +21,38 @@ namespace CommonRPG
         public Action Function;
 
         private bool isActive;
+        private bool isStayingActive;
+        /// <summary>
+        /// if true, this timerHandler is always active.
+        /// but when timerHanlder is done, timerHanlder is paused.
+        /// </summary>
+        public bool IsStayingActive
+        {
+            get { return isStayingActive; }
+            set { isStayingActive = value; }
+        }
+
+        private bool isPaused;
+        public bool IsPaused
+        {
+            get { return isPaused; }
+            set { isPaused = value; }
+        }
+
+        private float initialStartTime;
         private int initialRepeatNumber;
 
         public TimerHandler(float startTime, float interval, int repeatNumber, Action function, bool isActive)
         {
             StartTime = startTime;
+            initialStartTime = startTime;
             Interval = interval;
             RepeatNumber = repeatNumber;
             initialRepeatNumber = repeatNumber;
             Function = function;
             this.isActive = isActive;
+            isStayingActive = false;
+            isPaused = false;
         }
 
         public void ClearTimer()
@@ -38,7 +63,10 @@ namespace CommonRPG
             ElapsedTime = 0;
 
             isActive = false;
+            isStayingActive = false;
+            isPaused = false;
             initialRepeatNumber = 0;
+            initialStartTime = 0;
         }
 
         public bool IsActive()
@@ -51,21 +79,29 @@ namespace CommonRPG
             isActive = newIsActive;
         }
 
+        /// <summary>
+        /// this method make hanlder restart from beginning.
+        /// </summary>
         public void RestartTimer()
         {
             ElapsedTime = 0;
             RepeatNumber = initialRepeatNumber;
+            StartTime = initialStartTime;
             isActive = true;
+            isPaused = false;
         }
 
-        public void PauseTimer()
+        public void ResetTimer(float startTime, float interval, int repeatNumber, Action function, bool isActive)
         {
-            isActive = false;
-        }
-
-        public void ResumeTimer()
-        {
-            isActive = true;
+            StartTime = startTime;
+            initialStartTime = startTime;
+            Interval = interval;
+            RepeatNumber = repeatNumber;
+            initialRepeatNumber = repeatNumber;
+            Function = function;
+            this.isActive = isActive;
+            isStayingActive = false;
+            isPaused = false;
         }
     }
 
@@ -90,17 +126,18 @@ namespace CommonRPG
             {
                 TimerHandler handler = node.Value;
 
-                if (handler.IsActive() == false)
+                if (handler.IsPaused)
                 {
+                    node = node.Next;
                     continue;
                 }
 
-                bool isFirstRunEnded = (handler.StartTime == 0);
+                bool isFirstRunEnded = (handler.StartTime == -1);
                 if (isFirstRunEnded == false)
                 {
                     if (handler.StartTime <= handler.ElapsedTime)
                     {
-                        handler.StartTime = 0;
+                        handler.StartTime = -1;
                         handler.ElapsedTime = 0;
                         handler.Function.Invoke();
                     }
@@ -121,6 +158,14 @@ namespace CommonRPG
                 else
                 {
                     node = node.Next;
+
+                    if (handler.IsStayingActive)
+                    {
+                        handler.IsPaused = true;
+                        continue;
+                    }
+
+                    handler.SetActive(false);
                     DeactivatedTimerHandlers.Enqueue(handler);
                     ActivatedTimerHandlers.Remove(handler);
 
@@ -147,6 +192,7 @@ namespace CommonRPG
             else
             {
                 timerHandler = DeactivatedTimerHandlers.Dequeue();
+                timerHandler.ResetTimer(startTime, interval, repeatNumber, function, isActive);
             }
 
             ActivatedTimerHandlers.AddLast(timerHandler);

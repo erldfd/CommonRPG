@@ -11,7 +11,7 @@ namespace CommonRPG
 
         [SerializeField]
         private InGameUI inGameUI = null;
-        private InGameUI inGameUIInstance = null;
+        //private InGameUI inGameUIInstance = null;
         private static GameManager instance = null;
 
         private void Awake()
@@ -24,10 +24,10 @@ namespace CommonRPG
 
             DontDestroyOnLoad(gameObject);
 
-            inGameUIInstance = Instantiate(inGameUI);
-            Debug.Assert(inGameUIInstance);
+            //inGameUIInstance = Instantiate(inGameUI);
+            //Debug.Assert(inGameUIInstance);
 
-            DontDestroyOnLoad(inGameUIInstance);
+            //DontDestroyOnLoad(inGameUIInstance);
         }
 
         private void Start()
@@ -54,52 +54,52 @@ namespace CommonRPG
 
         public static void SetInGameUIVisible(bool shouldVisible)
         {
-            instance.inGameUIInstance.gameObject.SetActive(shouldVisible);
+            instance.inGameUI.gameObject.SetActive(shouldVisible);
         }
 
         public static void SetMonsterInfoUIVisible(bool shouldVisible)
         {
-            instance.inGameUIInstance.SetMonsterInfoUIVisible(shouldVisible);
+            instance.inGameUI.SetMonsterInfoUIVisible(shouldVisible);
         }
 
         public static void SetMonsterNameText(string NewName)
         {
-            instance.inGameUIInstance.SetMonsterNameText(NewName);
+            instance.inGameUI.SetMonsterNameText(NewName);
         }
 
         public static void SetMonsterHealthBarFillRatio(float ratio)
         {
-            instance.inGameUIInstance.SetMonsterHealthBarFillRatio(ratio);
+            instance.inGameUI.SetMonsterHealthBarFillRatio(ratio);
         }
 
         public static void SetPlayerInfoUIVisible(bool shouldVisible)
         {
-            instance.inGameUIInstance.SetPlayerInfoUIVisible(shouldVisible);
+            instance.inGameUI.SetPlayerInfoUIVisible(shouldVisible);
         }
 
         public static void SetPlayerNameText(string NewName)
         {
-            instance.inGameUIInstance.SetPlayerNameText(NewName);
+            instance.inGameUI.SetPlayerNameText(NewName);
         }
 
         public static void SetPlayerHealthBarFillRatio(float ratio)
         {
-            instance.inGameUIInstance.SetPlayerHealthBarFillRatio(ratio);
+            instance.inGameUI.SetPlayerHealthBarFillRatio(ratio);
         }
 
         public static void SetPlayerManaBarFillRatio(float ratio)
         {
-            instance.inGameUIInstance.SetPlayerManaBarFillRatio(ratio);
+            instance.inGameUI.SetPlayerManaBarFillRatio(ratio);
         }
 
         public static void SetPlayerLevelText(int NewLevel)
         {
-            instance.inGameUIInstance.SetPlayerLevelText(NewLevel);
+            instance.inGameUI.SetPlayerLevelText(NewLevel);
         }
 
         public static void SetPauseUIVisible(bool shouldVisible)
         {
-            instance.inGameUIInstance.SetPauseUIVisible(shouldVisible);
+            instance.inGameUI.SetPauseUIVisible(shouldVisible);
         }
 
         public static TimerHandler SetTimer(float startTime, float interval, int repeatNumber, Action function, bool isActive)

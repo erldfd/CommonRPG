@@ -21,6 +21,8 @@ namespace CommonRPG
         protected float deathTime = 0;
 
         protected AIController aiController = null;
+
+        protected TimerHandler monsterUITimerHandler = null;
         public virtual float TakeDamage(float DamageAmount, AUnit DamageCauser = null)
         {
             statComponent.CurrentHealthPoint -= DamageAmount;
@@ -29,6 +31,18 @@ namespace CommonRPG
             float currentHpRatio = Mathf.Clamp01(statComponent.CurrentHealthPoint / statComponent.TotalHealth);
             GameManager.SetMonsterHealthBarFillRatio(currentHpRatio);
             GameManager.SetMonsterInfoUIVisible(true);
+            GameManager.SetMonsterNameText(base.unitName);
+
+            if (monsterUITimerHandler == null)
+            {
+                monsterUITimerHandler = GameManager.SetTimer(3, 1, 0, () => { GameManager.SetMonsterInfoUIVisible(false); }, true);
+                monsterUITimerHandler.IsStayingActive = true;
+            }
+            else
+            {
+                monsterUITimerHandler.RestartTimer();
+            }
+
             if (currentHpRatio <= 0)
             {
                 BeKilled();

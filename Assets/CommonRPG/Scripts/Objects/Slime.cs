@@ -19,17 +19,17 @@ namespace CommonRPG
             //timerHandler.StartTime = 1;
             //timerHandler.Interval = 1;
             //timerHandler.RepeatNumber = 100;
-            //timerHandler.Function = () =>
-            //{
-            //    if (isDead || slimeAnimController.IsHit)
-            //    {
-            //        return;
-            //    }
+            //timerHandler.Function = 
 
-            //    slimeAnimController.PlayAttackAnim();
-            //};
+            GameManager.SetTimer(1, 1, 1, () =>
+            {
+                if (isDead || slimeAnimController.IsHit)
+                {
+                    return;
+                }
 
-            //GameManager.SetTimer(timerHandler);
+                slimeAnimController.PlayAttackAnim();
+            }, true);
         }
 
         protected override void Update()

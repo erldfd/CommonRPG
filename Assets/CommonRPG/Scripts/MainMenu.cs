@@ -18,7 +18,6 @@ namespace CommonRPG
             {
                 Instantiate(gameManager);
             }
-
         }
 
         public void OnTestGameButtonClicked()
