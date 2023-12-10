@@ -167,7 +167,7 @@ namespace CommonRPG
 
                     handler.SetActive(false);
                     DeactivatedTimerHandlers.Enqueue(handler);
-                    ActivatedTimerHandlers.Remove(handler);
+                    ActivatedTimerHandlers.Remove(node.Previous);
 
                     continue;
                 }
