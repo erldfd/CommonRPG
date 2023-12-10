@@ -51,7 +51,7 @@ namespace CommonRPG
 
             Debug.Assert(pauseUI);
 
-            DontDestroyOnLoad(gameObject);
+            //DontDestroyOnLoad(gameObject);
         }
 
         public void SetMonsterInfoUIVisible(bool shouldVisible)

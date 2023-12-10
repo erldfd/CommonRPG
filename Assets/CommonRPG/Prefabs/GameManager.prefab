@@ -68,6 +68,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7144394540234113546}
     m_Modifications:
+    - target: {fileID: 4452514171668632792, guid: 0357c9c0edc37774c9594900b2fb931a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7016624455665237213, guid: 0357c9c0edc37774c9594900b2fb931a, type: 3}
       propertyPath: m_Name
       value: InGameUICanvas

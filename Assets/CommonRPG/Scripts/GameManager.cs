@@ -33,18 +33,6 @@ namespace CommonRPG
         private void Start()
         {
             Debug.Log("GameManager Start");
-
-            //TimerHandler handler1 = SetTimer(5, 1, 0, () => 
-            //{   
-            //    Debug.Log("Handler 1 (3, 1, 3)");
-            //    TimerHandler handlerInternal = SetTimer(5, 1, 1, () => 
-            //    { 
-            //        Debug.Log("HandlerInternal");
-            //        TimerHandler handlerInternalInternal = SetTimer(5, 2, 5, () => { Debug.Log("HandlerInternal 2"); }, true);
-                
-            //    }, true);
-
-            //}, true);
         }
 
         private void OnEnable()
@@ -84,6 +72,8 @@ namespace CommonRPG
 
         public static void SetPlayerHealthBarFillRatio(float ratio)
         {
+            Debug.Assert(instance);
+            Debug.Assert(instance.inGameUI);
             instance.inGameUI.SetPlayerHealthBarFillRatio(ratio);
         }
 

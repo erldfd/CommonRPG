@@ -14,22 +14,6 @@ namespace CommonRPG
             base.Awake();
             SlimeAnimController slimeAnimController = (SlimeAnimController)animController;
             Debug.Assert(slimeAnimController);
-
-            //TimerHandler timerHandler = new TimerHandler();
-            //timerHandler.StartTime = 1;
-            //timerHandler.Interval = 1;
-            //timerHandler.RepeatNumber = 100;
-            //timerHandler.Function = 
-
-            GameManager.SetTimer(1, 1, 1, () =>
-            {
-                if (isDead || slimeAnimController.IsHit)
-                {
-                    return;
-                }
-
-                slimeAnimController.PlayAttackAnim();
-            }, true);
         }
 
         protected override void Update()
@@ -45,6 +29,8 @@ namespace CommonRPG
             Debug.Assert(slimeAnimController);
 
             slimeAnimController.OnAttackCheck += DoDamage;
+
+            base.aiController.OnAttack += Attack;
         }
 
         protected override void OnDisable()
@@ -53,6 +39,8 @@ namespace CommonRPG
             Debug.Assert(slimeAnimController);
 
             slimeAnimController.OnAttackCheck -= DoDamage;
+
+            base.aiController.OnAttack -= Attack;
         }
 
         public override float TakeDamage(float DamageAmount, AUnit DamageCauser = null)
@@ -86,6 +74,28 @@ namespace CommonRPG
 
                 damageableTarget.TakeDamage(attackDamage, this);
             }
+        }
+
+        private void Attack(Transform targetTransform)
+        {
+            SlimeAnimController slimeAnimController = (SlimeAnimController)animController;
+            Debug.Assert(slimeAnimController);
+
+            if (isDead)
+            {
+                aiController.IsAIActivated = false;
+                return;
+            }
+
+            if (slimeAnimController.IsHit)
+            {
+                return;
+            }
+
+            Vector3 LookTargetVector = targetTransform.position - transform.position;
+            transform.forward = LookTargetVector;
+
+            slimeAnimController.PlayAttackAnim();
         }
     }
 }
