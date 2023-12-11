@@ -44,7 +44,6 @@ namespace CommonRPG
             hitMonsterSet.Add(monster);
 
             monster.TakeDamage(weaponDamage);
-
         }
     }
 

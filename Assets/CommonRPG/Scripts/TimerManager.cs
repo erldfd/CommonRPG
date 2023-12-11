@@ -157,18 +157,27 @@ namespace CommonRPG
                 }
                 else
                 {
-                    node = node.Next;
-
                     if (handler.IsStayingActive)
                     {
                         handler.IsPaused = true;
+                        node = node.Next;
                         continue;
                     }
 
                     handler.SetActive(false);
                     DeactivatedTimerHandlers.Enqueue(handler);
-                    ActivatedTimerHandlers.Remove(node.Previous);
 
+                    if (node.Next == null)
+                    {
+                        ActivatedTimerHandlers.Remove(node);
+                        node = null;
+                    }
+                    else
+                    {
+                        node = node.Next;
+                        ActivatedTimerHandlers.Remove(node.Previous);
+                    }
+                    
                     continue;
                 }
 

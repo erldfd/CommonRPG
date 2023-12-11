@@ -9,10 +9,17 @@ namespace CommonRPG
         [SerializeField]
         private TimerManager timerManager = null;
 
+
         [SerializeField]
         private InGameUI inGameUI = null;
         //private InGameUI inGameUIInstance = null;
         private static GameManager instance = null;
+
+        [SerializeField]
+        private ItemDataScriptableObject itemData = null;
+
+        [SerializeField]
+        private Inventory playerInventory = null;
 
         private void Awake()
         {
@@ -22,17 +29,19 @@ namespace CommonRPG
             Debug.Assert(inGameUI);
             Debug.Assert(timerManager);
 
+           // playerInventory = GetComponentInChildren<Inventory>();
+            Debug.Assert(playerInventory);
+
             DontDestroyOnLoad(gameObject);
 
-            //inGameUIInstance = Instantiate(inGameUI);
-            //Debug.Assert(inGameUIInstance);
-
-            //DontDestroyOnLoad(inGameUIInstance);
+            
         }
 
         private void Start()
         {
             Debug.Log("GameManager Start");
+
+            SetTimer(3, 0, 0, () => { playerInventory.ObtainItem(1, itemData.ItemDataList[0].SlotData); }, true);
         }
 
         private void OnEnable()
@@ -72,8 +81,6 @@ namespace CommonRPG
 
         public static void SetPlayerHealthBarFillRatio(float ratio)
         {
-            Debug.Assert(instance);
-            Debug.Assert(instance.inGameUI);
             instance.inGameUI.SetPlayerHealthBarFillRatio(ratio);
         }
 
