@@ -7,13 +7,15 @@ using UnityEngine.UI;
 
 public enum EItemName
 {
-    TheFirstSword,
-    Weapon2,
+    None = -1,
+    TheFirstSword = 0,
+    TheSecondSword,
     Weapon3,
 }
 
 public enum EItemType
 {
+    None,
     Weapon,
     Shield,
     Misc
@@ -44,24 +46,22 @@ public class ItemData
     private string name = null;
 
     [SerializeField]
-    private SInventorySlotItemData slotData;
-    public SInventorySlotItemData SlotData { get { return slotData; } }
+    private SItemData slotData;
+    public SItemData SlotData { get { return slotData; } }
 
     [SerializeField]
-    private AItem item = null;
-    public AItem Item { get { return item; } }
+    private AItem itemPrefab = null;
+    public AItem ItemPrefab { get { return itemPrefab; } }
 }
 
 [Serializable]
-public struct SInventorySlotItemData
+public struct SItemData
 {
     public EItemName ItemName;
     public EItemType ItemType;
     public EItemGrade ItemGrade;
     public Sprite SlotSprite;
     public int MaxItemCount;
-    [HideInInspector]
-    public int CurrentItemCount;
     public float Damage;
     public float Defense;
     public float HPBonus;

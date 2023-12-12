@@ -8,9 +8,7 @@ namespace CommonRPG
     public class WeaponItem : AItem
     {
         private float weaponDamage = 1;
-
         private BoxCollider boxCollider = null;
-
         private HashSet<IDamageable> hitMonsterSet = new HashSet<IDamageable>();
 
         private void Awake()
@@ -30,6 +28,11 @@ namespace CommonRPG
 
         private void OnTriggerEnter(Collider other)
         {
+            if (base.IsFieldItem) 
+            {
+                return;
+            }
+
             IDamageable monster = other.GetComponent<IDamageable>();
             if (monster == null) 
             {

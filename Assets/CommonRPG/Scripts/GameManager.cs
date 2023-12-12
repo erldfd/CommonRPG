@@ -9,7 +9,6 @@ namespace CommonRPG
         [SerializeField]
         private TimerManager timerManager = null;
 
-
         [SerializeField]
         private InGameUI inGameUI = null;
         //private InGameUI inGameUIInstance = null;
@@ -19,7 +18,7 @@ namespace CommonRPG
         private ItemDataScriptableObject itemData = null;
 
         [SerializeField]
-        private Inventory playerInventory = null;
+        private InventoryManager playerInventory = null;
 
         private void Awake()
         {
@@ -33,15 +32,22 @@ namespace CommonRPG
             Debug.Assert(playerInventory);
 
             DontDestroyOnLoad(gameObject);
-
-            
         }
 
         private void Start()
         {
             Debug.Log("GameManager Start");
 
-            SetTimer(3, 0, 0, () => { playerInventory.ObtainItem(1, itemData.ItemDataList[0].SlotData); }, true);
+            SetTimer(3, 0, 0, () => { playerInventory.ObtainItem(1, 1, itemData.ItemDataList[(int)EItemName.TheSecondSword].SlotData); }, true);
+            SetTimer(6, 0, 0, () => 
+            { 
+                
+                int count = playerInventory.ObtainItem(6, itemData.ItemDataList[(int)EItemName.TheFirstSword].SlotData);
+                Debug.Log(count);
+
+            }, true);
+
+            SetTimer(10, 0, 0, () => { playerInventory.DeleteItem(2, 1); }, true);
         }
 
         private void OnEnable()
@@ -102,6 +108,22 @@ namespace CommonRPG
         public static TimerHandler SetTimer(float startTime, float interval, int repeatNumber, Action function, bool isActive)
         {
             return instance.timerManager.SetTimer(startTime, interval, repeatNumber, function, isActive);
+        }
+
+        public static AItem SpawnItem(EItemName itemName, Transform transform, bool isFieldItem)
+        {
+            AItem item = Instantiate(instance.itemData.ItemDataList[(int)itemName].ItemPrefab, transform);
+            item.IsFieldItem = isFieldItem;
+
+            return item;
+        }
+
+        public static AItem SpawnItem(EItemName itemName, Vector3 spawnPosition, Quaternion quaternion, bool isFieldItem)
+        {
+            AItem item = Instantiate(instance.itemData.ItemDataList[(int)itemName].ItemPrefab, spawnPosition, quaternion);
+            item.IsFieldItem = isFieldItem;
+
+            return item;
         }
     }
 }
