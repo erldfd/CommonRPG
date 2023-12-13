@@ -71,6 +71,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7144394540234113546}
     m_Modifications:
+    - target: {fileID: 924546931654468038, guid: d6af948af4168bc4eb47d9be53b27041, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -367
+      objectReference: {fileID: 0}
+    - target: {fileID: 924546931654468038, guid: d6af948af4168bc4eb47d9be53b27041, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -21
+      objectReference: {fileID: 0}
     - target: {fileID: 3147105919135248864, guid: d6af948af4168bc4eb47d9be53b27041, type: 3}
       propertyPath: m_Name
       value: MainInventoryCanvas

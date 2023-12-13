@@ -24,9 +24,11 @@ namespace CommonRPG
             GameManager.SetPlayerLevelText(statComponent.Level);
             GameManager.SetPlayerManaBarFillRatio(statComponent.CurrentManaPoint / statComponent.TotalMana);
             GameManager.SetPlayerNameText(base.unitName);
+        }
 
-            GameManager.SetTimer(10, 0, 0, () => { GameManager.SpawnItem(EItemName.TheSecondSword, transform, false); }, true);
-            GameManager.SetTimer(10, 0, 0, () => { GameManager.SpawnItem(EItemName.TheFirstSword, new Vector3(1,1,1), Quaternion.identity, true); }, true);
+        protected override void Start()
+        {
+            base.Start();
         }
 
         protected override void Update()

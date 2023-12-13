@@ -40,6 +40,11 @@ namespace CommonRPG
             Debug.Assert(animController);
         }
 
+        protected virtual void Start()
+        {
+
+        }
+
         protected virtual void Update()
         {
         }

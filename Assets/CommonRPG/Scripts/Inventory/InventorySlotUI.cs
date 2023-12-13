@@ -19,9 +19,11 @@ public class InventorySlotUI : MonoBehaviour, IPointerDownHandler, IPointerUpHan
     public int SlotIndex { get; set; }
     public bool IsEmpty { get; set; }
 
+    public EInventoryType CurrentSlotInventoryType { get; set; }
+
     public event Action<int> OnPointerDownDelegate = null;
     public event Action<int> OnBeginDragDelegate = null;
-    public event Action<int> OnEndDragDelegate = null;
+    public event Action<int, int, EInventoryType, EInventoryType> OnEndDragDelegate = null;
 
     private UnityEngine.UI.Image slotImage = null;
     private UnityEngine.UI.Image dragSlotImage = null;
@@ -123,10 +125,6 @@ public class InventorySlotUI : MonoBehaviour, IPointerDownHandler, IPointerUpHan
         }
 
         dragSlotImage.transform.position = eventData.position;
-
-        Debug.Log($"OnDrag, SlotIndex : {SlotIndex}");
-        Debug.Log($"Current Raycast : {eventData.pointerCurrentRaycast}");
-        Debug.Log($"Drag : {eventData.pointerDrag}");
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -151,6 +149,18 @@ public class InventorySlotUI : MonoBehaviour, IPointerDownHandler, IPointerUpHan
             return;
         }
 
-        OnEndDragDelegate.Invoke(SlotIndex);
+        Debug.Log($"OnEndDrag, SlotIndex : {SlotIndex}");
+        Debug.Log($"OnEndDrag, Current Raycast : {eventData.pointerCurrentRaycast}");
+        Debug.Log($"OnEndDrag, Drag : {eventData.pointerDrag}");
+
+        InventorySlotUI otherSlotUI = eventData.pointerCurrentRaycast.gameObject.transform.parent.GetComponent<InventorySlotUI>();
+        if (otherSlotUI == null) 
+        {
+            Debug.Log($"OnDragEnd otherSlotUI == null, gameobject : {eventData.pointerCurrentRaycast.gameObject}");
+            return;
+        }
+
+        Debug.Log($"firstSlotIndex : {SlotIndex}, secondSlotIndex : {otherSlotUI.SlotIndex}, firstSlotInventoryType : {CurrentSlotInventoryType}, secondSlotInventoryType : {otherSlotUI.CurrentSlotInventoryType}");
+        OnEndDragDelegate.Invoke(SlotIndex, otherSlotUI.SlotIndex, CurrentSlotInventoryType, otherSlotUI.CurrentSlotInventoryType);
     }
 }

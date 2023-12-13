@@ -13,12 +13,13 @@ public enum EItemName
     Weapon3,
 }
 
+[Flags]
 public enum EItemType
 {
-    None,
-    Weapon,
-    Shield,
-    Misc
+    None = 0,
+    Weapon = 1,
+    Shield = 2,
+    Misc = 4,
 }
 
 public enum EItemGrade

@@ -2,147 +2,96 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum EInventoryType
-{
-    Equipment,
-    EquipmentScreen,
-}
-
 public class InventoryManager : MonoBehaviour
 {
-    private List<InventorySlotItemData> equipmentItemDataList = null;
-    private InventorySlotUI[] equipmentSlotUIs = null;
+    [SerializeField]
+    private List<Inventory> inventoryList = null;
+
+    private InventorySlotItemData tempSlotItemData = new InventorySlotItemData();
 
     private void Awake()
     {
-        equipmentSlotUIs = GetComponentsInChildren<InventorySlotUI>(true);
-        Debug.Assert(equipmentSlotUIs != null && equipmentSlotUIs.Length > 0);
+        Debug.Assert(inventoryList.Count > 0);
+        inventoryList.Sort();
+    }
 
-        int slotUIsLength = equipmentSlotUIs.Length;
-        for (int i = 0; i < slotUIsLength; i++) 
+    private void OnEnable()
+    {
+        foreach (Inventory inventory in inventoryList)
         {
-            equipmentSlotUIs[i].SlotIndex = i;
-            equipmentSlotUIs[i].IsEmpty = true;
-        }
+            List<InventorySlotUI> inventorySlotUiList = inventory.SlotUiList;
 
-        equipmentItemDataList = new List<InventorySlotItemData>(slotUIsLength);
-        for (int i = 0; i < slotUIsLength; i++) 
-        {
-            equipmentItemDataList.Add(new InventorySlotItemData());
+            int slotUiListCount = inventorySlotUiList.Count;
+            for (int i = 0; i < slotUiListCount; ++i)
+            {
+                inventorySlotUiList[i].OnEndDragDelegate += ExchangeOrMoveItem;
+            }
         }
     }
 
-    public void ObtainItem(int slotIndex, int itemAddCount, in SItemData slotItemData)
+    private void OnDisable()
     {
-        Debug.AssertFormat(slotIndex < equipmentItemDataList.Count, $"slotIndex : {slotIndex}, equipmentItemDataList.Count : {equipmentItemDataList.Count}");
-
-        int totalItemCount = equipmentItemDataList[slotIndex].CurrentItemCount + itemAddCount;
-        if (totalItemCount > slotItemData.MaxItemCount)
+        foreach (Inventory inventory in inventoryList)
         {
-            Debug.LogWarning($"Too many items... cant obtain items.. CurrentItemCount : {equipmentItemDataList[slotIndex].CurrentItemCount}, itemAddCount : {itemAddCount}, MaxItemCount : {slotItemData.MaxItemCount}");
+            List<InventorySlotUI> inventorySlotUiList = inventory.SlotUiList;
+
+            int slotUiListCount = inventorySlotUiList.Count;
+            for (int i = 0; i < slotUiListCount; ++i)
+            {
+                inventorySlotUiList[i].OnEndDragDelegate -= ExchangeOrMoveItem;
+            }
+        }
+    }
+
+    public void ExchangeOrMoveItem(int firstSlotIndex, int secondSlotIndex, EInventoryType firstInventoryType, EInventoryType secondInventoryType)
+    {
+        Inventory firstInventory = inventoryList[(int)firstInventoryType];
+        Inventory secondInventory = inventoryList[(int)secondInventoryType];
+
+        InventorySlotItemData firstSlotItemData = firstInventory.InventoryItemDataList[firstSlotIndex];
+        InventorySlotItemData secondSlotItemData = secondInventory.InventoryItemDataList[secondSlotIndex];
+
+        if (secondSlotItemData.CurrentItemCount != 0 && firstInventory.CheckAllowedItem(secondSlotItemData.ItemData.ItemType) == false) 
+        {
             return;
         }
 
-        equipmentItemDataList[slotIndex].slotItemData = slotItemData;
-        equipmentItemDataList[slotIndex].CurrentItemCount = totalItemCount;
-        equipmentSlotUIs[slotIndex].SetSlotImageSprite(slotItemData.SlotSprite);
-        equipmentSlotUIs[slotIndex].SetSlotItemCountText(totalItemCount);
-        equipmentSlotUIs[slotIndex].IsEmpty = (totalItemCount == 0);
-    }
-    /// <summary>
-    ///  add item to inventory automatically as much as itemAddcount until inventory has no space.
-    /// </summary>
-    /// <returns> remaining item count after adding items until inventory is filled.</returns>
-    public int ObtainItem(int itemAddCount, in SItemData slotItemData)
-    {
-        int TotalItemAddCount = itemAddCount;
-
-        int equipmentItemdataListCount = equipmentItemDataList.Count;
-        for (int i = 0; i < equipmentItemdataListCount; ++i) 
+        if (firstSlotItemData.CurrentItemCount != 0 && secondInventory.CheckAllowedItem(firstSlotItemData.ItemData.ItemType) == false)
         {
-            InventorySlotItemData data = equipmentItemDataList[i];
-            
-            if (data.slotItemData.ItemName != slotItemData.ItemName && data.slotItemData.ItemName != EItemName.None) 
-            {
-                continue;
-            }
-
-            if (data.slotItemData.MaxItemCount == data.CurrentItemCount && data.slotItemData.ItemName != EItemName.None)  
-            {
-                continue;
-            }
-
-            int addableItemCount = 0;
-            if (data.slotItemData.ItemName == EItemName.None) 
-            {
-                addableItemCount = slotItemData.MaxItemCount;
-                equipmentSlotUIs[i].SetSlotImageSprite(slotItemData.SlotSprite);
-                data.slotItemData = slotItemData;
-            }
-            else
-            {
-                addableItemCount = data.slotItemData.MaxItemCount - data.CurrentItemCount;
-            }
-
-            int remainingItemCount = TotalItemAddCount - addableItemCount;
-            if (remainingItemCount > 0)
-            {
-                data.CurrentItemCount = slotItemData.MaxItemCount;
-                TotalItemAddCount = remainingItemCount;
-            }
-            else
-            {
-                data.CurrentItemCount = TotalItemAddCount;
-                TotalItemAddCount = 0;
-            }
-
-            equipmentSlotUIs[i].SetSlotItemCountText(data.CurrentItemCount);
-
-            if (TotalItemAddCount == 0)
-            {
-                return 0;
-            }
+            return;
         }
 
-        return TotalItemAddCount;
-    }
+        //tempSlotItemData = new InventorySlotItemData(firstSlotItemData);
+        //firstSlotItemData = new InventorySlotItemData(secondSlotItemData);
+        //secondSlotItemData = new InventorySlotItemData(tempSlotItemData);
 
-    public void DeleteItem(int slotIndex, int deleteCount)
-    {
-        if (deleteCount >= equipmentItemDataList[slotIndex].CurrentItemCount) 
+        tempSlotItemData.CopyFrom(firstSlotItemData);
+        firstSlotItemData.CopyFrom(secondSlotItemData);
+        secondSlotItemData.CopyFrom(tempSlotItemData);
+
+        int firstSlotItemCount = firstSlotItemData.CurrentItemCount;
+        int secondSlotItemCount = secondSlotItemData.CurrentItemCount;
+
+        firstInventory.SetItemCountText(firstSlotIndex, firstSlotItemCount);
+        secondInventory.SetItemCountText(secondSlotIndex, secondSlotItemCount);
+
+        if (firstSlotItemCount == 0) 
         {
-            equipmentItemDataList[slotIndex].CurrentItemCount = 0;
-
-            equipmentItemDataList[slotIndex].slotItemData.ItemName = EItemName.None;
-
-            equipmentSlotUIs[slotIndex].SetSlotImageSprite(null);
-            equipmentSlotUIs[slotIndex].SetSlotItemCountText(0);
+            firstInventory.PaintSlotImage(firstSlotIndex, null);
+            
         }
         else
         {
-            equipmentItemDataList[slotIndex].CurrentItemCount -= deleteCount;
-            equipmentSlotUIs[slotIndex].SetSlotItemCountText(equipmentItemDataList[slotIndex].CurrentItemCount);
+            firstInventory.PaintSlotImage(firstSlotIndex, firstSlotItemData.ItemData.SlotSprite);
         }
-    }
 
-    public void UseItem(int slotIndex)
-    {
-
-    }
-}
-
-public class InventorySlotItemData
-{
-    public SItemData slotItemData = new SItemData();
-    public int CurrentItemCount = 0;
-
-    public InventorySlotItemData()
-    {
-        slotItemData.ItemName = EItemName.None;
-    }
-
-    public void UseSlotItem()
-    {
-        
+        if (secondSlotItemCount == 0) 
+        {
+            secondInventory.PaintSlotImage(secondSlotIndex, null);
+        }
+        else
+        {
+            secondInventory.PaintSlotImage(secondSlotIndex, secondSlotItemData.ItemData.SlotSprite);
+        }
     }
 }

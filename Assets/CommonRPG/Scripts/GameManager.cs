@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace CommonRPG
 {
+    [DefaultExecutionOrder(-1)]
     public class GameManager : MonoBehaviour
     {
         [Header("Managers")]
@@ -18,12 +19,12 @@ namespace CommonRPG
         private ItemDataScriptableObject itemData = null;
 
         [SerializeField]
-        private InventoryManager playerInventory = null;
+        private Inventory playerInventory = null;
 
         private void Awake()
         {
             instance = this;
-
+            
             Debug.Assert(instance);
             Debug.Assert(inGameUI);
             Debug.Assert(timerManager);
@@ -38,16 +39,16 @@ namespace CommonRPG
         {
             Debug.Log("GameManager Start");
 
-            SetTimer(3, 0, 0, () => { playerInventory.ObtainItem(1, 1, itemData.ItemDataList[(int)EItemName.TheSecondSword].SlotData); }, true);
-            SetTimer(6, 0, 0, () => 
+            SetTimer(1, 0, 0, () => { playerInventory.ObtainItem(1, 1, itemData.ItemDataList[(int)EItemName.TheSecondSword].SlotData); }, true);
+            SetTimer(2, 0, 0, () => 
             { 
                 
-                int count = playerInventory.ObtainItem(6, itemData.ItemDataList[(int)EItemName.TheFirstSword].SlotData);
+                int count = playerInventory.ObtainItem(3, itemData.ItemDataList[(int)EItemName.TheFirstSword].SlotData);
                 Debug.Log(count);
 
             }, true);
 
-            SetTimer(10, 0, 0, () => { playerInventory.DeleteItem(2, 1); }, true);
+            SetTimer(3, 0, 0, () => { playerInventory.DeleteItem(2, 1); }, true);
         }
 
         private void OnEnable()
