@@ -1,3 +1,4 @@
+using CommonRPG;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,6 +22,21 @@ public class InventorySlotUI : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 
     public EInventoryType CurrentSlotInventoryType { get; set; }
 
+    [SerializeField]
+    private EItemType allowedItemType = EItemType.None;
+    public EItemType AllowedItemType
+    {
+        get
+        {
+            return allowedItemType;
+        }
+
+        set
+        {
+            allowedItemType = value;
+        }
+    }
+
     public event Action<int> OnPointerDownDelegate = null;
     public event Action<int> OnBeginDragDelegate = null;
     public event Action<int, int, EInventoryType, EInventoryType> OnEndDragDelegate = null;
@@ -34,7 +50,8 @@ public class InventorySlotUI : MonoBehaviour, IPointerDownHandler, IPointerUpHan
         slotImage = transform.GetChild((int)EInvntorySlotElementOrder.SlotImage).GetComponent<UnityEngine.UI.Image>();
         Debug.Assert(slotImage);
 
-        dragSlotImage = transform.root.GetChild(1).GetChild(1).GetComponent<UnityEngine.UI.Image>();
+        GameManager.GetDragSlotImage(out dragSlotImage);
+
         Debug.Assert(dragSlotImage);
         dragSlotImage.gameObject.SetActive(false);
 
@@ -54,9 +71,14 @@ public class InventorySlotUI : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 
     public void SetSlotItemCountText(int newItemCount)
     {
-        itemCountText.text = newItemCount.ToString();
         IsEmpty = (newItemCount == 0);
         itemCountText.gameObject.SetActive(IsEmpty == false);
+        SetSlotItemCountText(newItemCount.ToString());
+    }
+
+    public void SetSlotItemCountText(string newText)
+    {
+        itemCountText.text = newText;
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -150,8 +172,14 @@ public class InventorySlotUI : MonoBehaviour, IPointerDownHandler, IPointerUpHan
         }
 
         Debug.Log($"OnEndDrag, SlotIndex : {SlotIndex}");
-        Debug.Log($"OnEndDrag, Current Raycast : {eventData.pointerCurrentRaycast}");
         Debug.Log($"OnEndDrag, Drag : {eventData.pointerDrag}");
+
+        if (eventData.pointerCurrentRaycast.isValid == false)
+        {
+            return;
+        }
+
+        Debug.Log($"OnEndDrag, Current Raycast : {eventData.pointerCurrentRaycast}");
 
         InventorySlotUI otherSlotUI = eventData.pointerCurrentRaycast.gameObject.transform.parent.GetComponent<InventorySlotUI>();
         if (otherSlotUI == null) 

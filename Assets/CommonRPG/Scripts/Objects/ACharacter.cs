@@ -1,10 +1,31 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.VFX;
 
 namespace CommonRPG
 {
     public abstract class ACharacter : AUnit, IDamageable
     {
+        [Header("Equipment")]
+        [SerializeField]
+        protected WeaponItem characterWeapon = null;
+        public WeaponItem CharacterWeapon
+        {
+            get { return characterWeapon; } 
+            set 
+            { 
+                characterWeapon = value;
+
+                statComponent.WeaponAttackPowerBonus = value.Data.Damage;
+                statComponent.WeaponDefenseBonus = value.Data.Defense;
+                statComponent.WeaponHealthBonus = value.Data.HPBonus;
+                statComponent.WeaponManaBonus = value.Data.MPBonus;
+
+                GameManager.SetPlayerHealthBarFillRatio(statComponent.CurrentHealthPoint / statComponent.TotalHealth);
+                GameManager.SetPlayerManaBarFillRatio(statComponent.CurrentManaPoint / statComponent.TotalMana);
+            }
+        }
+
         [Header("Camera")]
         [SerializeField]
         protected Camera characterCamera = null;
@@ -43,8 +64,8 @@ namespace CommonRPG
         {
             Debug.Log("OnEnable");
             inputActionAsset.Enable();
+
             inputActionAsset.FindActionMap("PlayerInput").FindAction("Move").performed += OnMove;
-            //inputActionAsset.FindActionMap("PlayerInput").FindAction("Move").started += OnMove;
             inputActionAsset.FindActionMap("PlayerInput").FindAction("Move").canceled += OnMove;
 
             inputActionAsset.FindActionMap("PlayerInput").FindAction("PauseAndResume").performed += OnPauseAndResume;

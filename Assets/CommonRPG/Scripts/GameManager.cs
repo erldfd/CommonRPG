@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace CommonRPG
 {
@@ -11,6 +12,12 @@ namespace CommonRPG
         private TimerManager timerManager = null;
 
         [SerializeField]
+        private InventoryManager inventoryManager = null;
+
+        [SerializeField]
+        private UnitManager unitManager = null;
+
+        [SerializeField]
         private InGameUI inGameUI = null;
         //private InGameUI inGameUIInstance = null;
         private static GameManager instance = null;
@@ -19,7 +26,7 @@ namespace CommonRPG
         private ItemDataScriptableObject itemData = null;
 
         [SerializeField]
-        private Inventory playerInventory = null;
+        private AInventory playerInventory = null;
 
         private void Awake()
         {
@@ -39,16 +46,17 @@ namespace CommonRPG
         {
             Debug.Log("GameManager Start");
 
-            SetTimer(1, 0, 0, () => { playerInventory.ObtainItem(1, 1, itemData.ItemDataList[(int)EItemName.TheSecondSword].SlotData); }, true);
+            SetTimer(1, 0, 0, () => { playerInventory.ObtainItem(1, 1, itemData.ItemDataList[(int)EItemName.TheSecondSword].Data); }, true);
             SetTimer(2, 0, 0, () => 
             { 
                 
-                int count = playerInventory.ObtainItem(3, itemData.ItemDataList[(int)EItemName.TheFirstSword].SlotData);
+                int count = playerInventory.ObtainItem(5, itemData.ItemDataList[(int)EItemName.TheFirstSword].Data);
                 Debug.Log(count);
 
             }, true);
 
             SetTimer(3, 0, 0, () => { playerInventory.DeleteItem(2, 1); }, true);
+            SetTimer(4, 0, 0, () => { playerInventory.DeleteItem(3, 1); }, true);
         }
 
         private void OnEnable()
@@ -113,8 +121,11 @@ namespace CommonRPG
 
         public static AItem SpawnItem(EItemName itemName, Transform transform, bool isFieldItem)
         {
-            AItem item = Instantiate(instance.itemData.ItemDataList[(int)itemName].ItemPrefab, transform);
+            ItemData itemData = instance.itemData.ItemDataList[(int)itemName];
+
+            AItem item = Instantiate(itemData.ItemPrefab, transform);
             item.IsFieldItem = isFieldItem;
+            item.Data = itemData.Data;
 
             return item;
         }
@@ -125,6 +136,15 @@ namespace CommonRPG
             item.IsFieldItem = isFieldItem;
 
             return item;
+        }
+
+        public static ACharacter GetPlayer()
+        {
+            return instance.unitManager.Player;
+        }
+        public static void GetDragSlotImage(out Image dragSlotImage)
+        {
+            dragSlotImage = instance.inventoryManager.DragSltoImage;
         }
     }
 }

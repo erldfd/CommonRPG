@@ -1,11 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InventoryManager : MonoBehaviour
 {
     [SerializeField]
-    private List<Inventory> inventoryList = null;
+    private Image dragSlotImage;
+    public Image DragSltoImage
+    { 
+        get { return dragSlotImage; }
+        set { dragSlotImage = value; }
+    }
+
+    [SerializeField]
+    private List<AInventory> inventoryList = null;
 
     private InventorySlotItemData tempSlotItemData = new InventorySlotItemData();
 
@@ -17,81 +26,128 @@ public class InventoryManager : MonoBehaviour
 
     private void OnEnable()
     {
-        foreach (Inventory inventory in inventoryList)
+        foreach (AInventory inventory in inventoryList)
         {
             List<InventorySlotUI> inventorySlotUiList = inventory.SlotUiList;
 
             int slotUiListCount = inventorySlotUiList.Count;
             for (int i = 0; i < slotUiListCount; ++i)
             {
-                inventorySlotUiList[i].OnEndDragDelegate += ExchangeOrMoveItem;
+                inventorySlotUiList[i].OnEndDragDelegate += ExchangeOrMoveOrMergeItem;
             }
         }
     }
 
     private void OnDisable()
     {
-        foreach (Inventory inventory in inventoryList)
+        foreach (AInventory inventory in inventoryList)
         {
             List<InventorySlotUI> inventorySlotUiList = inventory.SlotUiList;
 
             int slotUiListCount = inventorySlotUiList.Count;
             for (int i = 0; i < slotUiListCount; ++i)
             {
-                inventorySlotUiList[i].OnEndDragDelegate -= ExchangeOrMoveItem;
+                inventorySlotUiList[i].OnEndDragDelegate -= ExchangeOrMoveOrMergeItem;
             }
         }
     }
 
-    public void ExchangeOrMoveItem(int firstSlotIndex, int secondSlotIndex, EInventoryType firstInventoryType, EInventoryType secondInventoryType)
+    public void ExchangeOrMoveOrMergeItem(int firstSlotIndex, int secondSlotIndex, EInventoryType firstInventoryType, EInventoryType secondInventoryType)
     {
-        Inventory firstInventory = inventoryList[(int)firstInventoryType];
-        Inventory secondInventory = inventoryList[(int)secondInventoryType];
+        AInventory firstInventory = inventoryList[(int)firstInventoryType];
+        AInventory secondInventory = inventoryList[(int)secondInventoryType];
 
         InventorySlotItemData firstSlotItemData = firstInventory.InventoryItemDataList[firstSlotIndex];
         InventorySlotItemData secondSlotItemData = secondInventory.InventoryItemDataList[secondSlotIndex];
 
-        if (secondSlotItemData.CurrentItemCount != 0 && firstInventory.CheckAllowedItem(secondSlotItemData.ItemData.ItemType) == false) 
+        if (secondSlotItemData.CurrentItemCount > 0 && firstInventory.CheckAllowedItemInSlot(firstSlotIndex, secondSlotItemData.ItemData.ItemType) == false) 
         {
             return;
         }
 
-        if (firstSlotItemData.CurrentItemCount != 0 && secondInventory.CheckAllowedItem(firstSlotItemData.ItemData.ItemType) == false)
+        if (firstSlotItemData.CurrentItemCount > 0 && secondInventory.CheckAllowedItemInSlot(secondSlotIndex, firstSlotItemData.ItemData.ItemType) == false)
         {
             return;
         }
 
-        //tempSlotItemData = new InventorySlotItemData(firstSlotItemData);
-        //firstSlotItemData = new InventorySlotItemData(secondSlotItemData);
-        //secondSlotItemData = new InventorySlotItemData(tempSlotItemData);
+        // merge
+        if (firstSlotItemData.CurrentItemCount > 0 && secondSlotItemData.CurrentItemCount > 0 && firstSlotItemData.ItemData.ItemName == secondSlotItemData.ItemData.ItemName) 
+        {
+            int totalItemCount = firstSlotItemData.CurrentItemCount + secondSlotItemData.CurrentItemCount;
 
+            if (totalItemCount > secondSlotItemData.ItemData.MaxItemCount) 
+            {
+                //firstSlotItemData.CurrentItemCount = totalItemCount - secondSlotItemData.ItemData.MaxItemCount;
+                //secondSlotItemData.CurrentItemCount = secondSlotItemData.ItemData.MaxItemCount;
+
+                firstInventory.SetSlotItemCount(firstSlotIndex, totalItemCount - secondSlotItemData.ItemData.MaxItemCount);
+                secondInventory.SetSlotItemCount(secondSlotIndex, secondSlotItemData.ItemData.MaxItemCount);
+            }
+            else
+            {
+
+                //firstSlotItemData.CurrentItemCount = 0;
+                //secondSlotItemData.CurrentItemCount = totalItemCount;
+                firstInventory.SetSlotItemCount(firstSlotIndex, 0);
+                secondInventory.SetSlotItemCount(secondSlotIndex, totalItemCount);
+                //firstInventory.PaintSlotImage(firstSlotIndex, null);
+            }
+
+            //firstInventory.SetItemCountText(firstSlotIndex, firstSlotItemData.CurrentItemCount);
+            //secondInventory.SetItemCountText(secondSlotIndex, secondSlotItemData.CurrentItemCount);
+
+            return;
+        }
+
+        //exchange or move
         tempSlotItemData.CopyFrom(firstSlotItemData);
-        firstSlotItemData.CopyFrom(secondSlotItemData);
-        secondSlotItemData.CopyFrom(tempSlotItemData);
+        //firstSlotItemData.CopyFrom(secondSlotItemData);
+        //secondSlotItemData.CopyFrom(tempSlotItemData);
 
-        int firstSlotItemCount = firstSlotItemData.CurrentItemCount;
-        int secondSlotItemCount = secondSlotItemData.CurrentItemCount;
+        firstInventory.SetItemInSlot(firstSlotIndex, secondSlotItemData);
+        secondInventory.SetItemInSlot(secondSlotIndex, tempSlotItemData);
 
-        firstInventory.SetItemCountText(firstSlotIndex, firstSlotItemCount);
-        secondInventory.SetItemCountText(secondSlotIndex, secondSlotItemCount);
+        //int firstSlotItemCount = firstSlotItemData.CurrentItemCount;
+        //int secondSlotItemCount = secondSlotItemData.CurrentItemCount;
 
-        if (firstSlotItemCount == 0) 
-        {
-            firstInventory.PaintSlotImage(firstSlotIndex, null);
-            
-        }
-        else
-        {
-            firstInventory.PaintSlotImage(firstSlotIndex, firstSlotItemData.ItemData.SlotSprite);
-        }
+        //firstInventory.SetItemCountText(firstSlotIndex, firstSlotItemCount);
+        //secondInventory.SetItemCountText(secondSlotIndex, secondSlotItemCount);
 
-        if (secondSlotItemCount == 0) 
-        {
-            secondInventory.PaintSlotImage(secondSlotIndex, null);
-        }
-        else
-        {
-            secondInventory.PaintSlotImage(secondSlotIndex, secondSlotItemData.ItemData.SlotSprite);
-        }
+        //if (firstSlotItemCount == 0) 
+        //{
+        //    firstInventory.PaintSlotImage(firstSlotIndex, null);
+        //}
+        //else
+        //{
+        //    firstInventory.PaintSlotImage(firstSlotIndex, firstSlotItemData.ItemData.SlotSprite);
+        //}
+
+        //if (secondSlotItemCount == 0) 
+        //{
+        //    secondInventory.PaintSlotImage(secondSlotIndex, null);
+        //}
+        //else
+        //{
+        //    secondInventory.PaintSlotImage(secondSlotIndex, secondSlotItemData.ItemData.SlotSprite);
+        //}
+    }
+
+    public void ObtainItem(EInventoryType inventoryType, int slotIndex, int itemAddCount, in SItemData itemData)
+    {
+        inventoryList[(int)inventoryType].ObtainItem(slotIndex, itemAddCount, itemData);
+    }
+
+    /// <summary>
+    ///  add item to inventory automatically as much as itemAddcount until inventory has no space.
+    /// </summary>
+    /// <returns> remaining item count after adding items until inventory is filled.</returns>
+    public int ObtainItem(EInventoryType inventoryType, int itemAddCount, in SItemData itemData)
+    {
+        return inventoryList[(int)inventoryType].ObtainItem(itemAddCount, itemData);
+    }
+
+    public void DeleteItem(EInventoryType inventoryType, int slotIndex, int deleteCount)
+    {
+        inventoryList[(int)inventoryType].DeleteItem(slotIndex, deleteCount);
     }
 }

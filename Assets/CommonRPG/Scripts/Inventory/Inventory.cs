@@ -14,8 +14,7 @@ public enum EInventoryType
     EquipmentScreen = 1,
 }
 
-
-public class Inventory : MonoBehaviour, IComparable<Inventory>
+public abstract class AInventory : MonoBehaviour, IComparable<AInventory>
 {
     [SerializeField]
     protected EInventoryType inventoryType = EInventoryType.None;
@@ -28,8 +27,8 @@ public class Inventory : MonoBehaviour, IComparable<Inventory>
     protected List<InventorySlotUI> slotUiList = null;
     public List<InventorySlotUI> SlotUiList { get { return slotUiList; } }
 
-    protected List<InventorySlotItemData> inveitoryItemDataList = null;
-    public List<InventorySlotItemData> InventoryItemDataList { get { return inveitoryItemDataList; } }
+    protected List<InventorySlotItemData> inventoryItemDataList = null;
+    public List<InventorySlotItemData> InventoryItemDataList { get { return inventoryItemDataList; } }
 
     protected virtual void Awake()
     {
@@ -42,46 +41,67 @@ public class Inventory : MonoBehaviour, IComparable<Inventory>
             slotUiList[i].IsEmpty = true;
         }
 
-        inveitoryItemDataList = new List<InventorySlotItemData>(slotUIsLength);
+        inventoryItemDataList = new List<InventorySlotItemData>(slotUIsLength);
         for (int i = 0; i < slotUIsLength; i++)
         {
-            inveitoryItemDataList.Add(new InventorySlotItemData());
+            inventoryItemDataList.Add(new InventorySlotItemData());
         }
     }
 
-    public virtual void ObtainItem(int slotIndex, int itemAddCount, in SItemData slotItemData)
+    public virtual void SetItemInSlot(int slotIndex, InventorySlotItemData slotItemData)
     {
-        Debug.AssertFormat(slotIndex < inveitoryItemDataList.Count, $"slotIndex : {slotIndex}, equipmentItemDataList.Count : {inveitoryItemDataList.Count}");
+        SetItemInSlot(slotIndex, slotItemData.CurrentItemCount, slotItemData.ItemData);
+    }
 
-        int totalItemCount = inveitoryItemDataList[slotIndex].CurrentItemCount + itemAddCount;
-        if (totalItemCount > slotItemData.MaxItemCount)
+    public virtual void SetItemInSlot(int slotIndex, int newItemCount, in SItemData itemData)
+    {
+        //inventoryItemDataList[slotIndex].CopyFrom(itemData, newItemCount);
+        inventoryItemDataList[slotIndex].ItemData = itemData;
+
+        Sprite slotSprite = (newItemCount == 0) ? null : itemData.SlotSprite;
+
+        slotUiList[slotIndex].SetSlotImageSprite(slotSprite);
+        SetSlotItemCount(slotIndex, newItemCount);
+    }
+
+    public virtual void SetSlotItemCount(int slotIndex, int newItemCount)
+    {
+        if (newItemCount == 0) 
         {
-            Debug.LogWarning($"Too many items... cant obtain items.. CurrentItemCount : {inveitoryItemDataList[slotIndex].CurrentItemCount}, itemAddCount : {itemAddCount}, MaxItemCount : {slotItemData.MaxItemCount}");
+            slotUiList[slotIndex].SetSlotImageSprite(null);
+        }
+
+        inventoryItemDataList[slotIndex].CurrentItemCount = newItemCount;
+        slotUiList[slotIndex].SetSlotItemCountText(newItemCount);
+    }
+
+    public virtual void ObtainItem(int slotIndex, int itemAddCount, in SItemData itemData)
+    {
+        Debug.AssertFormat(slotIndex < inventoryItemDataList.Count, $"slotIndex : {slotIndex}, equipmentItemDataList.Count : {inventoryItemDataList.Count}");
+
+        int totalItemCount = inventoryItemDataList[slotIndex].CurrentItemCount + itemAddCount;
+        if (totalItemCount > itemData.MaxItemCount)
+        {
+            Debug.LogWarning($"Too many items... cant obtain items.. CurrentItemCount : {inventoryItemDataList[slotIndex].CurrentItemCount}, itemAddCount : {itemAddCount}, MaxItemCount : {itemData.MaxItemCount}");
             return;
         }
 
-        inveitoryItemDataList[slotIndex].ItemData = slotItemData;
-        inveitoryItemDataList[slotIndex].CurrentItemCount = totalItemCount;
-
-        slotUiList[slotIndex].CurrentSlotInventoryType = inventoryType;
-        slotUiList[slotIndex].SetSlotImageSprite(slotItemData.SlotSprite);
-        slotUiList[slotIndex].SetSlotItemCountText(totalItemCount);
-        slotUiList[slotIndex].IsEmpty = (totalItemCount == 0);
+        SetItemInSlot(slotIndex, totalItemCount, itemData);
     }
     /// <summary>
     ///  add item to inventory automatically as much as itemAddcount until inventory has no space.
     /// </summary>
     /// <returns> remaining item count after adding items until inventory is filled.</returns>
-    public virtual int ObtainItem(int itemAddCount, in SItemData slotItemData)
+    public virtual int ObtainItem(int itemAddCount, in SItemData itemData)
     {
         int TotalItemAddCount = itemAddCount;
 
-        int equipmentItemdataListCount = inveitoryItemDataList.Count;
+        int equipmentItemdataListCount = inventoryItemDataList.Count;
         for (int i = 0; i < equipmentItemdataListCount; ++i) 
         {
-            InventorySlotItemData data = inveitoryItemDataList[i];
+            InventorySlotItemData data = inventoryItemDataList[i];
             
-            if (data.ItemData.ItemName != slotItemData.ItemName && data.ItemData.ItemName != EItemName.None) 
+            if (data.ItemData.ItemName != itemData.ItemName && data.ItemData.ItemName != EItemName.None) 
             {
                 continue;
             }
@@ -91,24 +111,18 @@ public class Inventory : MonoBehaviour, IComparable<Inventory>
                 continue;
             }
 
-            int addableItemCount = 0;
             if (data.ItemData.ItemName == EItemName.None) 
             {
-                addableItemCount = slotItemData.MaxItemCount;
-                slotUiList[i].CurrentSlotInventoryType = inventoryType;
-                slotUiList[i].SetSlotImageSprite(slotItemData.SlotSprite);
-                data.ItemData = slotItemData;
-            }
-            else
-            {
-                addableItemCount = data.ItemData.MaxItemCount - data.CurrentItemCount;
+                data.ItemData.MaxItemCount = itemData.MaxItemCount;
             }
 
-            int remainingItemCount = TotalItemAddCount - addableItemCount;
-            if (remainingItemCount > 0)
+            int addableItemCount = data.ItemData.MaxItemCount - data.CurrentItemCount;
+
+            int spareItemCount = TotalItemAddCount - addableItemCount;
+            if (spareItemCount > 0)
             {
-                data.CurrentItemCount = slotItemData.MaxItemCount;
-                TotalItemAddCount = remainingItemCount;
+                data.CurrentItemCount = itemData.MaxItemCount;
+                TotalItemAddCount = spareItemCount;
             }
             else
             {
@@ -116,7 +130,7 @@ public class Inventory : MonoBehaviour, IComparable<Inventory>
                 TotalItemAddCount = 0;
             }
 
-            slotUiList[i].SetSlotItemCountText(data.CurrentItemCount);
+            SetItemInSlot(i, addableItemCount, itemData);
 
             if (TotalItemAddCount == 0)
             {
@@ -129,19 +143,22 @@ public class Inventory : MonoBehaviour, IComparable<Inventory>
 
     public virtual void DeleteItem(int slotIndex, int deleteCount)
     {
-        if (deleteCount >= inveitoryItemDataList[slotIndex].CurrentItemCount) 
+        if (deleteCount >= inventoryItemDataList[slotIndex].CurrentItemCount) 
         {
-            inveitoryItemDataList[slotIndex].CurrentItemCount = 0;
+            //inventoryItemDataList[slotIndex].CurrentItemCount = 0;
 
-            inveitoryItemDataList[slotIndex].ItemData.ItemName = EItemName.None;
+            inventoryItemDataList[slotIndex].ItemData.ItemName = EItemName.None;
 
-            slotUiList[slotIndex].SetSlotImageSprite(null);
-            slotUiList[slotIndex].SetSlotItemCountText(0);
+            //slotUiList[slotIndex].SetSlotImageSprite(null);
+            //slotUiList[slotIndex].SetSlotItemCountText(0);
+            SetSlotItemCount(slotIndex, 0);
         }
         else
         {
-            inveitoryItemDataList[slotIndex].CurrentItemCount -= deleteCount;
-            slotUiList[slotIndex].SetSlotItemCountText(inveitoryItemDataList[slotIndex].CurrentItemCount);
+            //inventoryItemDataList[slotIndex].CurrentItemCount -= deleteCount;
+            //slotUiList[slotIndex].SetSlotItemCountText(inventoryItemDataList[slotIndex].CurrentItemCount);
+
+            SetSlotItemCount(slotIndex, inventoryItemDataList[slotIndex].CurrentItemCount - deleteCount);
         }
     }
 
@@ -160,12 +177,17 @@ public class Inventory : MonoBehaviour, IComparable<Inventory>
         slotUiList[slotIndex].SetSlotItemCountText(itemCount);
     }
 
-    public virtual bool CheckAllowedItem(EItemType checkingItemType)
+    public virtual bool CheckAllowedItemInInventory(EItemType checkingItemType)
     {
         return ((allowedItemType & checkingItemType) != 0);
     }
 
-    public int CompareTo(Inventory other)
+    public virtual bool CheckAllowedItemInSlot(int slotIndex, EItemType checkingItemType)
+    {
+        return ((slotUiList[slotIndex].AllowedItemType & checkingItemType) != 0);
+    }
+
+    public int CompareTo(AInventory other)
     {
         if (other == null || (int)InventoryType > (int)other.InventoryType)
         {
@@ -189,13 +211,26 @@ public class InventorySlotItemData
     private SItemData itemData = new SItemData();
     public ref SItemData ItemData { get { return ref itemData; } }
 
-    [HideInInspector]
-    public int CurrentItemCount = 0;
+    private int currnentItemCount = 0;
+    public int CurrentItemCount
+    {
+        get { return currnentItemCount; }
+        set
+        {
+            currnentItemCount = value;
+        }
+    }
 
     public void CopyFrom(InventorySlotItemData previousData)
     {
         itemData = previousData.ItemData;
-        CurrentItemCount = previousData.CurrentItemCount;
+        currnentItemCount = previousData.CurrentItemCount;
+    }
+
+    public void CopyFrom(in SItemData previousData, int previousItemCount)
+    {
+        itemData = previousData;
+        currnentItemCount = previousItemCount;
     }
 
     public InventorySlotItemData()

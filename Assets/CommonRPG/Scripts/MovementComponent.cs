@@ -21,6 +21,9 @@ namespace CommonRPG
         [SerializeField]
         private Rigidbody rigid = null;
 
+        protected bool canMove = false;
+        public bool CanMove { get { return canMove; } set { canMove = value; } }
+
         private void FixedUpdate()
         {
             Move();
@@ -29,6 +32,11 @@ namespace CommonRPG
         private void Move()
         {
             CurrentMoveSpeed = MoveDirection.magnitude * moveSpeed;
+
+            if (CanMove == false) 
+            {
+                return;
+            }
 
             if (MoveDirection == Vector3.zero)
             {

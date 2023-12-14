@@ -14,6 +14,7 @@ namespace CommonRPG
 
         [SerializeField]
         protected StatComponent statComponent = null;
+        public StatComponent StatComponent { get { return statComponent; } }
 
         [SerializeField]
         protected MovementComponent movementComponent = null;

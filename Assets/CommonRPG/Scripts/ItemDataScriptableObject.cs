@@ -47,8 +47,8 @@ public class ItemData
     private string name = null;
 
     [SerializeField]
-    private SItemData slotData;
-    public SItemData SlotData { get { return slotData; } }
+    private SItemData data;
+    public SItemData Data { get { return data; } }
 
     [SerializeField]
     private AItem itemPrefab = null;

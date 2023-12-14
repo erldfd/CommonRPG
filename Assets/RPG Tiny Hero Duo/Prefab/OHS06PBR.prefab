@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3328657967434100138}
   - component: {fileID: -666650600275919474}
   - component: {fileID: 6195532351894871954}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: OHS06PBR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -97,6 +97,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 908eaaecbc1b2ff43a752871767c3f66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  data:
+    ItemName: 0
+    ItemType: 0
+    ItemGrade: 0
+    SlotSprite: {fileID: 0}
+    MaxItemCount: 0
+    Damage: 0
+    Defense: 0
+    HPBonus: 0
+    MPBonus: 0
 --- !u!65 &6195532351894871954
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -112,7 +122,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3

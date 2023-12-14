@@ -7,7 +7,6 @@ namespace CommonRPG
 {
     public class WeaponItem : AItem
     {
-        private float weaponDamage = 1;
         private BoxCollider boxCollider = null;
         private HashSet<IDamageable> hitMonsterSet = new HashSet<IDamageable>();
 
@@ -15,10 +14,16 @@ namespace CommonRPG
         {
             boxCollider = GetComponent<BoxCollider>();
             Debug.Assert(boxCollider);
+            boxCollider.enabled = false;
         }
 
         public void EnableCollider(bool ShouldEnable)
         {
+            if (boxCollider.IsDestroyed()) 
+            {
+                return;
+            }
+
             boxCollider.enabled = ShouldEnable;
             if (ShouldEnable == false) 
             {
@@ -46,7 +51,7 @@ namespace CommonRPG
 
             hitMonsterSet.Add(monster);
 
-            monster.TakeDamage(weaponDamage);
+            monster.TakeDamage(GameManager.GetPlayer().StatComponent.TotalAttackPower);
         }
     }
 

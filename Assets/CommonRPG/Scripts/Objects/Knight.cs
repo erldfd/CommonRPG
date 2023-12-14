@@ -8,16 +8,12 @@ namespace CommonRPG
 {
     public class Knight : ACharacter
     {
-
-        [SerializeField]
-        private WeaponItem knightWeapon = null;
-
         private bool canCombo = false;
 
         protected override void Awake()
         {
             base.Awake();
-            Debug.Assert(knightWeapon);
+            //Debug.Assert(base.characterWeapon);
 
             float currentHpRatio = Mathf.Clamp01(statComponent.CurrentHealthPoint / statComponent.TotalHealth);
             GameManager.SetPlayerHealthBarFillRatio(currentHpRatio);
@@ -34,10 +30,7 @@ namespace CommonRPG
         protected override void Update()
         {
             base.Update();
-            if (IsMovable() == false)
-            {
-                SetMovementDirection(Vector2.zero);
-            }
+            MovementComp.CanMove = IsMovable();
         }
 
         protected override void OnEnable()
@@ -86,12 +79,6 @@ namespace CommonRPG
 
         protected override void OnMove(InputAction.CallbackContext context)
         {
-            if (IsMovable() == false)
-            {
-                SetMovementDirection(Vector2.zero);
-                return;
-            }
-
             base.OnMove(context);
         }
 
@@ -126,7 +113,12 @@ namespace CommonRPG
 
         private void EnableCollider(bool shouldEnable)
         {
-            knightWeapon.EnableCollider(shouldEnable);
+            if (base.characterWeapon == null) 
+            {
+                return;
+            }
+
+            base.characterWeapon.EnableCollider(shouldEnable);
         }
 
         /// <summary>
@@ -156,7 +148,7 @@ namespace CommonRPG
             KnightAnimController knightAnimController = (KnightAnimController)animController;
             Debug.Assert(knightAnimController);
 
-            bool isAttackPossible = (isDead == false && knightAnimController.IsHit == false);
+            bool isAttackPossible = (isDead == false && knightAnimController.IsHit == false && characterWeapon != null);
             return isAttackPossible;
         }
     }
