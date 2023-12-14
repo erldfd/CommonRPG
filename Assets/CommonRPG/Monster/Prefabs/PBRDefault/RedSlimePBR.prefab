@@ -427,13 +427,12 @@ GameObject:
   - component: {fileID: 8767723077673145667}
   - component: {fileID: 95457531584545886}
   - component: {fileID: 5990399153577003101}
-  - component: {fileID: 4274567812633625379}
   - component: {fileID: 7699671152328820728}
   - component: {fileID: 8690946085632455872}
   - component: {fileID: 8036984009479632090}
   - component: {fileID: 8142977164877517767}
   m_Layer: 0
-  m_Name: SlimePBR
+  m_Name: RedSlimePBR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -542,26 +541,11 @@ MonoBehaviour:
   unitName: RedSlime
   isDead: 0
   statComponent: {fileID: 8690946085632455872}
-  movementComponent: {fileID: 4274567812633625379}
+  movementComponent: {fileID: 0}
   animController: {fileID: 7699671152328820728}
   attackDamage: 1
   attackRange: 10
   despawnTime: 3
---- !u!114 &4274567812633625379
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1931298151966786}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 98cb1ff3f74628f4cb04803838432060, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rotationSpeed: 1
-  moveSpeed: 1
-  rigid: {fileID: 7457682594119588346}
 --- !u!114 &7699671152328820728
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -640,6 +624,8 @@ MonoBehaviour:
   detectInterval: 1
   detectRange: 10
   patrolRadius: 5
+  patrolInterval: 3
+  attackInterval: 3
   destination: {fileID: 0}
 --- !u!195 &8142977164877517767
 NavMeshAgent:

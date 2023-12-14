@@ -14,26 +14,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemDataScriptableObject
   itemDataList:
   - name: TheFirstSword
-    slotData:
+    data:
       ItemName: 0
       ItemType: 1
       ItemGrade: 0
       SlotSprite: {fileID: 21300000, guid: ae10aec072e5ff646b587370b7edfb86, type: 3}
       MaxItemCount: 1
+      Damage: 1
+      Defense: 2
+      HPBonus: 3
+      MPBonus: 4
+    itemPrefab: {fileID: 7657546599954280174, guid: 9fbe61d1f4bc091439f25f985dd189a5, type: 3}
+  - name: TheSecondSword
+    data:
+      ItemName: 1
+      ItemType: 1
+      ItemGrade: 0
+      SlotSprite: {fileID: 21300000, guid: 5377a7a47e2cd1d40a9480a66f76fe18, type: 3}
+      MaxItemCount: 1
       Damage: 2
       Defense: 3
       HPBonus: 4
       MPBonus: 5
-    itemPrefab: {fileID: 7657546599954280174, guid: 9fbe61d1f4bc091439f25f985dd189a5, type: 3}
-  - name: TheSecondSword
-    slotData:
-      ItemName: 1
-      ItemType: 1
-      ItemGrade: 1
-      SlotSprite: {fileID: 21300000, guid: 5377a7a47e2cd1d40a9480a66f76fe18, type: 3}
-      MaxItemCount: 1
-      Damage: 9
-      Defense: 8
-      HPBonus: 7
-      MPBonus: 6
     itemPrefab: {fileID: -666650600275919474, guid: 3617e4093ca8d5145986d37c89cfd692, type: 3}
