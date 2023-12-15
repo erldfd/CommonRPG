@@ -38,10 +38,15 @@ public class ItemDataScriptableObject : ScriptableObject
     [SerializeField]
     private List<ItemData> itemDataList;
     public List<ItemData> ItemDataList { get { return itemDataList; } }
+
+    public void Awake()
+    {
+        itemDataList.Sort();
+    }
 }
 
 [Serializable]
-public class ItemData
+public class ItemData : IComparable<ItemData>
 {
     [SerializeField]
     private string name = null;
@@ -53,6 +58,22 @@ public class ItemData
     [SerializeField]
     private AItem itemPrefab = null;
     public AItem ItemPrefab { get { return itemPrefab; } }
+
+    public int CompareTo(ItemData other)
+    {
+        if (other == null || (int)data.ItemName > (int)other.data.ItemName) 
+        {
+            return 1;
+        }
+        else if ((int)data.ItemName == (int)other.data.ItemName)
+        {
+            return 0;
+        }
+        else
+        {
+            return -1;
+        }
+    }
 }
 
 [Serializable]

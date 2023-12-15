@@ -5,10 +5,9 @@ using UnityEngine;
 
 public enum EMonsterName
 {
-    RedSlime,
-    GreenSlime,
-    BlueSlime,
-    YellowSlime
+    None = -1,
+    RedSlime = 0,
+    BlueTurtle = 1,
 }
 
 [CreateAssetMenu(fileName = "MonsterData", menuName = "ScriptableObjects/MonsterDataScriptableObject", order = 2)]

@@ -1,3 +1,4 @@
+using CommonRPG;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -69,12 +70,14 @@ public class AIController : MonoBehaviour
 
     private EAIState currentAIState = EAIState.None;
 
-    private void Awake()
+    private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         Debug.Assert(agent);
         //Debug.Assert(destination);
+        tempTargetTransform = GameManager.GetPlayer().transform;
     }
+
 
     private void Update()
     {
@@ -170,8 +173,8 @@ public class AIController : MonoBehaviour
         float patrolRadiusZ = Mathf.Sqrt((patrolRadius + xPosInCircleRadius) * (patrolRadius - xPosInCircleRadius));
         float zPosInCircleRadius = UnityEngine.Random.Range(-patrolRadiusZ, patrolRadiusZ);
 
-        targetPos.x = xPosInCircleRadius;
-        targetPos.z = zPosInCircleRadius;
+        targetPos.x += xPosInCircleRadius;
+        targetPos.z += zPosInCircleRadius;
 
         agent.SetDestination(targetPos);
         Debug.Log($"PatrolPos : {targetPos}");

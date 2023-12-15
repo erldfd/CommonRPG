@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 
 namespace CommonRPG
@@ -40,7 +42,8 @@ namespace CommonRPG
                 }
                 else
                 {
-                    Destroy(gameObject);
+                    //Destroy(gameObject);
+                    GameManager.DeactiveMonster(this);
                 }
             }
 
@@ -73,6 +76,11 @@ namespace CommonRPG
 
         public virtual float TakeDamage(float DamageAmount, AUnit DamageCauser = null)
         {
+            if (IsDead) 
+            {
+                return 0f;
+            }
+
             statComponent.CurrentHealthPoint -= DamageAmount;
             Debug.Log($"Damage is Taked : {DamageAmount}, CurrentHp : {statComponent.CurrentHealthPoint}");
 
@@ -114,10 +122,25 @@ namespace CommonRPG
         protected virtual void DoDamage(bool isStartingAttackCheck)
         {
             LayerMask layerMask = LayerMask.GetMask("Character");
-            if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, attackRange, layerMask))
+
+
+            //if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, attackRange, layerMask))
+            //{
+            //    IDamageable damageableTarget = hit.transform.GetComponent<IDamageable>();
+            //    if (damageableTarget == null)
+            //    {
+            //        return;
+            //    }
+
+            //    damageableTarget.TakeDamage(StatComponent.BaseAttackPower, this);
+            //}
+
+            float radius = 0.5f;
+            Collider[] hitColliders = Physics.OverlapCapsule(transform.position, transform.position + transform.forward * attackRange, radius, layerMask);
+            if (hitColliders.Length > 0) 
             {
-                IDamageable damageableTarget = hit.transform.GetComponent<IDamageable>();
-                if (damageableTarget == null)
+                IDamageable damageableTarget = hitColliders[0].transform.GetComponent<IDamageable>();
+                if(damageableTarget == null)
                 {
                     return;
                 }
@@ -152,6 +175,12 @@ namespace CommonRPG
         {
             base.isDead = true;
             deathTime = 0;
+            ActivateAI(false);
+        }
+
+        public void ActivateAI(bool shouldActivate)
+        {
+            aiController.IsAIActivated = shouldActivate;
         }
     }
 

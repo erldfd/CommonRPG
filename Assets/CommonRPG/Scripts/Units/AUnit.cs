@@ -11,6 +11,7 @@ namespace CommonRPG
 
         [SerializeField]
         protected bool isDead = false;
+        public bool IsDead { get { return isDead; } set { isDead = value; } }
 
         [SerializeField]
         protected StatComponent statComponent = null;

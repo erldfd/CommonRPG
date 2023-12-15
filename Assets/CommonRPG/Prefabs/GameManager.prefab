@@ -53,6 +53,7 @@ MonoBehaviour:
   unitManager: {fileID: 871848659161635000}
   inGameUI: {fileID: 6894829491225305212}
   itemData: {fileID: 11400000, guid: 1235e445023fed94e983e83cd7b1b8db, type: 2}
+  monsterData: {fileID: 11400000, guid: 7297ba9bed65ac04ab88c259c22b044f, type: 2}
   playerInventory: {fileID: 7035582945807466497}
 --- !u!114 &1325510393791179235
 MonoBehaviour:

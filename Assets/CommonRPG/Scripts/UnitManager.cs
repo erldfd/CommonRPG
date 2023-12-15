@@ -12,8 +12,13 @@ public class UnitManager : MonoBehaviour
     [SerializeField]
     private HashSet<Slime> activatedSlimeSet = new HashSet<Slime>();
     [SerializeField]
-    private Queue<Slime> deactivatedSlimeSet = new Queue<Slime>();
- 
+    private Queue<Slime> deactivatedSlimeQueue = new Queue<Slime>();
+
+    [SerializeField]
+    private HashSet<Turtle> activatedTurtleSet = new HashSet<Turtle>();
+    [SerializeField]
+    private Queue<Turtle> deactivatedTurtleQueue = new Queue<Turtle>();
+
     private void Awake()
     {
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<ACharacter>();
@@ -24,12 +29,11 @@ public class UnitManager : MonoBehaviour
     {
         MonsterBase monster = data.MonsterPrefab;
 
-        if (monster is Slime) 
+        if (monster is Slime)
         {
-            if (deactivatedSlimeSet.Count > 0)
+            if (deactivatedSlimeQueue.Count > 0)
             {
-                monster = deactivatedSlimeSet.Dequeue();
-                
+                monster = deactivatedSlimeQueue.Dequeue();
             }
             else
             {
@@ -38,12 +42,56 @@ public class UnitManager : MonoBehaviour
 
             activatedSlimeSet.Add((Slime)monster);
         }
+        else if (monster is Turtle) 
+        {
+            if (deactivatedTurtleQueue.Count > 0)
+            {
+                monster = deactivatedTurtleQueue.Dequeue();
+            }
+            else
+            {
+                monster = Instantiate(monster, position, rotation);
+            }
+
+            activatedTurtleSet.Add((Turtle)monster);
+        }
 
         monster.gameObject.SetActive(true);
         monster.transform.SetPositionAndRotation(position, rotation);
+        monster.IsDead = false;
+        monster.ActivateAI(true);
+
+        StatComponent monsterStat = monster.StatComponent;
+
+        monsterStat.BaseAttackPower = data.Data.Damage;
+        monsterStat.BaseDefense = data.Data.Defense;
+        monsterStat.BaseHealthPoint = data.Data.Hp;
+        monsterStat.CurrentHealthPoint = data.Data.Hp;
+        monsterStat.BaseManaPoint = data.Data.Mp;
         
+
         //monster.StatComponent.
         // TODO : Set Monster Stat according to MonsterData
+
         return monster;
+    }
+
+    public void DeactiveMonster(MonsterBase monster)
+    {
+        monster.IsDead = true;
+
+        if (monster is Slime)
+        {
+            deactivatedSlimeQueue.Enqueue((Slime)monster);
+            activatedSlimeSet.Remove((Slime)monster);
+        }
+        else if (monster is Turtle) 
+        {
+            deactivatedTurtleQueue.Enqueue((Turtle)monster);
+            activatedTurtleSet.Remove((Turtle)monster);
+        }
+
+        monster.ActivateAI(false);
+        monster.gameObject.SetActive(false);
     }
 }

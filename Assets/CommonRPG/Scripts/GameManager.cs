@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,6 +25,9 @@ namespace CommonRPG
 
         [SerializeField]
         private ItemDataScriptableObject itemData = null;
+
+        [SerializeField]
+        private MonsterDataScriptableObject monsterData = null;
 
         [SerializeField]
         private AInventory playerInventory = null;
@@ -119,6 +123,11 @@ namespace CommonRPG
             return instance.timerManager.SetTimer(startTime, interval, repeatNumber, function, isActive);
         }
 
+        public static ItemData GetItemData(EItemName itemName)
+        {
+            return instance.itemData.ItemDataList[(int)itemName];
+        }
+
         public static AItem SpawnItem(EItemName itemName, Transform transform, bool isFieldItem)
         {
             ItemData itemData = instance.itemData.ItemDataList[(int)itemName];
@@ -130,9 +139,9 @@ namespace CommonRPG
             return item;
         }
 
-        public static AItem SpawnItem(EItemName itemName, Vector3 spawnPosition, Quaternion quaternion, bool isFieldItem)
+        public static AItem SpawnItem(EItemName itemName, UnityEngine.Vector3 spawnPosition, UnityEngine.Quaternion rotation, bool isFieldItem)
         {
-            AItem item = Instantiate(instance.itemData.ItemDataList[(int)itemName].ItemPrefab, spawnPosition, quaternion);
+            AItem item = Instantiate(instance.itemData.ItemDataList[(int)itemName].ItemPrefab, spawnPosition, rotation);
             item.IsFieldItem = isFieldItem;
 
             return item;
@@ -142,9 +151,25 @@ namespace CommonRPG
         {
             return instance.unitManager.Player;
         }
+
         public static void GetDragSlotImage(out Image dragSlotImage)
         {
             dragSlotImage = instance.inventoryManager.DragSltoImage;
+        }
+
+        public static MonsterData GetMonsterData(EMonsterName monsterName)
+        {
+            return instance.monsterData.MonsterDataList[(int)monsterName];
+        }
+
+        public static void SpawnMonster(EMonsterName monsterName, UnityEngine.Vector3 spawnPosition, UnityEngine.Quaternion rotation)
+        {
+            instance.unitManager.SpawnMonster(instance.monsterData.MonsterDataList[(int)monsterName], spawnPosition, rotation);
+        }
+
+        public static void DeactiveMonster(MonsterBase monster)
+        {
+            instance.unitManager.DeactiveMonster(monster);
         }
     }
 }
