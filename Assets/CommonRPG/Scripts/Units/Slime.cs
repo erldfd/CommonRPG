@@ -61,7 +61,7 @@ namespace CommonRPG
                 return DamageAmount;
         }
 
-        private void DoDamage(int bIsStartingAttackCheck)
+        private void DoDamage(bool isStartingAttackCheck)
         {
             LayerMask layerMask = LayerMask.GetMask("Character");
             if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, attackRange, layerMask)) 

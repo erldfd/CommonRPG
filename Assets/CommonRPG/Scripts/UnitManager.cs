@@ -35,12 +35,15 @@ public class UnitManager : MonoBehaviour
             {
                 monster = Instantiate(monster, position, rotation);
             }
+
+            activatedSlimeSet.Add((Slime)monster);
         }
 
         monster.gameObject.SetActive(true);
         monster.transform.SetPositionAndRotation(position, rotation);
-
+        
         //monster.StatComponent.
+        // TODO : Set Monster Stat according to MonsterData
         return monster;
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace CommonRPG
 {
-    public class ACharacterAnimController : AAnimController
+    public class Turtle : MonsterBase
     {
         
     }

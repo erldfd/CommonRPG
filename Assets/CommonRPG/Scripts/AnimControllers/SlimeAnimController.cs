@@ -33,36 +33,6 @@ namespace CommonRPG
                 NormalStateRate = 1 - value;
             }
         }
-        /// <summary>
-        /// params : int bIsStartingAttackCheck
-        /// </summary>
-        public event Action<int> OnAttackCheck = null;
-
-        public override void PlayHitAnim()
-        {
-            animator.Play("GetHit", 0);
-            isHit = true;
-        }
-
-        public void OnHitAnimEnd()
-        {
-            isHit = false;
-        }
-
-        public void PlayAttackAnim()
-        {
-            animator.Play("Attack01", 0);
-        }
-
-        public void PlayDeathAnim()
-        {
-            animator.Play("Die", 0);
-        }
-
-        public void StartAttackCheck(int bIsStartingAttackCheck)
-        {
-            OnAttackCheck.Invoke(bIsStartingAttackCheck);
-        }
     }
 }
 

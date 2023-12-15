@@ -1,10 +1,14 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace CommonRPG
 {
     public class KnightAnimController : ACharacterAnimController
     {
+        [SerializeField]
+        protected List<string> comboAttackAnimList;
+
         protected float normalStateRate = 1;
         public float NormalStateRate
         {
@@ -30,10 +34,7 @@ namespace CommonRPG
                 NormalStateRate = 1 - value;
             }
         }
-        /// <summary>
-        /// params : bool isCheckingAttack
-        /// </summary>
-        public event Action<bool> OnAttackCheck = null;
+        
         /// <summary>
         /// bool isCheckingComboInitiate
         /// </summary>
@@ -60,47 +61,15 @@ namespace CommonRPG
             set { comboCount = value; }
         }
 
-        public override void PlayHitAnim()
+        public void PlayComboAttackAnim(int playIndex)
         {
-            animator.Play("GetHit01_SwordAndShield", 0);
-            isHit = true;
+            base.animator.Play(comboAttackAnimList[playIndex], 0);
         }
 
-        public void OnHitAnimEnd()
+        public override void StartAttackCheck(int bIsCheckingAttack)
         {
-            isHit = false;
-        }
+            base.StartAttackCheck(bIsCheckingAttack);
 
-        public void PlayNormalAttackAnim(int playIndex)
-        {
-            switch(playIndex)
-            {
-                case 0:
-                    animator.Play("Attack01_SwordAndShiled", 0);
-                    break;
-                case 1:
-                    animator.Play("Attack02_SwordAndShiled", 0);
-                    break;
-                case 2:
-                    animator.Play("Attack03_SwordAndShiled", 0);
-                    break;
-                case 3:
-                    animator.Play("Attack04_SwordAndShiled", 0);
-                    break;
-                default:
-                    Debug.LogWarning($"Wrong Index : {playIndex}");
-                    break;
-            }
-        }
-
-        public void PlayDeathAnim()
-        {
-            animator.Play("Die01_SwordAndShield", 0);
-        }
-
-        public void StartAttackCheck(int bIsCheckingAttack)
-        {
-            OnAttackCheck.Invoke(bIsCheckingAttack != 0);
             OnComboCheck.Invoke(false);
         }
 
@@ -113,22 +82,23 @@ namespace CommonRPG
         {
             bool isBeginningAttackAnim = (bIsBeginningAttackAnim != 0);
             this.isBeginningAttackAnim = isBeginningAttackAnim;
-            //Debug.Log($"isBeginningAttackAnim : {isBeginningAttackAnim}");
+
             if (isBeginningAttackAnim)
             {
                 shouldPlayNextComboAttack = false;
             }
             else if (shouldPlayNextComboAttack) 
             {
-                PlayNormalAttackAnim(comboCount++);
+                PlayComboAttackAnim(comboCount++);
             }
         }
         /// <summary>
         /// this is for initialize animation properties.
         /// </summary>
-        public void OnAnimStart()
+        public override void OnAnimStart()
         {
-            OnAttackCheck.Invoke(false);
+            base.OnAnimStart();
+
             OnComboCheck.Invoke(false);
             isBeginningAttackAnim = false;
             shouldPlayNextComboAttack = false;

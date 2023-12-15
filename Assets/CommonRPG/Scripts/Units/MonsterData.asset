@@ -12,4 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c09cebaeff485e4194fa95b5cea435f, type: 3}
   m_Name: MonsterData
   m_EditorClassIdentifier: 
-  monsterDataList: []
+  monsterDataList:
+  - name: RedSlime
+    data:
+      MonsterName: 0
+      Damage: 1
+      Defense: 1
+      Hp: 10
+      Mp: 1
+      Exp: 2
+      ExpTolerance: 1
+      HoldingMoney: 5
+      MoneyTolerance: 2
+      HoldingItems: 
+    monsterPrefab: {fileID: 5990399153577003101, guid: 18c8f6e5bfeb7fc41a2d890cde6b8075, type: 3}

@@ -103,7 +103,7 @@ namespace CommonRPG
             if (knightAnimController.IsBeginningAttackAnim == false)
             {
                 knightAnimController.ComboCount = 0;
-                knightAnimController.PlayNormalAttackAnim(knightAnimController.ComboCount++);
+                knightAnimController.PlayComboAttackAnim(knightAnimController.ComboCount++);
             }
             else if (canCombo) 
             {

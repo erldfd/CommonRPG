@@ -6,8 +6,12 @@ namespace CommonRPG
 {
     public class MonsterAnimController : AAnimController
     {
-        public override void PlayHitAnim()
+        [SerializeField]
+        protected string attackAnimName;
+
+        public virtual void PlayAttackAnim()
         {
+            base.animator.Play(attackAnimName, 0);
         }
     }
 }

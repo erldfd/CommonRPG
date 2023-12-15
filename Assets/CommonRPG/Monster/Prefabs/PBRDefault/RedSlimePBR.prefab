@@ -559,6 +559,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 95457531584545886}
+  hitAnimName: GetHit
+  attackAnimName: Attack01
+  deathAnimName: Die
 --- !u!114 &8690946085632455872
 MonoBehaviour:
   m_ObjectHideFlags: 0
