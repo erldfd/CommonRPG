@@ -191,6 +191,15 @@ public class AIController : MonoBehaviour
             return;
         }
 
+        transform.LookAt(tempTargetTransform, transform.up);
+        float distanceToTarget = Vector3.Distance(tempTargetTransform.position, transform.position);
+
+        if (distanceToTarget > agent.stoppingDistance) 
+        {
+            currentAIState = EAIState.None;
+            return;
+        }
+
         if (elapsedTime_Attack < attackInterval)
         {
             return;
