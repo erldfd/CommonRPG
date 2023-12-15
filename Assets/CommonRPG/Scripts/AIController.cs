@@ -63,8 +63,8 @@ public class AIController : MonoBehaviour
     private float attackInterval = 3;
     private float elapsedTime_Attack = 0;
 
-    [SerializeField]
-    private Transform destination = null;
+    //[SerializeField]
+    //private Transform destination = null;
     private NavMeshAgent agent = null;
 
     private EAIState currentAIState = EAIState.None;
@@ -73,7 +73,7 @@ public class AIController : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         Debug.Assert(agent);
-        Debug.Assert(destination);
+        //Debug.Assert(destination);
     }
 
     private void Update()

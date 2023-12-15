@@ -7,9 +7,6 @@ namespace CommonRPG
     public class MonsterBase : AUnit, IDamageable
     {
         [SerializeField]
-        protected float attackDamage = 1;
-
-        [SerializeField]
         protected float attackRange = 2;
 
         [SerializeField]
@@ -23,34 +20,7 @@ namespace CommonRPG
         protected AIController aiController = null;
 
         protected TimerHandler monsterUITimerHandler = null;
-        public virtual float TakeDamage(float DamageAmount, AUnit DamageCauser = null)
-        {
-            statComponent.CurrentHealthPoint -= DamageAmount;
-            Debug.Log($"Damage is Taked : {DamageAmount}, CurrentHp : {statComponent.CurrentHealthPoint}");
-
-            float currentHpRatio = Mathf.Clamp01(statComponent.CurrentHealthPoint / statComponent.TotalHealth);
-            GameManager.SetMonsterHealthBarFillRatio(currentHpRatio);
-            GameManager.SetMonsterInfoUIVisible(true);
-            GameManager.SetMonsterNameText(base.unitName);
-
-            if (monsterUITimerHandler == null)
-            {
-                monsterUITimerHandler = GameManager.SetTimer(3, 1, 0, () => { GameManager.SetMonsterInfoUIVisible(false); }, true);
-                monsterUITimerHandler.IsStayingActive = true;
-            }
-            else
-            {
-                monsterUITimerHandler.RestartTimer();
-            }
-
-            if (currentHpRatio <= 0)
-            {
-                BeKilled();
-            }
-
-            return DamageAmount;
-        }
-
+        
         protected override void Awake()
         {
             base.Awake();
@@ -79,10 +49,103 @@ namespace CommonRPG
 
         protected override void OnEnable()
         {
+            base.OnEnable();
+
+            MonsterAnimController monsterAnimController = (MonsterAnimController)animController;
+            Debug.Assert(monsterAnimController);
+
+            monsterAnimController.OnAttackCheck += DoDamage;
+
+            aiController.OnAttack += Attack;
         }
 
         protected override void OnDisable()
         {
+            base.OnDisable();
+
+            MonsterAnimController monsterAnimController = (MonsterAnimController)animController;
+            Debug.Assert(monsterAnimController);
+
+            monsterAnimController.OnAttackCheck -= DoDamage;
+
+            aiController.OnAttack -= Attack;
+        }
+
+        public virtual float TakeDamage(float DamageAmount, AUnit DamageCauser = null)
+        {
+            statComponent.CurrentHealthPoint -= DamageAmount;
+            Debug.Log($"Damage is Taked : {DamageAmount}, CurrentHp : {statComponent.CurrentHealthPoint}");
+
+            float currentHpRatio = Mathf.Clamp01(statComponent.CurrentHealthPoint / statComponent.TotalHealth);
+            GameManager.SetMonsterHealthBarFillRatio(currentHpRatio);
+            GameManager.SetMonsterInfoUIVisible(true);
+            GameManager.SetMonsterNameText(base.unitName);
+
+            if (monsterUITimerHandler == null)
+            {
+                monsterUITimerHandler = GameManager.SetTimer(3, 1, 0, () => { GameManager.SetMonsterInfoUIVisible(false); }, true);
+                monsterUITimerHandler.IsStayingActive = true;
+            }
+            else
+            {
+                monsterUITimerHandler.RestartTimer();
+            }
+
+            if (currentHpRatio <= 0)
+            {
+                BeKilled();
+            }
+
+            MonsterAnimController monsterAnimController = (MonsterAnimController)animController;
+            Debug.Assert(monsterAnimController);
+
+            if (statComponent.CurrentHealthPoint <= 0)
+            {
+                monsterAnimController.PlayDeathAnim();
+            }
+            else
+            {
+                monsterAnimController.PlayHitAnim();
+            }
+
+            return DamageAmount;
+        }
+
+        protected virtual void DoDamage(bool isStartingAttackCheck)
+        {
+            LayerMask layerMask = LayerMask.GetMask("Character");
+            if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, attackRange, layerMask))
+            {
+                IDamageable damageableTarget = hit.transform.GetComponent<IDamageable>();
+                if (damageableTarget == null)
+                {
+                    return;
+                }
+
+                damageableTarget.TakeDamage(StatComponent.BaseAttackPower, this);
+            }
+        }
+
+        protected virtual void Attack(Transform targetTransform)
+        {
+            MonsterAnimController monsterAnimController = (MonsterAnimController)animController;
+            Debug.Assert(monsterAnimController);
+
+            if (isDead)
+            {
+                aiController.IsAIActivated = false;
+                return;
+            }
+
+            if (monsterAnimController.IsHit)
+            {
+                return;
+            }
+
+            Vector3 LookTargetVector = targetTransform.position - transform.position;
+            transform.forward = LookTargetVector;
+
+            monsterAnimController.PlayAttackAnim();
         }
 
         protected void BeKilled()
@@ -90,8 +153,6 @@ namespace CommonRPG
             base.isDead = true;
             deathTime = 0;
         }
-
-        
     }
 
 }

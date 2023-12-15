@@ -50,8 +50,14 @@ namespace CommonRPG
         {
         }
 
-        protected abstract void OnEnable();
-        protected abstract void OnDisable();
+        protected virtual void OnEnable()
+        {
+
+        }
+        protected virtual void OnDisable()
+        {
+
+        }
     }
 }
 

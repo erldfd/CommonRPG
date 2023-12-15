@@ -517,6 +517,9 @@ GameObject:
   - component: {fileID: 3567654465215949369}
   - component: {fileID: 8864478539619149441}
   - component: {fileID: 95706204029656638}
+  - component: {fileID: -6171792937410026262}
+  - component: {fileID: -7619304457020963378}
+  - component: {fileID: 2740400675537629137}
   - component: {fileID: 147810485495875241}
   - component: {fileID: 3833367163501852862}
   m_Layer: 0
@@ -601,7 +604,7 @@ Animator:
   m_GameObject: {fileID: 1524411113276028}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 599b2dc9e6c44a8ebc02ddea1f18d215, type: 3}
-  m_Controller: {fileID: 9100000, guid: 1f68948a5bb74f2fa9e9087a872750e9, type: 2}
+  m_Controller: {fileID: 9100000, guid: 553fa3e9ce1b25846a5e52cde6703347, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -612,6 +615,89 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &-6171792937410026262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1524411113276028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74de67928e53c2f4791e68855ba5c0c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unitName: BlueTurtle
+  isDead: 0
+  statComponent: {fileID: 2740400675537629137}
+  movementComponent: {fileID: 0}
+  animController: {fileID: -7619304457020963378}
+  attackRange: 2
+  despawnTime: 3
+--- !u!114 &-7619304457020963378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1524411113276028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 208be05361540d74bba250c1bf498b72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 95706204029656638}
+  hitAnimName: GetHit
+  deathAnimName: Die
+  attackAnimName: Attack01
+--- !u!114 &2740400675537629137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1524411113276028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e00c48549997d940b50d3d431b40a70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  level: 0
+  OnLevelUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+  currentHealthPoint: 20
+  OnCurrentHealthPointUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+  currentManaPoint: 1
+  OnCurrentManaPointUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+  baseHealthPoint: 20
+  OnBaseHealthUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+  baseManaPoint: 1
+  OnBaseManaUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+  baseAttackPower: 1
+  OnBaseAttackPowerUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+  baseDefense: 1
+  OnBaseDefenseUpdate:
+    m_PersistentCalls:
+      m_Calls: []
+  weaponHealthBonus: 0
+  weaponManaBonus: 0
+  weaponAttackPowerBonus: 0
+  weaponDefenseBonus: 0
+  totalHealth: 20
+  totalMana: 1
+  totalAttackPower: 1
+  totalDefense: 0
 --- !u!114 &147810485495875241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -631,7 +717,6 @@ MonoBehaviour:
   patrolRadius: 5
   patrolInterval: 3
   attackInterval: 3
-  destination: {fileID: 0}
 --- !u!195 &3833367163501852862
 NavMeshAgent:
   m_ObjectHideFlags: 0
