@@ -1,126 +1,103 @@
 using Cinemachine.Editor;
-using CommonRPG;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static EquipmentScreen;
 
-public class EquipmentScreen : AInventory
+namespace CommonRPG
 {
-    public enum EEquipmentSlot
+    public class EquipmentScreen : AInventory
     {
-        Weapon,
-        Shield
-    }
-
-    [SerializeField]
-    private Transform weaponEquipmentTransform;
-
-    [SerializeField]
-    private Transform ShieldEquipmentTransform;
-
-    protected override void Awake()
-    {
-        base.Awake();
-
-        //int slotUIsLength = base.slotUiList.Count;
-        //for (int i = 0; i < slotUIsLength; i++)
-        //{
-        //    base.slotUiList[i].CurrentSlotInventoryType = inventoryType;
-        //}
-
-        //base.slotUiList[(int)EEquipmentSlot.Weapon].AllowedItemType = EItemType.Weapon;
-        //base.slotUiList[(int)EEquipmentSlot.Shield].AllowedItemType = EItemType.Shield;
-    }
-
-    public override void InitInventory()
-    {
-        base.InitInventory();
-
-        int slotUIsLength = base.slotUiList.Count;
-        for (int i = 0; i < slotUIsLength; i++)
+        public enum EEquipmentSlot
         {
-            base.slotUiList[i].CurrentSlotInventoryType = inventoryType;
+            Weapon,
+            Shield
         }
 
-        base.slotUiList[(int)EEquipmentSlot.Weapon].AllowedItemType = EItemType.Weapon;
-        base.slotUiList[(int)EEquipmentSlot.Shield].AllowedItemType = EItemType.Shield;
-    }
+        [SerializeField]
+        private Transform weaponEquipmentTransform;
 
-    public override void SetItemInSlot(int slotIndex, int newItemCount, in SItemData itemData)
-    {
-        base.SetItemInSlot(slotIndex, newItemCount, itemData);
-        SetItemInSlot((EEquipmentSlot)slotIndex, newItemCount, itemData);
-    }
+        [SerializeField]
+        private Transform ShieldEquipmentTransform;
 
-    public void SetItemInSlot(EEquipmentSlot equipmentSlot, int newItemCount, in SItemData itemData)
-    {
-        bool WillMakeSlotEmpty = (newItemCount == 0);
-
-        RemoveEquipment();
-
-        if (WillMakeSlotEmpty)
+        protected override void Awake()
         {
-            return;
+            base.Awake();
         }
 
-        //if (itemData.ItemType == EItemType.Weapon)
-        //{
-        //    if (weaponEquipmentTransform.childCount > 0)
-        //    {
-        //        for (int i = 0; i < weaponEquipmentTransform.childCount; i++)
-        //        {
-        //            Destroy(weaponEquipmentTransform.GetChild(0));
-        //        }
-        //    }
-        //}
-        //else if (itemData.ItemType == EItemType.Shield) 
-        //{
+        public override void InitInventory()
+        {
+            base.InitInventory();
 
-        //}
-        //WeaponItem weapon = GameManager.GetPlayer().CharacterWeapon;
-        if (equipmentSlot == EEquipmentSlot.Weapon && itemData.ItemType == EItemType.Weapon)
-        {
-            //GameManager.GetPlayer().CharacterWeapon = (WeaponItem)GameManager.SpawnItem(itemData.ItemName, weaponEquipmentTransform, false);
-            Debug.Assert(GameManager.GetPlayer().CharacterWeapon = (WeaponItem)GameManager.SpawnItem(itemData.ItemName, weaponEquipmentTransform, false));
-        }
-        else if (equipmentSlot == EEquipmentSlot.Shield && itemData.ItemType == EItemType.Shield)
-        {
-            GameManager.SpawnItem(itemData.ItemName, ShieldEquipmentTransform, false);
-        }
-        else
-        {
-            Debug.LogAssertion("Weird equiment is detected");
-        }
-
-        void RemoveEquipment()
-        {
-            if (equipmentSlot == EEquipmentSlot.Weapon)
+            int slotUIsLength = base.slotUiList.Count;
+            for (int i = 0; i < slotUIsLength; i++)
             {
-                if (weaponEquipmentTransform.childCount > 0)
+                base.slotUiList[i].CurrentSlotInventoryType = inventoryType;
+            }
+
+            base.slotUiList[(int)EEquipmentSlot.Weapon].AllowedItemType = EItemType.Weapon;
+            base.slotUiList[(int)EEquipmentSlot.Shield].AllowedItemType = EItemType.Shield;
+        }
+
+        public override void SetItemInSlot(int slotIndex, int newItemCount, in SItemData itemData)
+        {
+            base.SetItemInSlot(slotIndex, newItemCount, itemData);
+            SetItemInSlot((EEquipmentSlot)slotIndex, newItemCount, itemData);
+        }
+
+        public void SetItemInSlot(EEquipmentSlot equipmentSlot, int newItemCount, in SItemData itemData)
+        {
+            bool WillMakeSlotEmpty = (newItemCount == 0);
+
+            RemoveEquipment();
+
+            if (WillMakeSlotEmpty)
+            {
+                return;
+            }
+
+            if (equipmentSlot == EEquipmentSlot.Weapon && itemData.ItemType == EItemType.Weapon)
+            {
+                Debug.Assert(GameManager.GetPlayer().CharacterWeapon = (WeaponItem)GameManager.SpawnItem(itemData.ItemName, weaponEquipmentTransform, false));
+            }
+            else if (equipmentSlot == EEquipmentSlot.Shield && itemData.ItemType == EItemType.Shield)
+            {
+                GameManager.SpawnItem(itemData.ItemName, ShieldEquipmentTransform, false);
+            }
+            else
+            {
+                Debug.LogAssertion("Weird equiment is detected");
+            }
+
+            void RemoveEquipment()
+            {
+                if (equipmentSlot == EEquipmentSlot.Weapon)
                 {
-                    for (int i = 0; i < weaponEquipmentTransform.childCount; i++)
+                    if (weaponEquipmentTransform.childCount > 0)
                     {
-                        Destroy(weaponEquipmentTransform.GetChild(0).gameObject);
+                        for (int i = 0; i < weaponEquipmentTransform.childCount; i++)
+                        {
+                            Destroy(weaponEquipmentTransform.GetChild(0).gameObject);
+                        }
                     }
                 }
-            }
-            else if (equipmentSlot == EEquipmentSlot.Shield)
-            {
-                if (ShieldEquipmentTransform.childCount > 0)
+                else if (equipmentSlot == EEquipmentSlot.Shield)
                 {
-                    for (int i = 0; i < ShieldEquipmentTransform.childCount; i++)
+                    if (ShieldEquipmentTransform.childCount > 0)
                     {
-                        Destroy(ShieldEquipmentTransform.GetChild(0).gameObject);
+                        for (int i = 0; i < ShieldEquipmentTransform.childCount; i++)
+                        {
+                            Destroy(ShieldEquipmentTransform.GetChild(0).gameObject);
+                        }
                     }
                 }
             }
         }
-    }
 
-    public override void SetSlotItemCount(int slotIndex, int newItemCount)
-    {
-        base.SetSlotItemCount(slotIndex, newItemCount);
-        slotUiList[slotIndex].SetSlotItemCountText("");
+        public override void SetSlotItemCount(int slotIndex, int newItemCount)
+        {
+            base.SetSlotItemCount(slotIndex, newItemCount);
+            slotUiList[slotIndex].SetSlotItemCountText("");
+        }
     }
 }
+

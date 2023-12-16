@@ -72,7 +72,6 @@ namespace CommonRPG
         public void RotateWithVerticalAxis(float angle)
         {
             transform.Rotate(transform.up, angle);
-            //childTransform.LookAt(transform.position);
         }
 
         public void RotateWithHorizontalAxis(float angle)

@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 
 namespace CommonRPG
@@ -122,21 +118,9 @@ namespace CommonRPG
         protected virtual void DoDamage(bool isStartingAttackCheck)
         {
             LayerMask layerMask = LayerMask.GetMask("Character");
-
-
-            //if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, attackRange, layerMask))
-            //{
-            //    IDamageable damageableTarget = hit.transform.GetComponent<IDamageable>();
-            //    if (damageableTarget == null)
-            //    {
-            //        return;
-            //    }
-
-            //    damageableTarget.TakeDamage(StatComponent.BaseAttackPower, this);
-            //}
-
             float radius = 0.5f;
             Collider[] hitColliders = Physics.OverlapCapsule(transform.position, transform.position + transform.forward * attackRange, radius, layerMask);
+
             if (hitColliders.Length > 0) 
             {
                 IDamageable damageableTarget = hitColliders[0].transform.GetComponent<IDamageable>();

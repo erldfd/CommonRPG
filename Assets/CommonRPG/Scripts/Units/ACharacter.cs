@@ -1,8 +1,6 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.VFX;
-using static UnityEngine.InputSystem.InputAction;
 
 namespace CommonRPG
 {
@@ -160,17 +158,6 @@ namespace CommonRPG
         protected virtual void OnNormalAttack(InputAction.CallbackContext context)
         {
             isNormalAttackPressed = Convert.ToBoolean(context.ReadValue<float>());
-            //LayerMask layerMask = LayerMask.GetMask("Monster");
-
-            //bool isRayHit = Physics.Raycast(transform.position + transform.forward * 2, transform.forward, out RaycastHit hit, 5, layerMask);
-            //if (isRayHit)
-            //{
-            //    IDamageable damageableUnit = hit.transform.GetComponent<IDamageable>();
-            //    if (damageableUnit != null)
-            //    {
-            //        damageableUnit.TakeDamage(1);
-            //    }
-            //}
         }
 
         protected virtual void OnNormalAttackInternal()

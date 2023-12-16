@@ -52,7 +52,6 @@ namespace CommonRPG
             }
 
             transform.forward = Vector3.Lerp(forward, MoveDirection, rotationSpeed * fixedDeltaTime);
-
             rigid.MovePosition(transform.position + MoveDirection * moveSpeed * fixedDeltaTime);
         }
 

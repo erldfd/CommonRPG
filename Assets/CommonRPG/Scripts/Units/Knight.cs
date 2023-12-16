@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,7 +10,6 @@ namespace CommonRPG
         protected override void Awake()
         {
             base.Awake();
-            //Debug.Assert(base.characterWeapon);
 
             float currentHpRatio = Mathf.Clamp01(statComponent.CurrentHealthPoint / statComponent.TotalHealth);
             GameManager.SetPlayerHealthBarFillRatio(currentHpRatio);
@@ -96,24 +92,6 @@ namespace CommonRPG
         protected override void OnNormalAttack(InputAction.CallbackContext context)
         {
             base.OnNormalAttack(context);
-            //Debug.Log(context);
-            //if (IsAttackPossible() == false) 
-            //{
-            //    return;
-            //}
-
-            //KnightAnimController knightAnimController = (KnightAnimController)animController;
-            //Debug.Assert(knightAnimController);
-
-            //if (knightAnimController.IsBeginningAttackAnim == false)
-            //{
-            //    knightAnimController.ComboCount = 0;
-            //    knightAnimController.PlayComboAttackAnim(knightAnimController.ComboCount++);
-            //}
-            //else if (canCombo) 
-            //{
-            //    knightAnimController.ShouldPlayNextComboAttackAnim = true;
-            //}
         }
 
         protected override void OnNormalAttackInternal()
@@ -180,7 +158,6 @@ namespace CommonRPG
             Debug.Assert(knightAnimController);
 
             bool isMovable = (isDead == false && knightAnimController.IsHit == false && knightAnimController.IsBeginningAttackAnim == false);
-            //Debug.Log($"{isDead}, {knightAnimController.IsHit}, {knightAnimController.IsBeginningAttackAnim}, {isMoveable}");
             return isMovable;
         }
 

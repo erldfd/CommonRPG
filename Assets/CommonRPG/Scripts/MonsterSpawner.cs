@@ -31,17 +31,17 @@ namespace CommonRPG
 
         protected void OnGUI()
         {
-            //Debug.Log("OnGUI Enabled");
-#if UNITY_EDITOR
-            //GUI.editor
-            if (UnityEditor.EditorApplication.isPlaying)
-            {
-                return;
-            }
+//            //Debug.Log("OnGUI Enabled");
+//#if UNITY_EDITOR
+//            //GUI.editor
+//            if (UnityEditor.EditorApplication.isPlaying)
+//            {
+//                return;
+//            }
 
-            Vector3 pos = Camera.current.WorldToScreenPoint(transform.position);
-            GUI.Label(new Rect(pos.x, Screen.height - pos.y, 100, 20), spawnerName);
-#endif
+//            Vector3 pos = Camera.current.WorldToScreenPoint(transform.position);
+//            GUI.Label(new Rect(pos.x, Screen.height - pos.y, 100, 20), spawnerName);
+//#endif
         }
     }
 }

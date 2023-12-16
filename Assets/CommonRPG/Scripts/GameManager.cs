@@ -20,7 +20,7 @@ namespace CommonRPG
 
         [SerializeField]
         private InGameUI inGameUI = null;
-        //private InGameUI inGameUIInstance = null;
+
         private static GameManager instance = null;
 
         [SerializeField]
@@ -43,7 +43,6 @@ namespace CommonRPG
             Debug.Assert(inGameUI);
             Debug.Assert(timerManager);
 
-           // playerInventory = GetComponentInChildren<Inventory>();
             Debug.Assert(playerInventory);
 
             DontDestroyOnLoad(gameObject);
