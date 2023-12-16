@@ -42,6 +42,7 @@ namespace CommonRPG
 
             knightAnimController.OnAttackCheck += EnableCollider;
             knightAnimController.OnComboCheck += CheckCombo;
+            knightAnimController.OnStartPlayingComboAttack += OnStartComboAttack;
 
         }
 
@@ -51,6 +52,8 @@ namespace CommonRPG
             Debug.Assert(knightAnimController);
 
             knightAnimController.OnAttackCheck -= EnableCollider;
+            knightAnimController.OnComboCheck -= CheckCombo;
+            knightAnimController.OnStartPlayingComboAttack -= OnStartComboAttack;
         }
 
         public override float TakeDamage(float DamageAmount, AUnit DamageCauser = null)
@@ -92,7 +95,32 @@ namespace CommonRPG
 
         protected override void OnNormalAttack(InputAction.CallbackContext context)
         {
-            if (IsAttackPossible() == false) 
+            base.OnNormalAttack(context);
+            //Debug.Log(context);
+            //if (IsAttackPossible() == false) 
+            //{
+            //    return;
+            //}
+
+            //KnightAnimController knightAnimController = (KnightAnimController)animController;
+            //Debug.Assert(knightAnimController);
+
+            //if (knightAnimController.IsBeginningAttackAnim == false)
+            //{
+            //    knightAnimController.ComboCount = 0;
+            //    knightAnimController.PlayComboAttackAnim(knightAnimController.ComboCount++);
+            //}
+            //else if (canCombo) 
+            //{
+            //    knightAnimController.ShouldPlayNextComboAttackAnim = true;
+            //}
+        }
+
+        protected override void OnNormalAttackInternal()
+        {
+            base.OnNormalAttackInternal();
+
+            if (IsAttackPossible() == false)
             {
                 return;
             }
@@ -100,15 +128,28 @@ namespace CommonRPG
             KnightAnimController knightAnimController = (KnightAnimController)animController;
             Debug.Assert(knightAnimController);
 
-            if (knightAnimController.IsBeginningAttackAnim == false)
+            if (knightAnimController.IsBeginningAttackAnim == false && knightAnimController.ShouldPlayNextComboAttackAnim == false)
             {
                 knightAnimController.ComboCount = 0;
                 knightAnimController.PlayComboAttackAnim(knightAnimController.ComboCount++);
             }
-            else if (canCombo) 
+            else if (canCombo)
             {
                 knightAnimController.ShouldPlayNextComboAttackAnim = true;
             }
+        }
+
+        private void OnStartComboAttack(int playIndex)
+        {
+            if (movementInput == Vector2.zero) 
+            {
+                return;
+            }
+
+            Transform cameraTransform = characterCamera.transform;
+            Vector3 moveDirection = cameraTransform.right * movementInput.x + cameraTransform.forward * movementInput.y;
+            moveDirection.y = 0;
+            transform.forward = moveDirection;
         }
 
         private void EnableCollider(bool shouldEnable)
@@ -148,7 +189,7 @@ namespace CommonRPG
             KnightAnimController knightAnimController = (KnightAnimController)animController;
             Debug.Assert(knightAnimController);
 
-            bool isAttackPossible = (isDead == false && knightAnimController.IsHit == false && characterWeapon != null);
+            bool isAttackPossible = (isDead == false && knightAnimController.IsHit == false && characterWeapon != null && Time.timeScale != 0);
             return isAttackPossible;
         }
     }

@@ -1,6 +1,8 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.VFX;
+using static UnityEngine.InputSystem.InputAction;
 
 namespace CommonRPG
 {
@@ -41,6 +43,8 @@ namespace CommonRPG
 
         public abstract float TakeDamage(float DamageAmount, AUnit DamageCauser = null);
 
+        protected bool isNormalAttackPressed = false;
+
         protected override void Awake()
         {
             base.Awake();
@@ -58,6 +62,11 @@ namespace CommonRPG
         {
             base.Update();
             animController.CurrentMoveSpeed = movementComponent.CurrentMoveSpeed;
+
+            if (isNormalAttackPressed) 
+            {
+                OnNormalAttackInternal();
+            }
         }
 
         protected override void OnEnable()
@@ -74,6 +83,8 @@ namespace CommonRPG
             inputActionAsset.FindActionMap("PlayerInput").FindAction("MoveMouseHorizontal").performed += OnMoveMouseHorizontal;
 
             inputActionAsset.FindActionMap("PlayerInput").FindAction("NormalAttack").performed += OnNormalAttack;
+
+            inputActionAsset.FindActionMap("PlayerInput").FindAction("OpenInventory").performed += OnOpenInventory;
         }
 
         protected override void OnDisable()
@@ -88,6 +99,8 @@ namespace CommonRPG
             inputActionAsset.FindActionMap("PlayerInput").FindAction("MoveMouseHorizontal").performed -= OnMoveMouseHorizontal;
 
             inputActionAsset.FindActionMap("PlayerInput").FindAction("NormalAttack").performed -= OnNormalAttack;
+
+            inputActionAsset.FindActionMap("PlayerInput").FindAction("OpenInventory").performed -= OnOpenInventory;
         }
 
         protected virtual void OnMove(InputAction.CallbackContext context)
@@ -103,6 +116,11 @@ namespace CommonRPG
 
         protected virtual void OnMoveMouseVertical(InputAction.CallbackContext context)
         {
+            if (GameManager.IsInventoryOpened())
+            {
+                return;
+            }
+
             float inValue = context.ReadValue<float>();
 
             if (springArm)
@@ -115,6 +133,11 @@ namespace CommonRPG
 
         protected virtual void OnMoveMouseHorizontal(InputAction.CallbackContext context)
         {
+            if (GameManager.IsInventoryOpened()) 
+            {
+                return;
+            }
+
             float inValue = context.ReadValue<float>();
 
             if (springArm)
@@ -136,17 +159,28 @@ namespace CommonRPG
 
         protected virtual void OnNormalAttack(InputAction.CallbackContext context)
         {
-            LayerMask layerMask = LayerMask.GetMask("Monster");
+            isNormalAttackPressed = Convert.ToBoolean(context.ReadValue<float>());
+            //LayerMask layerMask = LayerMask.GetMask("Monster");
 
-            bool isRayHit = Physics.Raycast(transform.position + transform.forward * 2, transform.forward, out RaycastHit hit, 5, layerMask);
-            if (isRayHit)
-            {
-                IDamageable damageableUnit = hit.transform.GetComponent<IDamageable>();
-                if (damageableUnit != null)
-                {
-                    damageableUnit.TakeDamage(1);
-                }
-            }
+            //bool isRayHit = Physics.Raycast(transform.position + transform.forward * 2, transform.forward, out RaycastHit hit, 5, layerMask);
+            //if (isRayHit)
+            //{
+            //    IDamageable damageableUnit = hit.transform.GetComponent<IDamageable>();
+            //    if (damageableUnit != null)
+            //    {
+            //        damageableUnit.TakeDamage(1);
+            //    }
+            //}
+        }
+
+        protected virtual void OnNormalAttackInternal()
+        {
+
+        }
+
+        protected virtual void OnOpenInventory(InputAction.CallbackContext context)
+        {
+            GameManager.OpenAndCloseInventory();
         }
     }
 

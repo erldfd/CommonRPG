@@ -30,6 +30,9 @@ namespace CommonRPG
         private MonsterDataScriptableObject monsterData = null;
 
         [SerializeField]
+        private LevelExpDataScriptableObject levelMaxExpData = null;
+
+        [SerializeField]
         private AInventory playerInventory = null;
 
         private void Awake()
@@ -49,6 +52,9 @@ namespace CommonRPG
         private void Start()
         {
             Debug.Log("GameManager Start");
+
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
 
             SetTimer(1, 0, 0, () => { playerInventory.ObtainItem(1, 1, itemData.ItemDataList[(int)EItemName.TheSecondSword].Data); }, true);
             SetTimer(2, 0, 0, () => 
@@ -170,6 +176,21 @@ namespace CommonRPG
         public static void DeactiveMonster(MonsterBase monster)
         {
             instance.unitManager.DeactiveMonster(monster);
+        }
+
+        public static void OpenAndCloseInventory()
+        {
+            instance.inventoryManager.OpenAndCloseMainInventory();
+        }
+
+        public static bool IsInventoryOpened()
+        {
+            return instance.inventoryManager.IsInventoryOpened;
+        }
+
+        public static float GetLevelMaxExpData(int level)
+        {
+            return instance.levelMaxExpData.GetLevelMaxExp(level);
         }
     }
 }

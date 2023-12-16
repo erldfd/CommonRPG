@@ -40,6 +40,11 @@ namespace CommonRPG
         /// </summary>
         public event Action<bool> OnComboCheck = null;
 
+        /// <summary>
+        /// int : combo index
+        /// </summary>
+        public event Action<int> OnStartPlayingComboAttack = null;
+
         private bool isBeginningAttackAnim = false;
         public bool IsBeginningAttackAnim
         {
@@ -64,6 +69,7 @@ namespace CommonRPG
         public void PlayComboAttackAnim(int playIndex)
         {
             base.animator.Play(comboAttackAnimList[playIndex], 0);
+            OnStartPlayingComboAttack.Invoke(playIndex);
         }
 
         public override void StartAttackCheck(int bIsCheckingAttack)

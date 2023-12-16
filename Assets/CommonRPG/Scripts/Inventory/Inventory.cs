@@ -34,6 +34,22 @@ public abstract class AInventory : MonoBehaviour, IComparable<AInventory>
     {
         Debug.Assert(slotUiList != null && slotUiList.Count > 0);
 
+        //int slotUIsLength = slotUiList.Count;
+        //for (int i = 0; i < slotUIsLength; i++)
+        //{
+        //    slotUiList[i].SlotIndex = i;
+        //    slotUiList[i].IsEmpty = true;
+        //}
+
+        //inventoryItemDataList = new List<InventorySlotItemData>(slotUIsLength);
+        //for (int i = 0; i < slotUIsLength; i++)
+        //{
+        //    inventoryItemDataList.Add(new InventorySlotItemData());
+        //}
+    }
+
+    public virtual void InitInventory()
+    {
         int slotUIsLength = slotUiList.Count;
         for (int i = 0; i < slotUIsLength; i++)
         {

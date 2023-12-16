@@ -92,6 +92,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: InventoryCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 3147105919135248864, guid: d6af948af4168bc4eb47d9be53b27041, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6220202112658335707, guid: d6af948af4168bc4eb47d9be53b27041, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6476752625329208272, guid: d6af948af4168bc4eb47d9be53b27041, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -170,6 +178,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6476752625329208272, guid: d6af948af4168bc4eb47d9be53b27041, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9157504112165505225, guid: d6af948af4168bc4eb47d9be53b27041, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

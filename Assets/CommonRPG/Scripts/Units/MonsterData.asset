@@ -26,3 +26,16 @@ MonoBehaviour:
       MoneyTolerance: 2
       HoldingItems: 
     monsterPrefab: {fileID: 5990399153577003101, guid: 18c8f6e5bfeb7fc41a2d890cde6b8075, type: 3}
+  - name: BlueTurtle
+    data:
+      MonsterName: 1
+      Damage: 2
+      Defense: 3
+      Hp: 20
+      Mp: 1
+      Exp: 2
+      ExpTolerance: 2
+      HoldingMoney: 6
+      MoneyTolerance: 3
+      HoldingItems: 
+    monsterPrefab: {fileID: 2780257264874242769, guid: 2ef517ca176a813468db4cfc5bd0d879, type: 3}

@@ -18,10 +18,30 @@ public class InventoryManager : MonoBehaviour
 
     private InventorySlotItemData tempSlotItemData = new InventorySlotItemData();
 
+    private bool isInventoryOpened = false;
+    public bool IsInventoryOpened { get { return isInventoryOpened; } }
+
     private void Awake()
     {
         Debug.Assert(inventoryList.Count > 0);
         inventoryList.Sort();
+
+        foreach(AInventory inventory in inventoryList)
+        {
+            inventory.InitInventory();
+            inventory.gameObject.SetActive(true);
+            isInventoryOpened = true;
+        }
+    }
+
+    private void Start()
+    {
+        foreach (AInventory inventory in inventoryList)
+        {
+            inventory.InitInventory();
+            inventory.gameObject.SetActive(false);
+            isInventoryOpened = false;
+        }
     }
 
     private void OnEnable()
@@ -149,5 +169,21 @@ public class InventoryManager : MonoBehaviour
     public void DeleteItem(EInventoryType inventoryType, int slotIndex, int deleteCount)
     {
         inventoryList[(int)inventoryType].DeleteItem(slotIndex, deleteCount);
+    }
+
+    public void OpenAndCloseMainInventory()
+    {
+        isInventoryOpened = (isInventoryOpened == false);
+
+        foreach(AInventory inventory in inventoryList)
+        {
+            inventory.gameObject.SetActive(isInventoryOpened);
+        }
+
+        Time.timeScale = (isInventoryOpened) ? 0 : 1;
+
+        Cursor.visible = isInventoryOpened;
+
+        Cursor.lockState = (IsInventoryOpened) ? CursorLockMode.Confined : CursorLockMode.Locked;
     }
 }

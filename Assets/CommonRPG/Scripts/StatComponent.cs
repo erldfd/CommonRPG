@@ -3,6 +3,14 @@ using UnityEngine.Events;
 
 namespace CommonRPG
 {
+    public enum EStatType
+    {
+        Hp,
+        Mp,
+        AttackPower,
+        Defense
+    }
+
     public class StatComponent : MonoBehaviour
     {
         [SerializeField]
@@ -15,16 +23,136 @@ namespace CommonRPG
             }
             set
             {
+                OnLevelUpdate.Invoke(value - level);
                 level = value;
-                OnLevelUpdate.Invoke(level);
+                MaxExpOfCurrentLevel = GameManager.GetLevelMaxExpData(level);
+                uninvestedStatPoint += UNINVESTED_STAT_POINT_PER_LEVEL_UP;
             }
         }
 
+        private const int UNINVESTED_STAT_POINT_PER_LEVEL_UP = 4;
+
         /// <summary>
-        /// arg : int LevelUpdated
+        /// arg : int Added Level
         /// </summary>
-        [Tooltip("arg : int LevelUpdated")]
+        [Tooltip("arg : int Added Level")]
         public UnityEvent<int> OnLevelUpdate = null;
+
+        [SerializeField]
+        private float currentExp = 0;
+        public float CurrentExp
+        {
+            get
+            {
+                return currentExp;
+            }
+            set
+            {
+                currentExp = value;
+
+                if (currentExp >= MaxExpOfCurrentLevel)
+                {
+                    currentExp -= MaxExpOfCurrentLevel;
+                    Level += 1;
+                }
+            }
+        }
+
+        [SerializeField]
+        private float maxExpOfCurrentLevel = 10;
+        public float MaxExpOfCurrentLevel
+        {
+            get
+            {
+                return maxExpOfCurrentLevel;
+            }
+            set
+            {
+                maxExpOfCurrentLevel = value;
+            }
+        }
+
+        [SerializeField]
+        private int uninvestedStatPoint = 0;
+        public int UninvestedStatPoint
+        {
+            get
+            {
+                return uninvestedStatPoint;
+            }
+            set
+            {
+                uninvestedStatPoint = value;
+            }
+        }
+
+        [SerializeField]
+        private int statHpPoint = 1;
+        public int StatHpPoint
+        {
+            get
+            {
+                return statHpPoint;
+            }
+            set
+            {
+                statHpPoint = value;
+                StatBonusHealthPoint = statHpPoint * STAT_HP_POINT_COEFFICIENT;
+            }
+        }
+
+        private const float STAT_HP_POINT_COEFFICIENT = 10;
+
+        [SerializeField]
+        private int statMpPoint = 1;
+        public int StatMpPoint
+        {
+            get
+            {
+                return statMpPoint;
+            }
+            set
+            {
+                statMpPoint = value;
+                StatBonusManaPoint = statMpPoint * STAT_MP_POINT_COEFFICIENT;
+            }
+        }
+
+        private const float STAT_MP_POINT_COEFFICIENT = 10;
+
+        [SerializeField]
+        private int statAttackPowerPoint = 1;
+        public int StatAttackPowerPoint
+        {
+            get
+            {
+                return statAttackPowerPoint;
+            }
+            set
+            {
+                statAttackPowerPoint = value;
+                StatBonusAttackPower = statAttackPowerPoint * STAT_ATTACK_POWER_POINT_COEFFICIENT;
+            }
+        }
+
+        private const float STAT_ATTACK_POWER_POINT_COEFFICIENT = 2;
+
+        [SerializeField]
+        private int statDefensePoint = 0;
+        public int StatDefensePoint
+        {
+            get
+            {
+                return statDefensePoint;
+            }
+            set
+            {
+                statDefensePoint = value;
+                StatBonusDefense = statDefensePoint * STAT_DEFENSE_POINT_COEFFICIENT;
+            }
+        }
+
+        private const float STAT_DEFENSE_POINT_COEFFICIENT = 1;
 
         [SerializeField]
         private float currentHealthPoint = 1;
@@ -37,15 +165,8 @@ namespace CommonRPG
             set
             {
                 currentHealthPoint = value;
-                OnCurrentHealthPointUpdate.Invoke(currentHealthPoint);
             }
         }
-
-        /// <summary>
-        /// arg : float CurrentHealthPointUpdated
-        /// </summary>
-        [Tooltip("arg : float CurrentHealthPointUpdated")]
-        public UnityEvent<float> OnCurrentHealthPointUpdate = null;
 
         [SerializeField]
         private float currentManaPoint = 1;
@@ -58,15 +179,8 @@ namespace CommonRPG
             set
             {
                 currentManaPoint = value;
-                OnCurrentManaPointUpdate.Invoke(currentManaPoint);
             }
         }
-
-        /// <summary>
-        /// arg : float CurrentManaPointUpdated
-        /// </summary>
-        [Tooltip("arg : float CurrentManaPointUpdated")]
-        public UnityEvent<float> OnCurrentManaPointUpdate = null;
 
         [SerializeField]
         private float baseHealthPoint = 1;
@@ -79,17 +193,9 @@ namespace CommonRPG
             set
             {
                 baseHealthPoint = value;
-                totalHealth = baseHealthPoint + weaponHealthBonus;
-
-                OnBaseHealthUpdate.Invoke(baseHealthPoint);
+                totalHealth = baseHealthPoint + weaponHealthBonus + statBonusHealthPoint;
             }
         }
-
-        /// <summary>
-        /// arg : float BaseHealthPointUpdated
-        /// </summary>
-        [Tooltip("arg : float BaseHealthPointUpdated")]
-        public UnityEvent<float> OnBaseHealthUpdate = null;
 
         [SerializeField]
         private float baseManaPoint = 1;
@@ -102,17 +208,9 @@ namespace CommonRPG
             set
             {
                 baseManaPoint = value;
-                totalMana = baseManaPoint + weaponManaBonus;
-
-                OnBaseManaUpdate.Invoke(baseManaPoint);
+                totalMana = baseManaPoint + weaponManaBonus + statBonusManaPoint;
             }
         }
-
-        /// <summary>
-        /// arg : float BaseManaPointUpdated
-        /// </summary>
-        [Tooltip("arg : float ManaPointUpdated")]
-        public UnityEvent<float> OnBaseManaUpdate = null;
 
         [SerializeField]
         private float baseAttackPower = 1;
@@ -125,17 +223,9 @@ namespace CommonRPG
             set
             {
                 baseAttackPower = value;
-                totalAttackPower = baseAttackPower + weaponAttackPowerBonus;
-
-                OnBaseAttackPowerUpdate.Invoke(baseAttackPower);
+                totalAttackPower = baseAttackPower + weaponAttackPowerBonus + statBonusAttackPower;
             }
         }
-
-        /// <summary>
-        /// arg : float baseAttackPowerUpdated
-        /// </summary>
-        [Tooltip("arg : float baseAttackPower")]
-        public UnityEvent<float> OnBaseAttackPowerUpdate = null;
 
         [SerializeField]
         private float baseDefense = 0;
@@ -148,17 +238,69 @@ namespace CommonRPG
             set
             {
                 baseDefense = value;
-                totalDefense = baseDefense + weaponDefenseBonus;
-
-                OnBaseDefenseUpdate.Invoke(baseDefense);
+                totalDefense = baseDefense + weaponDefenseBonus + statBonusDefense;
             }
         }
 
-        /// <summary>
-        /// arg : float baseDefenseUpdated
-        /// </summary>
-        [Tooltip("arg : float baseDefense")]
-        public UnityEvent<float> OnBaseDefenseUpdate = null;
+        [SerializeField]
+        private float statBonusHealthPoint = 0;
+        public float StatBonusHealthPoint
+        {
+            get
+            {
+                return statBonusHealthPoint;
+            }
+            set
+            {
+                statBonusHealthPoint = value;
+                totalHealth = statBonusHealthPoint + baseHealthPoint + weaponHealthBonus;
+            }
+        }
+
+        [SerializeField]
+        private float statBonusManaPoint = 0;
+        public float StatBonusManaPoint
+        {
+            get
+            {
+                return statBonusManaPoint;
+            }
+            set
+            {
+                statBonusManaPoint = value;
+                totalMana = statBonusManaPoint + baseManaPoint + weaponManaBonus;
+            }
+        }
+
+        [SerializeField]
+        private float statBonusAttackPower = 0;
+        public float StatBonusAttackPower
+        {
+            get
+            {
+                return statBonusAttackPower;
+            }
+            set
+            {
+                statBonusAttackPower = value;
+                totalAttackPower = statBonusAttackPower + baseAttackPower + weaponAttackPowerBonus;
+            }
+        }
+
+        [SerializeField]
+        private float statBonusDefense = 0;
+        public float StatBonusDefense
+        {
+            get
+            {
+                return statBonusDefense;
+            }
+            set
+            {
+                statBonusDefense = value;
+                totalDefense = statBonusDefense + baseDefense + weaponDefenseBonus;
+            }
+        }
 
         [SerializeField]
         private float weaponHealthBonus = 0;
@@ -171,7 +313,7 @@ namespace CommonRPG
             set
             {
                 weaponHealthBonus = value;
-                totalHealth = baseHealthPoint + weaponHealthBonus;
+                totalHealth = baseHealthPoint + weaponHealthBonus + statBonusHealthPoint;
             }
         }
 
@@ -186,7 +328,7 @@ namespace CommonRPG
             set
             {
                 weaponManaBonus = value;
-                totalMana = baseManaPoint + weaponManaBonus;
+                totalMana = baseManaPoint + weaponManaBonus + statBonusManaPoint;
             }
         }
 
@@ -201,7 +343,7 @@ namespace CommonRPG
             set
             {
                 weaponAttackPowerBonus = value;
-                totalAttackPower = baseAttackPower + weaponAttackPowerBonus;
+                totalAttackPower = baseAttackPower + weaponAttackPowerBonus + statBonusAttackPower;
             }
         }
 
@@ -216,6 +358,7 @@ namespace CommonRPG
             set
             {
                 weaponDefenseBonus = value;
+                totalDefense = baseDefense + weaponDefenseBonus + statBonusDefense;
             }
         }
 
@@ -273,6 +416,49 @@ namespace CommonRPG
             {
                 totalDefense = value;
             }
+        }
+
+        public void InvestStatPointTo(EStatType statType, int statPointsToInvest)
+        {
+            if (UninvestedStatPoint < statPointsToInvest)
+            {
+                return;
+            }
+
+            for (int i = 0; i < statPointsToInvest; i++) 
+            {
+                switch (statType)
+                {
+                    case EStatType.Hp:
+                    {
+                        StatHpPoint++;
+                        break;
+                    }
+                    case EStatType.Mp:
+                    {
+                        StatMpPoint++;
+                        break;
+                    }
+                    case EStatType.AttackPower:
+                    {
+                        StatAttackPowerPoint++;
+                        break;
+                    }
+                    case EStatType.Defense:
+                    {
+                        StatDefensePoint++;
+                        break;
+                    }
+                    default:
+                    {
+                        Debug.LogError("WierdStatType Detected");
+                        break;
+                    }
+                }
+
+                UninvestedStatPoint--;
+            }
+            
         }
     }
 

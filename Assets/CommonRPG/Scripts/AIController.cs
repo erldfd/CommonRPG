@@ -86,6 +86,11 @@ public class AIController : MonoBehaviour
             return;
         }
 
+        if (agent.isOnNavMesh == false) 
+        {
+            return;
+        }
+
         Detect();
         Chase();
         Patrol();
