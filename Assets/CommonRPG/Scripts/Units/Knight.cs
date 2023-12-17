@@ -58,7 +58,7 @@ namespace CommonRPG
             float currentHpRatio = Mathf.Clamp01(statComponent.CurrentHealthPoint / statComponent.TotalHealth);
             GameManager.SetPlayerHealthBarFillRatio(currentHpRatio);
 
-            Debug.Log($"Damage is Taked : {DamageAmount}, CurrentHp : {statComponent.CurrentHealthPoint}");
+            //Debug.Log($"Damage is Taked : {DamageAmount}, CurrentHp : {statComponent.CurrentHealthPoint}");
 
             KnightAnimController knightAnimController = (KnightAnimController)animController;
             Debug.Assert(knightAnimController);

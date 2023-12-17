@@ -51,7 +51,7 @@ namespace CommonRPG
 
             hitMonsterSet.Add(monster);
 
-            monster.TakeDamage(GameManager.GetPlayer().StatComponent.TotalAttackPower);
+            monster.TakeDamage(GameManager.GetPlayer().StatComponent.TotalAttackPower, GameManager.GetPlayer());
         }
     }
 

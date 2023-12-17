@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace CommonRPG
 {
+    [DefaultExecutionOrder(-1)]
     public class UnitManager : MonoBehaviour
     {
         [SerializeField]
@@ -60,6 +61,7 @@ namespace CommonRPG
             monster.transform.SetPositionAndRotation(position, rotation);
             monster.IsDead = false;
             monster.ActivateAI(true);
+            monster.MonsterName = data.Data.MonsterName;
 
             StatComponent monsterStat = monster.StatComponent;
 

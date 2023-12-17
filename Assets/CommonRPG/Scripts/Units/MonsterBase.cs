@@ -5,6 +5,14 @@ namespace CommonRPG
     public class MonsterBase : AUnit, IDamageable
     {
         [SerializeField]
+        protected EMonsterName monsterName = EMonsterName.None;
+        public EMonsterName MonsterName
+        {
+            get { return monsterName; }
+            set { monsterName = value; }
+        }
+
+        [SerializeField]
         protected float attackRange = 2;
 
         [SerializeField]
@@ -78,7 +86,7 @@ namespace CommonRPG
             }
 
             statComponent.CurrentHealthPoint -= DamageAmount;
-            Debug.Log($"Damage is Taked : {DamageAmount}, CurrentHp : {statComponent.CurrentHealthPoint}");
+            //Debug.Log($"Damage is Taked : {DamageAmount}, CurrentHp : {statComponent.CurrentHealthPoint}");
 
             float currentHpRatio = Mathf.Clamp01(statComponent.CurrentHealthPoint / statComponent.TotalHealth);
             GameManager.SetMonsterHealthBarFillRatio(currentHpRatio);
@@ -95,9 +103,20 @@ namespace CommonRPG
                 monsterUITimerHandler.RestartTimer();
             }
 
-            if (currentHpRatio <= 0)
+            if (currentHpRatio <= 0 && base.isDead == false)
             {
                 BeKilled();
+
+                if (DamageCauser is ACharacter)
+                {
+                    ACharacter character = (ACharacter)DamageCauser;
+
+                    float obatiningExp = GameManager.GetMonsterData(monsterName).Data.Exp;
+                    float expTolerance = GameManager.GetMonsterData(monsterName).Data.ExpTolerance;
+
+                    character.ObtainExp(Random.Range(obatiningExp - expTolerance, obatiningExp + expTolerance));
+                    Debug.Log($"exp obtained : {Random.Range(obatiningExp - expTolerance, obatiningExp + expTolerance)}");
+                }
             }
 
             MonsterAnimController monsterAnimController = (MonsterAnimController)animController;

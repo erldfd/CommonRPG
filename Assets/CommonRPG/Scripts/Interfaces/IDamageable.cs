@@ -10,7 +10,7 @@ namespace CommonRPG
         /// Take Damage from DamageCauser.
         /// </summary>
         /// <returns> Taked Damage Amount. </returns>
-        public float TakeDamage(float DamageAmount, AUnit DamageCauser = null);
+        public float TakeDamage(float DamageAmount, AUnit DamageCauser);
     }
 }
 

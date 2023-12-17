@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace CommonRPG
 {
-    [DefaultExecutionOrder(-1)]
+    [DefaultExecutionOrder(-2)]
     public class GameManager : MonoBehaviour
     {
         [Header("Managers")]
@@ -20,6 +20,9 @@ namespace CommonRPG
 
         [SerializeField]
         private InGameUI inGameUI = null;
+
+        [SerializeField]
+        private StatWindow statWindow = null;
 
         private static GameManager instance = null;
 
@@ -38,10 +41,13 @@ namespace CommonRPG
         private void Awake()
         {
             instance = this;
-            
             Debug.Assert(instance);
-            Debug.Assert(inGameUI);
+
             Debug.Assert(timerManager);
+            Debug.Assert(inventoryManager);
+            
+            Debug.Assert(inGameUI);
+            Debug.Assert(statWindow);
 
             Debug.Assert(playerInventory);
 
@@ -180,11 +186,17 @@ namespace CommonRPG
         public static void OpenAndCloseInventory()
         {
             instance.inventoryManager.OpenAndCloseMainInventory();
+            instance.statWindow.OpenAndCloseStatWindow();
         }
 
         public static bool IsInventoryOpened()
         {
             return instance.inventoryManager.IsInventoryOpened;
+        }
+
+        public static void UpdateStatWindow()
+        {
+            instance.statWindow.UpdateStatWindow();
         }
 
         public static float GetLevelMaxExpData(int level)

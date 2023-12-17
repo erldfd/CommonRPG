@@ -12,4 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c03807747baa674da7db37a431be289, type: 3}
   m_Name: LevelExpData
   m_EditorClassIdentifier: 
-  levelExpList: []
+  levelMaxExpList:
+  - 10
+  - 20
+  - 30
+  - 40
+  - 50
+  - 60
+  - 70
+  - 80
+  - 90
+  - 100

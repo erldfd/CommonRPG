@@ -13,13 +13,23 @@ namespace CommonRPG
         {
             get { return characterWeapon; } 
             set 
-            { 
+            {
                 characterWeapon = value;
 
-                statComponent.WeaponAttackPowerBonus = value.Data.Damage;
-                statComponent.WeaponDefenseBonus = value.Data.Defense;
-                statComponent.WeaponHealthBonus = value.Data.HPBonus;
-                statComponent.WeaponManaBonus = value.Data.MPBonus;
+                if (value == null) 
+                {
+                    statComponent.WeaponAttackPowerBonus = 0;
+                    statComponent.WeaponDefenseBonus = 0;
+                    statComponent.WeaponHealthBonus = 0;
+                    statComponent.WeaponManaBonus = 0;
+                }
+                else
+                {
+                    statComponent.WeaponAttackPowerBonus = value.Data.Damage;
+                    statComponent.WeaponDefenseBonus = value.Data.Defense;
+                    statComponent.WeaponHealthBonus = value.Data.HPBonus;
+                    statComponent.WeaponManaBonus = value.Data.MPBonus;
+                }
 
                 GameManager.SetPlayerHealthBarFillRatio(statComponent.CurrentHealthPoint / statComponent.TotalHealth);
                 GameManager.SetPlayerManaBarFillRatio(statComponent.CurrentManaPoint / statComponent.TotalMana);
@@ -99,6 +109,12 @@ namespace CommonRPG
             inputActionAsset.FindActionMap("PlayerInput").FindAction("NormalAttack").performed -= OnNormalAttack;
 
             inputActionAsset.FindActionMap("PlayerInput").FindAction("OpenInventory").performed -= OnOpenInventory;
+        }
+
+        public virtual void ObtainExp(float amount)
+        {
+            statComponent.CurrentExp += amount;
+            Debug.Log($"exp obtained : {amount}");
         }
 
         protected virtual void OnMove(InputAction.CallbackContext context)

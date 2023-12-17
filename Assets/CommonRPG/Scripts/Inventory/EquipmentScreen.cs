@@ -52,12 +52,13 @@ namespace CommonRPG
 
             if (WillMakeSlotEmpty)
             {
+                GameManager.UpdateStatWindow();
                 return;
             }
 
             if (equipmentSlot == EEquipmentSlot.Weapon && itemData.ItemType == EItemType.Weapon)
             {
-                Debug.Assert(GameManager.GetPlayer().CharacterWeapon = (WeaponItem)GameManager.SpawnItem(itemData.ItemName, weaponEquipmentTransform, false));
+                GameManager.GetPlayer().CharacterWeapon = (WeaponItem)GameManager.SpawnItem(itemData.ItemName, weaponEquipmentTransform, false);
             }
             else if (equipmentSlot == EEquipmentSlot.Shield && itemData.ItemType == EItemType.Shield)
             {
@@ -67,6 +68,8 @@ namespace CommonRPG
             {
                 Debug.LogAssertion("Weird equiment is detected");
             }
+
+            GameManager.UpdateStatWindow();
 
             void RemoveEquipment()
             {
@@ -79,6 +82,8 @@ namespace CommonRPG
                             Destroy(weaponEquipmentTransform.GetChild(0).gameObject);
                         }
                     }
+
+                    GameManager.GetPlayer().CharacterWeapon = null;
                 }
                 else if (equipmentSlot == EEquipmentSlot.Shield)
                 {

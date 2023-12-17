@@ -23,10 +23,20 @@ namespace CommonRPG
             }
             set
             {
-                OnLevelUpdate.Invoke(value - level);
+                int previousLevel = level;
                 level = value;
+
+                uninvestedStatPoint += UNINVESTED_STAT_POINT_PER_LEVEL_UP * (level - previousLevel);
                 MaxExpOfCurrentLevel = GameManager.GetLevelMaxExpData(level);
-                uninvestedStatPoint += UNINVESTED_STAT_POINT_PER_LEVEL_UP;
+
+                currentHealthPoint = totalHealth;
+                currentManaPoint = totalMana;
+
+                GameManager.SetPlayerHealthBarFillRatio(currentHealthPoint / totalHealth);
+                GameManager.SetPlayerManaBarFillRatio(currentManaPoint / totalMana);
+                GameManager.SetPlayerLevelText(level);
+
+                OnLevelUpdate.Invoke(level - previousLevel);
             }
         }
 
@@ -87,7 +97,7 @@ namespace CommonRPG
         }
 
         [SerializeField]
-        private int statHpPoint = 1;
+        private int statHpPoint = 0;
         public int StatHpPoint
         {
             get
@@ -101,10 +111,10 @@ namespace CommonRPG
             }
         }
 
-        private const float STAT_HP_POINT_COEFFICIENT = 10;
+        public const float STAT_HP_POINT_COEFFICIENT = 10;
 
         [SerializeField]
-        private int statMpPoint = 1;
+        private int statMpPoint = 0;
         public int StatMpPoint
         {
             get
@@ -118,10 +128,10 @@ namespace CommonRPG
             }
         }
 
-        private const float STAT_MP_POINT_COEFFICIENT = 10;
+        public const float STAT_MP_POINT_COEFFICIENT = 10;
 
         [SerializeField]
-        private int statAttackPowerPoint = 1;
+        private int statAttackPowerPoint = 0;
         public int StatAttackPowerPoint
         {
             get
@@ -135,7 +145,7 @@ namespace CommonRPG
             }
         }
 
-        private const float STAT_ATTACK_POWER_POINT_COEFFICIENT = 2;
+        public const float STAT_ATTACK_POWER_POINT_COEFFICIENT = 2;
 
         [SerializeField]
         private int statDefensePoint = 0;
@@ -152,7 +162,7 @@ namespace CommonRPG
             }
         }
 
-        private const float STAT_DEFENSE_POINT_COEFFICIENT = 1;
+        public const float STAT_DEFENSE_POINT_COEFFICIENT = 1;
 
         [SerializeField]
         private float currentHealthPoint = 1;
@@ -416,6 +426,25 @@ namespace CommonRPG
             {
                 totalDefense = value;
             }
+        }
+
+        public void InvestStatPointToHp(int amount)
+        {
+            InvestStatPointTo(EStatType.Hp, amount);
+        }
+        public void InvestStatPointToMp(int amount)
+        {
+            InvestStatPointTo(EStatType.Mp, amount);
+        }
+
+        public void InvestStatPointToAttackPower(int amount)
+        {
+            InvestStatPointTo(EStatType.AttackPower, amount);
+        }
+
+        public void InvestStatPointToDefense(int amount)
+        {
+            InvestStatPointTo(EStatType.Defense, amount);
         }
 
         public void InvestStatPointTo(EStatType statType, int statPointsToInvest)
