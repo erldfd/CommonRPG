@@ -34,14 +34,34 @@ namespace CommonRPG
                 allowedItemType = value;
             }
         }
-
+        /// <summary>
+        /// arg : int slotIndex
+        /// </summary>
         public event Action<int> OnPointerDownDelegate = null;
+
+        /// <summary>
+        /// args : int slotIndex, EInventoryType thisInventoryType Vector2 slotPosition, Vector2 slotWidthAndHeight
+        /// </summary>
+        public event Action<int, EInventoryType, Vector2, Vector2> OnPointerEnterDelegate = null;
+        /// <summary>
+        /// arg : int slotIndex
+        /// </summary>
+        public event Action<int> OnPointerExitDelegate = null;
+        /// <summary>
+        /// arg : int slotIndex
+        /// </summary>
         public event Action<int> OnBeginDragDelegate = null;
+        /// <summary>
+        /// args : int thisSlotIndex, int otherSlotIndex, EInventoryType thisInventoryType, EInventoryType otherInventoryType
+        /// </summary>
         public event Action<int, int, EInventoryType, EInventoryType> OnEndDragDelegate = null;
 
         private UnityEngine.UI.Image slotImage = null;
         private UnityEngine.UI.Image dragSlotImage = null;
         private TextMeshProUGUI itemCountText = null;
+
+        private RectTransform rectTransform = null;
+        private Vector2 widthAndHeight = Vector2.zero;
 
         private void Awake()
         {
@@ -58,6 +78,9 @@ namespace CommonRPG
 
             IsEmpty = true;
             itemCountText.gameObject.SetActive(IsEmpty == false);
+
+            rectTransform = GetComponent<RectTransform>();
+            widthAndHeight = new Vector2(rectTransform.rect.width, rectTransform.rect.height);
         }
 
         public void SetSlotImageSprite(Sprite newSprite)
@@ -95,11 +118,15 @@ namespace CommonRPG
         public void OnPointerEnter(PointerEventData eventData)
         {
             //Debug.Log($"OnPointerEnter, SlotIndex : {SlotIndex}");
+
+            OnPointerEnterDelegate.Invoke(SlotIndex, CurrentSlotInventoryType, rectTransform.position, widthAndHeight);
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
             //Debug.Log($"OnPointerExit, SlotIndex : {SlotIndex}");
+
+            OnPointerExitDelegate.Invoke(SlotIndex);
         }
 
         public void OnBeginDrag(PointerEventData eventData)

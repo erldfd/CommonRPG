@@ -1,5 +1,4 @@
 using System;
-using System.Numerics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,14 +17,19 @@ namespace CommonRPG
         [SerializeField]
         private UnitManager unitManager = null;
 
+        [Header("UIs")]
         [SerializeField]
         private InGameUI inGameUI = null;
 
         [SerializeField]
         private StatWindow statWindow = null;
 
+        [SerializeField]
+        private ItemInfoWindow itemInfoWindow = null;
+
         private static GameManager instance = null;
 
+        [Header("Data")]
         [SerializeField]
         private ItemDataScriptableObject itemData = null;
 
@@ -35,6 +39,7 @@ namespace CommonRPG
         [SerializeField]
         private LevelExpDataScriptableObject levelMaxExpData = null;
 
+        [Header("etc.")]
         [SerializeField]
         private AInventory playerInventory = null;
 
@@ -48,6 +53,7 @@ namespace CommonRPG
             
             Debug.Assert(inGameUI);
             Debug.Assert(statWindow);
+            Debug.Assert(itemInfoWindow);
 
             Debug.Assert(playerInventory);
 
@@ -187,6 +193,8 @@ namespace CommonRPG
         {
             instance.inventoryManager.OpenAndCloseMainInventory();
             instance.statWindow.OpenAndCloseStatWindow();
+
+            instance.itemInfoWindow.ShowOrHide(false);
         }
 
         public static bool IsInventoryOpened()
@@ -202,6 +210,29 @@ namespace CommonRPG
         public static float GetLevelMaxExpData(int level)
         {
             return instance.levelMaxExpData.GetLevelMaxExp(level);
+        }
+
+        public static int GetCurrentCoins()
+        {
+            return instance.inventoryManager.Coins;
+        }
+
+        public static void SetCoins(int amount)
+        {
+            instance.inventoryManager.Coins = amount;
+        }
+
+        public static void ShowItemInfoWindow(Vector2 slotPos, Vector2 slotWithAndHeight, in SItemData data)
+        {
+            
+            instance.itemInfoWindow.SetToProperPosition(slotPos, slotWithAndHeight);
+            instance.itemInfoWindow.SetItemInfoData(data);
+            instance.itemInfoWindow.ShowOrHide(true);
+        }
+
+        public static void HideItemInfoWindow()
+        {
+            instance.itemInfoWindow.ShowOrHide(false);
         }
     }
 }

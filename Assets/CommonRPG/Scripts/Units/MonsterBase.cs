@@ -111,11 +111,17 @@ namespace CommonRPG
                 {
                     ACharacter character = (ACharacter)DamageCauser;
 
-                    float obatiningExp = GameManager.GetMonsterData(monsterName).Data.Exp;
+                    float obtainingExp = GameManager.GetMonsterData(monsterName).Data.Exp;
                     float expTolerance = GameManager.GetMonsterData(monsterName).Data.ExpTolerance;
 
-                    character.ObtainExp(Random.Range(obatiningExp - expTolerance, obatiningExp + expTolerance));
-                    Debug.Log($"exp obtained : {Random.Range(obatiningExp - expTolerance, obatiningExp + expTolerance)}");
+                    character.ObtainExp(Random.Range(obtainingExp - expTolerance, obtainingExp + expTolerance));
+                    
+                    int obtainingCoins = GameManager.GetMonsterData(MonsterName).Data.HoldingMoney;
+                    int coinTolerance = GameManager.GetMonsterData(MonsterName).Data.MoneyTolerance;
+
+                    GameManager.SetCoins(GameManager.GetCurrentCoins() + Random.Range(obtainingCoins - coinTolerance, obtainingCoins + coinTolerance));
+
+                    Debug.Log($"exp obtained : {Random.Range(obtainingExp - expTolerance, obtainingExp + expTolerance)}, coin obtained : {Random.Range(obtainingCoins - coinTolerance, obtainingCoins + coinTolerance)}");
                 }
             }
 

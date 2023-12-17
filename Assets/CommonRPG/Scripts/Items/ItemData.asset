@@ -24,6 +24,8 @@ MonoBehaviour:
       Defense: 2
       HPBonus: 3
       MPBonus: 4
+      BuyPrice: 10
+      SellPrice: 5
     itemPrefab: {fileID: 7657546599954280174, guid: 9fbe61d1f4bc091439f25f985dd189a5, type: 3}
   - name: TheSecondSword
     data:
@@ -36,4 +38,6 @@ MonoBehaviour:
       Defense: 3
       HPBonus: 4
       MPBonus: 5
+      BuyPrice: 20
+      SellPrice: 10
     itemPrefab: {fileID: -666650600275919474, guid: 3617e4093ca8d5145986d37c89cfd692, type: 3}

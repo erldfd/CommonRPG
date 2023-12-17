@@ -87,5 +87,8 @@ namespace CommonRPG
         public float Defense;
         public float HPBonus;
         public float MPBonus;
+        public int BuyPrice;
+        public int SellPrice;
+        public string ItemDiscription;
     }
 }

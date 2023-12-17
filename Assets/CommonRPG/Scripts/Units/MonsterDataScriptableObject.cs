@@ -44,8 +44,8 @@ namespace CommonRPG
         public float Mp;
         public float Exp;
         public float ExpTolerance;
-        public float HoldingMoney;
-        public float MoneyTolerance;
+        public int HoldingMoney;
+        public int MoneyTolerance;
         [HideInInspector]
         public List<EItemName> HoldingItems;
     }

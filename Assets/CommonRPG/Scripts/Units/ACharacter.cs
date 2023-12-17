@@ -11,12 +11,12 @@ namespace CommonRPG
         protected WeaponItem characterWeapon = null;
         public WeaponItem CharacterWeapon
         {
-            get { return characterWeapon; } 
-            set 
+            get { return characterWeapon; }
+            set
             {
                 characterWeapon = value;
 
-                if (value == null) 
+                if (value == null)
                 {
                     statComponent.WeaponAttackPowerBonus = 0;
                     statComponent.WeaponDefenseBonus = 0;
@@ -29,6 +29,16 @@ namespace CommonRPG
                     statComponent.WeaponDefenseBonus = value.Data.Defense;
                     statComponent.WeaponHealthBonus = value.Data.HPBonus;
                     statComponent.WeaponManaBonus = value.Data.MPBonus;
+                }
+
+                if (statComponent.CurrentHealthPoint > statComponent.TotalHealth)
+                {
+                    statComponent.CurrentHealthPoint = statComponent.TotalHealth;
+                }
+
+                if (statComponent.CurrentManaPoint > statComponent.TotalMana)
+                {
+                    statComponent.CurrentManaPoint = statComponent.TotalMana;
                 }
 
                 GameManager.SetPlayerHealthBarFillRatio(statComponent.CurrentHealthPoint / statComponent.TotalHealth);
@@ -71,7 +81,7 @@ namespace CommonRPG
             base.Update();
             animController.CurrentMoveSpeed = movementComponent.CurrentMoveSpeed;
 
-            if (isNormalAttackPressed) 
+            if (isNormalAttackPressed)
             {
                 OnNormalAttackInternal();
             }
@@ -147,7 +157,7 @@ namespace CommonRPG
 
         protected virtual void OnMoveMouseHorizontal(InputAction.CallbackContext context)
         {
-            if (GameManager.IsInventoryOpened()) 
+            if (GameManager.IsInventoryOpened())
             {
                 return;
             }

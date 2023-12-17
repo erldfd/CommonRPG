@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,6 +23,28 @@ namespace CommonRPG
 
         private bool isInventoryOpened = false;
         public bool IsInventoryOpened { get { return isInventoryOpened; } }
+
+        private int coins = 0;
+        public int Coins
+        {
+            get { return coins; }
+            set
+            {
+                if (value < 0) 
+                {
+                    coins = 0;
+                }
+                else
+                {
+                    coins = value;
+                }
+
+                currentCoinText.text = coins.ToString();
+            }
+        }
+
+        [SerializeField]
+        private TextMeshProUGUI currentCoinText = null;
 
         private void Awake()
         {
@@ -55,6 +78,9 @@ namespace CommonRPG
                 int slotUiListCount = inventorySlotUiList.Count;
                 for (int i = 0; i < slotUiListCount; ++i)
                 {
+                    inventorySlotUiList[i].OnPointerEnterDelegate += OnPointerEnterToSlot;
+                    inventorySlotUiList[i].OnPointerExitDelegate += OnPointerExitFromSlot;
+
                     inventorySlotUiList[i].OnEndDragDelegate += ExchangeOrMoveOrMergeItem;
                 }
             }
@@ -69,6 +95,9 @@ namespace CommonRPG
                 int slotUiListCount = inventorySlotUiList.Count;
                 for (int i = 0; i < slotUiListCount; ++i)
                 {
+                    inventorySlotUiList[i].OnPointerEnterDelegate -= OnPointerEnterToSlot;
+                    inventorySlotUiList[i].OnPointerExitDelegate -= OnPointerExitFromSlot;
+
                     inventorySlotUiList[i].OnEndDragDelegate -= ExchangeOrMoveOrMergeItem;
                 }
             }
@@ -148,6 +177,24 @@ namespace CommonRPG
             Time.timeScale = (isInventoryOpened) ? 0 : 1;
             Cursor.visible = isInventoryOpened;
             Cursor.lockState = (IsInventoryOpened) ? CursorLockMode.Confined : CursorLockMode.Locked;
+
+            currentCoinText.text = coins.ToString();
+        }
+
+        private void OnPointerEnterToSlot(int slotIndex, EInventoryType inventoryType, Vector2 slotPos, Vector2 slotWidthAndHeight)
+        {
+            AInventory inventory = inventoryList[(int)inventoryType];
+            if (inventory.SlotUiList[slotIndex].IsEmpty) 
+            {
+                return;
+            }
+
+            GameManager.ShowItemInfoWindow(slotPos, slotWidthAndHeight, inventory.InventoryItemDataList[slotIndex].ItemData);
+        }
+
+        private void OnPointerExitFromSlot(int slotIndex)
+        {
+            GameManager.HideItemInfoWindow();
         }
     }
 
