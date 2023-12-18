@@ -39,6 +39,12 @@ namespace CommonRPG
         [SerializeField]
         private LevelExpDataScriptableObject levelMaxExpData = null;
 
+        /// <summary>
+        /// call ReadyToUse method before using
+        /// </summary>
+        [SerializeField]
+        private ItemDropDataScriptableObject itemDropData = null;
+
         [Header("etc.")]
         [SerializeField]
         private AInventory playerInventory = null;
@@ -58,6 +64,8 @@ namespace CommonRPG
             Debug.Assert(playerInventory);
 
             DontDestroyOnLoad(gameObject);
+
+            itemDropData.ReadyToUse();
         }
 
         private void Start()

@@ -59,6 +59,7 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 1235e445023fed94e983e83cd7b1b8db, type: 2}
   monsterData: {fileID: 11400000, guid: 7297ba9bed65ac04ab88c259c22b044f, type: 2}
   levelMaxExpData: {fileID: 11400000, guid: c01f689a18ae71d409da863306221c81, type: 2}
+  itemDropData: {fileID: 11400000, guid: b3e11f75556b61745939e611dcfb67c3, type: 2}
   playerInventory: {fileID: 7035582945807466497}
 --- !u!114 &1325510393791179235
 MonoBehaviour:
