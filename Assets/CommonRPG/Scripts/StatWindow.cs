@@ -94,7 +94,7 @@ namespace CommonRPG
             simpleDamageInfo.text = $"{statComponent.TotalAttackPower}";
             detailDamageInfo.text = $"{statComponent.BaseAttackPower} + {statComponent.StatAttackPowerPoint} * {StatComponent.STAT_ATTACK_POWER_POINT_COEFFICIENT} + {statComponent.WeaponAttackPowerBonus} + 0";
 
-            simpleArmorInfo.text = $"{statComponent.TotalAttackPower}";
+            simpleArmorInfo.text = $"{statComponent.TotalDefense}";
             detailArmorInfo.text = $"{statComponent.BaseDefense} + {statComponent.StatDefensePoint} * {StatComponent.STAT_DEFENSE_POINT_COEFFICIENT} + {statComponent.WeaponDefenseBonus} + 0";
 
             statPointsInfo.text = statComponent.UninvestedStatPoint.ToString();

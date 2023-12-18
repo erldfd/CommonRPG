@@ -54,7 +54,13 @@ namespace CommonRPG
 
         public override float TakeDamage(float DamageAmount, AUnit DamageCauser = null)
         {
-            statComponent.CurrentHealthPoint -= DamageAmount;
+            float actualDamageAmount = DamageAmount - statComponent.TotalDefense;
+            if (actualDamageAmount < 1)
+            {
+                actualDamageAmount = 1;
+            }
+
+            statComponent.CurrentHealthPoint -= actualDamageAmount;
             float currentHpRatio = Mathf.Clamp01(statComponent.CurrentHealthPoint / statComponent.TotalHealth);
             GameManager.SetPlayerHealthBarFillRatio(currentHpRatio);
 

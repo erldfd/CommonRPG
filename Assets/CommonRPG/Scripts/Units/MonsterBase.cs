@@ -85,7 +85,13 @@ namespace CommonRPG
                 return 0f;
             }
 
-            statComponent.CurrentHealthPoint -= DamageAmount;
+            float actualDamageAmount = DamageAmount - statComponent.TotalDefense;
+            if(actualDamageAmount < 1)
+            {
+                actualDamageAmount = 1;
+            }
+
+            statComponent.CurrentHealthPoint -= actualDamageAmount;
             //Debug.Log($"Damage is Taked : {DamageAmount}, CurrentHp : {statComponent.CurrentHealthPoint}");
 
             float currentHpRatio = Mathf.Clamp01(statComponent.CurrentHealthPoint / statComponent.TotalHealth);
