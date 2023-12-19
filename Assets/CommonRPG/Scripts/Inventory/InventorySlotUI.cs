@@ -189,15 +189,15 @@ namespace CommonRPG
                 return;
             }
 
-            Debug.Log($"OnEndDrag, SlotIndex : {SlotIndex}");
-            Debug.Log($"OnEndDrag, Drag : {eventData.pointerDrag}");
+            //Debug.Log($"OnEndDrag, SlotIndex : {SlotIndex}");
+            //Debug.Log($"OnEndDrag, Drag : {eventData.pointerDrag}");
 
             if (eventData.pointerCurrentRaycast.isValid == false)
             {
                 return;
             }
 
-            Debug.Log($"OnEndDrag, Current Raycast : {eventData.pointerCurrentRaycast}");
+            //Debug.Log($"OnEndDrag, Current Raycast : {eventData.pointerCurrentRaycast}");
 
             InventorySlotUI otherSlotUI = eventData.pointerCurrentRaycast.gameObject.transform.parent.GetComponent<InventorySlotUI>();
             if (otherSlotUI == null)
@@ -206,7 +206,7 @@ namespace CommonRPG
                 return;
             }
 
-            Debug.Log($"firstSlotIndex : {SlotIndex}, secondSlotIndex : {otherSlotUI.SlotIndex}, firstSlotInventoryType : {CurrentSlotInventoryType}, secondSlotInventoryType : {otherSlotUI.CurrentSlotInventoryType}");
+            //Debug.Log($"firstSlotIndex : {SlotIndex}, secondSlotIndex : {otherSlotUI.SlotIndex}, firstSlotInventoryType : {CurrentSlotInventoryType}, secondSlotInventoryType : {otherSlotUI.CurrentSlotInventoryType}");
             OnEndDragDelegate.Invoke(SlotIndex, otherSlotUI.SlotIndex, CurrentSlotInventoryType, otherSlotUI.CurrentSlotInventoryType);
         }
     }

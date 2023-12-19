@@ -24,10 +24,12 @@ namespace CommonRPG
         }
 
         /// <summary>
-        /// proablility is 0 ~ 1
+        /// Choose drop item Randomly based on SItemDropData
         /// </summary>
-        public EItemName GetDropItemData(EMonsterName monsterName, float probability)
+        public EItemName GetDropItem(EMonsterName monsterName)
         {
+            float probability = UnityEngine.Random.Range(0, 1.0f);
+
             SItemDropData itemDropData = itemDropDataList[(int)monsterName];
             List<SItemDropProbabilityData> probabilityDataList = itemDropData.ItemProbabilityDataList;
             int itemProbabilityDataListCount = probabilityDataList.Count;
@@ -45,16 +47,17 @@ namespace CommonRPG
 
             for (int i = 0; i < itemProbabilityDataListCount; ++i) 
             {
+                calculatedProbability += probabilityDataList[i].dropProbability;
+
                 if (calculatedProbability > chosenProbalility) 
                 {
                     chosenItemName = probabilityDataList[i].ItemName;
-                }
-                else
-                {
-                    calculatedProbability += probabilityDataList[i].dropProbability;
+                    break;
                 }
             }
 
+            Debug.Log($"monsterName : {monsterName}, chosenItemName : {chosenItemName}");
+            //Debug.Log($"calculatedProbability : {calculatedProbability}, chosenProbalility : {chosenProbalility}");
             return chosenItemName;
         }
     }

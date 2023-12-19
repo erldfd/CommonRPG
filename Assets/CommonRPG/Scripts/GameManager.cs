@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 namespace CommonRPG
 {
@@ -70,8 +71,6 @@ namespace CommonRPG
 
         private void Start()
         {
-            Debug.Log("GameManager Start");
-
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
 
@@ -80,7 +79,6 @@ namespace CommonRPG
             { 
                 
                 int count = playerInventory.ObtainItem(5, itemData.ItemDataList[(int)EItemName.TheFirstSword].Data);
-                Debug.Log(count);
 
             }, true);
 
@@ -90,7 +88,6 @@ namespace CommonRPG
 
         private void OnEnable()
         {
-            Debug.Log("GameManager OnEnable");
         }
 
         public static void SetInGameUIVisible(bool shouldVisible)
@@ -153,8 +150,17 @@ namespace CommonRPG
             return instance.itemData.ItemDataList[(int)itemName];
         }
 
+        /// <summary>
+        /// this is attach to transform
+        /// if itemName is None, return null
+        /// </summary>
         public static AItem SpawnItem(EItemName itemName, Transform transform, bool isFieldItem)
         {
+            if (EItemName.None == itemName) 
+            {
+                return null;
+            }
+
             ItemData itemData = instance.itemData.ItemDataList[(int)itemName];
 
             AItem item = Instantiate(itemData.ItemPrefab, transform);
@@ -164,10 +170,21 @@ namespace CommonRPG
             return item;
         }
 
+        /// <summary>
+        /// if itemName is None, return null
+        /// </summary>
         public static AItem SpawnItem(EItemName itemName, UnityEngine.Vector3 spawnPosition, UnityEngine.Quaternion rotation, bool isFieldItem)
         {
+            if (EItemName.None == itemName)
+            {
+                return null;
+            }
+
+            ItemData itemData = instance.itemData.ItemDataList[(int)itemName];
+
             AItem item = Instantiate(instance.itemData.ItemDataList[(int)itemName].ItemPrefab, spawnPosition, rotation);
             item.IsFieldItem = isFieldItem;
+            item.Data = itemData.Data;
 
             return item;
         }
@@ -187,9 +204,9 @@ namespace CommonRPG
             return instance.monsterData.MonsterDataList[(int)monsterName];
         }
 
-        public static void SpawnMonster(EMonsterName monsterName, UnityEngine.Vector3 spawnPosition, UnityEngine.Quaternion rotation)
+        public static MonsterBase SpawnMonster(EMonsterName monsterName, UnityEngine.Vector3 spawnPosition, UnityEngine.Quaternion rotation)
         {
-            instance.unitManager.SpawnMonster(instance.monsterData.MonsterDataList[(int)monsterName], spawnPosition, rotation);
+            return instance.unitManager.SpawnMonster(instance.monsterData.MonsterDataList[(int)monsterName], spawnPosition, rotation);
         }
 
         public static void DeactiveMonster(MonsterBase monster)
@@ -232,7 +249,6 @@ namespace CommonRPG
 
         public static void ShowItemInfoWindow(Vector2 slotPos, Vector2 slotWithAndHeight, in SItemData data)
         {
-            
             instance.itemInfoWindow.SetToProperPosition(slotPos, slotWithAndHeight);
             instance.itemInfoWindow.SetItemInfoData(data);
             instance.itemInfoWindow.ShowOrHide(true);
@@ -241,6 +257,13 @@ namespace CommonRPG
         public static void HideItemInfoWindow()
         {
             instance.itemInfoWindow.ShowOrHide(false);
+        }
+
+        public static AItem DropItemFromMonster(EMonsterName monsterName, Vector3 dropPos, Quaternion rotation)
+        {
+            EItemName chosenItem = instance.itemDropData.GetDropItem(monsterName);
+
+            return SpawnItem(chosenItem, dropPos, rotation, true);
         }
     }
 }

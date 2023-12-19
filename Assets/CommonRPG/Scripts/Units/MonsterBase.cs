@@ -126,8 +126,7 @@ namespace CommonRPG
                     int coinTolerance = GameManager.GetMonsterData(MonsterName).Data.MoneyTolerance;
 
                     GameManager.SetCoins(GameManager.GetCurrentCoins() + Random.Range(obtainingCoins - coinTolerance, obtainingCoins + coinTolerance));
-
-                    Debug.Log($"exp obtained : {Random.Range(obtainingExp - expTolerance, obtainingExp + expTolerance)}, coin obtained : {Random.Range(obtainingCoins - coinTolerance, obtainingCoins + coinTolerance)}");
+                    GameManager.DropItemFromMonster(MonsterName, transform.position, transform.rotation);
                 }
             }
 

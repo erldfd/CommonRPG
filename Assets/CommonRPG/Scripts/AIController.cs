@@ -117,7 +117,7 @@ namespace CommonRPG
 
             if (currentAIState == EAIState.Attack)
             {
-                Debug.Log($"In Detect : {currentAIState}");
+                //Debug.Log($"In Detect : {currentAIState}");
                 return;
             }
 

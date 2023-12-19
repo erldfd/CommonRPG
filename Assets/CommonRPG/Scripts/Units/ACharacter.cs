@@ -89,7 +89,6 @@ namespace CommonRPG
 
         protected override void OnEnable()
         {
-            Debug.Log("OnEnable");
             inputActionAsset.Enable();
 
             inputActionAsset.FindActionMap("PlayerInput").FindAction("Move").performed += OnMove;
@@ -124,7 +123,7 @@ namespace CommonRPG
         public virtual void ObtainExp(float amount)
         {
             statComponent.CurrentExp += amount;
-            Debug.Log($"exp obtained : {amount}");
+            //Debug.Log($"exp obtained : {amount}");
         }
 
         protected virtual void OnMove(InputAction.CallbackContext context)

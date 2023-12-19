@@ -6,8 +6,8 @@ namespace CommonRPG
 {
     public enum EItemName
     {
-        None = -1,
-        TheFirstSword = 0,
+        None = 0,
+        TheFirstSword,
         TheSecondSword,
         Weapon3,
     }
