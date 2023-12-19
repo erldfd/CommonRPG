@@ -15,8 +15,8 @@ TagManager:
   - Character
   - PostProcessing
   - Not in Reflection
-  - Item
-  - 
+  - EquipedItem
+  - FieldItem
   - 
   - 
   - 

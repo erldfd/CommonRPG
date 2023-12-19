@@ -16,6 +16,11 @@ namespace CommonRPG
             get { return data; }
             set { data = value; }
         }
+
+        public virtual void EnableCollider(bool ShouldEnable)
+        {
+            
+        }
     }
 }
 

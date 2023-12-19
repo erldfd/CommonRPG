@@ -34,6 +34,9 @@ namespace CommonRPG
         [SerializeField]
         private TextMeshProUGUI playerLevelText = null;
 
+        [SerializeField]
+        private GameObject interactionUI = null;
+
         [Header("Etc.")]
         [SerializeField]
         private GameObject pauseUI = null;
@@ -48,6 +51,8 @@ namespace CommonRPG
             Debug.Assert(playerHealthBar);
             Debug.Assert(playerManaBar);
             Debug.Assert(playerLevelText);
+
+            Debug.Assert(interactionUI);
 
             Debug.Assert(pauseUI);
 
@@ -104,8 +109,13 @@ namespace CommonRPG
 
         public void OnReturnToMenuButtonClicked()
         {
-            Debug.Log("Return to Menu Button Clicled.");
+            Debug.Log("Return to Menu Button Clicked.");
             SceneManager.LoadSceneAsync(0);
+        }
+
+        public void SetActiveInteractioUI(bool ShouldActivate)
+        {
+            interactionUI.SetActive(ShouldActivate);
         }
     }
 

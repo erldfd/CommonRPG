@@ -17,7 +17,7 @@ namespace CommonRPG
             boxCollider.enabled = false;
         }
 
-        public void EnableCollider(bool ShouldEnable)
+        public override void EnableCollider(bool ShouldEnable)
         {
             if (boxCollider.IsDestroyed()) 
             {

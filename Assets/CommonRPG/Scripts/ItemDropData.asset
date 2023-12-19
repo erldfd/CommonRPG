@@ -16,14 +16,14 @@ MonoBehaviour:
   - name: Red Slime
     MonsterName: 0
     ItemProbabilityDataList:
-    - ItemName: -1
+    - ItemName: 0
       dropProbability: 0.5
-    - ItemName: 1
+    - ItemName: 2
       dropProbability: 0.5
   - name: Blue Turtle
     MonsterName: 1
     ItemProbabilityDataList:
-    - ItemName: -1
-      dropProbability: 99
     - ItemName: 0
+      dropProbability: 99
+    - ItemName: 1
       dropProbability: 99

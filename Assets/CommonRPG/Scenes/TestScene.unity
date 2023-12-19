@@ -536,7 +536,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1524411113276028, guid: 2ef517ca176a813468db4cfc5bd0d879, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4544219117696442, guid: 2ef517ca176a813468db4cfc5bd0d879, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1077,6 +1077,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1261190126354225858, guid: 03e3dd7f1c29c0d429d341124e457061, type: 3}
+      propertyPath: baseAttackPower
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 1261190126354225858, guid: 03e3dd7f1c29c0d429d341124e457061, type: 3}
+      propertyPath: currentHealthPoint
+      value: 300
+      objectReference: {fileID: 0}
     - target: {fileID: 2305862662234831926, guid: 03e3dd7f1c29c0d429d341124e457061, type: 3}
       propertyPath: springArm
       value: 
@@ -1370,6 +1378,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8767723077673145667, guid: 18c8f6e5bfeb7fc41a2d890cde6b8075, type: 3}
       propertyPath: m_ExcludeLayers.m_Bits
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8767723077673145667, guid: 18c8f6e5bfeb7fc41a2d890cde6b8075, type: 3}
+      propertyPath: m_IncludeLayers.m_Bits
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

@@ -795,6 +795,75 @@ Transform:
   - {fileID: 2812306654539247274}
   m_Father: {fileID: 7275273537404466719}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2176824540074984451
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1870416446275231784}
+  - component: {fileID: 3300511683828448632}
+  - component: {fileID: 5195417877010280496}
+  m_Layer: 7
+  m_Name: InteractionCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1870416446275231784
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2176824540074984451}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8855052669661678444}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &3300511683828448632
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2176824540074984451}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 2048
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 2039
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.4
+  m_Height: 1.5
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.72, z: 0}
+--- !u!114 &5195417877010280496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2176824540074984451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abae2e2de4ef3da4796938e7c324b72a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactionCollider: {fileID: 3300511683828448632}
 --- !u!1 &2341758691510156735
 GameObject:
   m_ObjectHideFlags: 0
@@ -2396,6 +2465,7 @@ Transform:
   - {fileID: 4052450133362360554}
   - {fileID: 4651028323595200166}
   - {fileID: 4682473949907222776}
+  - {fileID: 1870416446275231784}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &9036980633323257398
@@ -2491,6 +2561,7 @@ MonoBehaviour:
   cameraMoveSensitivity: 1
   springArm: {fileID: 0}
   inputActionAsset: {fileID: -944628639613478452, guid: 3545778eedc2ece4e90004a5c511bd10, type: 3}
+  interactionDetector: {fileID: 5195417877010280496}
 --- !u!114 &4092898106349061587
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2542,30 +2613,23 @@ MonoBehaviour:
   OnLevelUpdate:
     m_PersistentCalls:
       m_Calls: []
+  currentExp: 0
+  maxExpOfCurrentLevel: 10
+  uninvestedStatPoint: 0
+  statHpPoint: 0
+  statMpPoint: 0
+  statAttackPowerPoint: 0
+  statDefensePoint: 0
   currentHealthPoint: 3
-  OnCurrentHealthPointUpdate:
-    m_PersistentCalls:
-      m_Calls: []
   currentManaPoint: 1
-  OnCurrentManaPointUpdate:
-    m_PersistentCalls:
-      m_Calls: []
   baseHealthPoint: 3
-  OnBaseHealthUpdate:
-    m_PersistentCalls:
-      m_Calls: []
   baseManaPoint: 1
-  OnBaseManaUpdate:
-    m_PersistentCalls:
-      m_Calls: []
   baseAttackPower: 1
-  OnBaseAttackPowerUpdate:
-    m_PersistentCalls:
-      m_Calls: []
   baseDefense: 0
-  OnBaseDefenseUpdate:
-    m_PersistentCalls:
-      m_Calls: []
+  statBonusHealthPoint: 0
+  statBonusManaPoint: 0
+  statBonusAttackPower: 0
+  statBonusDefense: 0
   weaponHealthBonus: 0
   weaponManaBonus: 0
   weaponAttackPowerBonus: 0

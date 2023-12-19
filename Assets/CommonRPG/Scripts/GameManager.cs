@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Experimental.GraphView.GraphView;
 using static UnityEditor.Progress;
 
 namespace CommonRPG
@@ -84,6 +85,7 @@ namespace CommonRPG
 
             SetTimer(3, 0, 0, () => { playerInventory.DeleteItem(2, 1); }, true);
             SetTimer(4, 0, 0, () => { playerInventory.DeleteItem(3, 1); }, true);
+            SetTimer(4, 0, 0, () => { SpawnItem(EItemName.TheFirstSword, Vector3.zero, Quaternion.identity, true); }, true);
         }
 
         private void OnEnable()
@@ -164,8 +166,15 @@ namespace CommonRPG
             ItemData itemData = instance.itemData.ItemDataList[(int)itemName];
 
             AItem item = Instantiate(itemData.ItemPrefab, transform);
+
             item.IsFieldItem = isFieldItem;
             item.Data = itemData.Data;
+
+            if (isFieldItem) 
+            {
+                item.gameObject.layer = LayerMask.NameToLayer("FieldItem");
+                item.EnableCollider(true);
+            }
 
             return item;
         }
@@ -183,8 +192,15 @@ namespace CommonRPG
             ItemData itemData = instance.itemData.ItemDataList[(int)itemName];
 
             AItem item = Instantiate(instance.itemData.ItemDataList[(int)itemName].ItemPrefab, spawnPosition, rotation);
+
             item.IsFieldItem = isFieldItem;
             item.Data = itemData.Data;
+
+            if (isFieldItem)
+            {
+                item.gameObject.layer = LayerMask.NameToLayer("FieldItem");
+                item.EnableCollider(true);
+            }
 
             return item;
         }
@@ -264,6 +280,11 @@ namespace CommonRPG
             EItemName chosenItem = instance.itemDropData.GetDropItem(monsterName);
 
             return SpawnItem(chosenItem, dropPos, rotation, true);
+        }
+
+        public static void SetActiveInteractioUI(bool ShouldActivate)
+        {
+            instance.inGameUI.SetActiveInteractioUI(ShouldActivate);
         }
     }
 }

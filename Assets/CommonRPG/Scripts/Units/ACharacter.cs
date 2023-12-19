@@ -56,8 +56,13 @@ namespace CommonRPG
         [SerializeField]
         protected SpringArm springArm = null;
 
+        [Header("Input")]
         [SerializeField]
         protected InputActionAsset inputActionAsset = null;
+
+        [Header("Interaction")]
+        [SerializeField]
+        protected InteractionDetector interactionDetector = null;
 
         public abstract float TakeDamage(float DamageAmount, AUnit DamageCauser = null);
 
@@ -68,7 +73,11 @@ namespace CommonRPG
             base.Awake();
             Debug.Assert(MovementComp);
             Debug.Assert(characterCamera);
+
             Debug.Assert(inputActionAsset);
+
+            Debug.Assert(interactionDetector);
+
         }
 
         protected override void Start()
@@ -102,6 +111,10 @@ namespace CommonRPG
             inputActionAsset.FindActionMap("PlayerInput").FindAction("NormalAttack").performed += OnNormalAttack;
 
             inputActionAsset.FindActionMap("PlayerInput").FindAction("OpenInventory").performed += OnOpenInventory;
+
+            inputActionAsset.FindActionMap("PlayerInput").FindAction("Interaction").performed += OnInteraction;
+
+
         }
 
         protected override void OnDisable()
@@ -118,6 +131,8 @@ namespace CommonRPG
             inputActionAsset.FindActionMap("PlayerInput").FindAction("NormalAttack").performed -= OnNormalAttack;
 
             inputActionAsset.FindActionMap("PlayerInput").FindAction("OpenInventory").performed -= OnOpenInventory;
+
+            inputActionAsset.FindActionMap("PlayerInput").FindAction("Interaction").performed -= OnInteraction;
         }
 
         public virtual void ObtainExp(float amount)
@@ -193,6 +208,12 @@ namespace CommonRPG
         protected virtual void OnOpenInventory(InputAction.CallbackContext context)
         {
             GameManager.OpenAndCloseInventory();
+        }
+
+        protected virtual void OnInteraction(InputAction.CallbackContext context)
+        {
+            interactionDetector.Interact();
+            Debug.Log("Interaction detected");
         }
     }
 
