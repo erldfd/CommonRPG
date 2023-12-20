@@ -6,6 +6,7 @@ namespace CommonRPG
 {
     public class EquipmentInventory : AInventory
     {
+
         protected override void Awake()
         {
             base.Awake();
@@ -20,6 +21,25 @@ namespace CommonRPG
             {
                 base.slotUiList[i].CurrentSlotInventoryType = inventoryType;
                 base.slotUiList[i].AllowedItemType = allowedItemType;
+            }
+        }
+
+        public void SortInventory()
+        {
+            inventoryItemDataList.Sort();
+
+            int inventoryItemDataListCount = inventoryItemDataList.Count;
+            for (int i = 0; i < inventoryItemDataListCount; ++i) 
+            {
+                if (inventoryItemDataList[i].CurrentItemCount == 0)
+                {
+                    slotUiList[i].SetSlotImageSprite(null);
+                    slotUiList[i].SetSlotItemCountText(0);
+                    continue;
+                }
+
+                slotUiList[i].SetSlotImageSprite(inventoryItemDataList[i].ItemData.SlotSprite);
+                slotUiList[i].SetSlotItemCountText(inventoryItemDataList[i].CurrentItemCount);
             }
         }
     }

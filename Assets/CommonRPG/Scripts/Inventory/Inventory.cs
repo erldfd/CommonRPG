@@ -207,7 +207,7 @@ namespace CommonRPG
     }
 
     [Serializable]
-    public class InventorySlotItemData
+    public class InventorySlotItemData : IComparable<InventorySlotItemData>
     {
         [SerializeField]
         private SItemData itemData = new SItemData();
@@ -243,6 +243,27 @@ namespace CommonRPG
         public void UseSlotItem()
         {
 
+        }
+
+        public int CompareTo(InventorySlotItemData other)
+        {
+            if (other == null || other.CurrentItemCount == 0) 
+            {
+                return -1;
+            }
+
+            if (itemData.ItemGrade < other.itemData.ItemGrade) 
+            {
+                return 1;
+            }    
+            else if (itemData.ItemGrade == other.itemData.ItemGrade)
+            {
+                return 0;
+            }
+            else
+            {
+                return -1;
+            }
         }
     }
 }
