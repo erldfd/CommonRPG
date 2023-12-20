@@ -62,8 +62,8 @@ MonoBehaviour:
     data:
       ItemName: 3
       ItemType: 4
-      ItemGrade: 1
-      SlotSprite: {fileID: 21300000, guid: 5377a7a47e2cd1d40a9480a66f76fe18, type: 3}
+      ItemGrade: 0
+      SlotSprite: {fileID: 21300000, guid: b8cdb46b0a004ca44b43e7e466eeb7b6, type: 3}
       MaxItemCount: 100
       Damage: 0
       Defense: 0
@@ -71,5 +71,5 @@ MonoBehaviour:
       MPBonus: 0
       BuyPrice: 200
       SellPrice: 100
-      ItemDiscription: First Hp Potion
-    itemPrefab: {fileID: -666650600275919474, guid: 3617e4093ca8d5145986d37c89cfd692, type: 3}
+      ItemDiscription: The First Hp Potion
+    itemPrefab: {fileID: 7111628234224559682, guid: 7cafb89b5a0f61f479d0a748962abbbc, type: 3}

@@ -130,7 +130,7 @@ namespace CommonRPG
                     TotalItemAddCount = 0;
                 }
 
-                SetItemInSlot(i, addableItemCount, itemData);
+                SetItemInSlot(i, data.CurrentItemCount, itemData);
 
                 if (TotalItemAddCount == 0)
                 {
@@ -188,6 +188,10 @@ namespace CommonRPG
         public virtual bool CheckAllowedItemInSlot(int slotIndex, EItemType checkingItemType)
         {
             return ((slotUiList[slotIndex].AllowedItemType & checkingItemType) != 0);
+        }
+
+        public virtual void SortSlotItem()
+        {
         }
 
         public int CompareTo(AInventory other)
@@ -259,7 +263,18 @@ namespace CommonRPG
             }    
             else if (itemData.ItemGrade == other.itemData.ItemGrade)
             {
-                return 0;
+                if (itemData.ItemName < other.itemData.ItemName) 
+                {
+                    return 1;
+                }
+                else if(itemData.ItemName == other.itemData.ItemName)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return -1;
+                }
             }
             else
             {

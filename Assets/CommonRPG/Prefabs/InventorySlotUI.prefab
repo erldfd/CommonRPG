@@ -126,6 +126,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   allowedItemType: 0
+  slotImage: {fileID: 2692929923492816326}
+  itemCountText: {fileID: 8847570376636744541}
 --- !u!1 &2935208185476476314
 GameObject:
   m_ObjectHideFlags: 0

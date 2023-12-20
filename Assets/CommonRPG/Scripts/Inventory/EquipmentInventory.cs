@@ -24,7 +24,7 @@ namespace CommonRPG
             }
         }
 
-        public void SortInventory()
+        public override void SortSlotItem()
         {
             inventoryItemDataList.Sort();
 

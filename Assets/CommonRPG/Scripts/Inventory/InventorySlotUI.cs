@@ -16,7 +16,9 @@ namespace CommonRPG
         }
 
         public int SlotIndex { get; set; }
-        public bool IsEmpty { get; set; }
+
+        private bool isEmpty = true;
+        public bool IsEmpty { get { return isEmpty; } set { isEmpty = value; } }
 
         public EInventoryType CurrentSlotInventoryType { get; set; }
 
@@ -59,8 +61,11 @@ namespace CommonRPG
         /// </summary>
         public event Action<int, int, EInventoryType, EInventoryType> OnEndDragDelegate = null;
 
+        [SerializeField]
         private UnityEngine.UI.Image slotImage = null;
         private UnityEngine.UI.Image dragSlotImage = null;
+
+        [SerializeField]
         private TextMeshProUGUI itemCountText = null;
 
         private RectTransform rectTransform = null;
@@ -68,18 +73,18 @@ namespace CommonRPG
 
         private void Awake()
         {
-            slotImage = transform.GetChild((int)EInvntorySlotElementOrder.SlotImage).GetComponent<UnityEngine.UI.Image>();
+            //slotImage = transform.GetChild((int)EInvntorySlotElementOrder.SlotImage).GetComponent<UnityEngine.UI.Image>();
             Debug.Assert(slotImage);
 
             GameManager.GetDragSlotImage(out dragSlotImage);
 
             Debug.Assert(dragSlotImage);
-            dragSlotImage.gameObject.SetActive(false);
+            //dragSlotImage.gameObject.SetActive(false);
 
-            itemCountText = transform.GetChild((int)EInvntorySlotElementOrder.ItemCountText).GetComponent<TextMeshProUGUI>();
+            //itemCountText = transform.GetChild((int)EInvntorySlotElementOrder.ItemCountText).GetComponent<TextMeshProUGUI>();
             Debug.Assert(itemCountText);
 
-            IsEmpty = true;
+            //IsEmpty = true;
             itemCountText.gameObject.SetActive(IsEmpty == false);
 
             rectTransform = GetComponent<RectTransform>();

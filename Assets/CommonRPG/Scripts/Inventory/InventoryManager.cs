@@ -19,6 +19,9 @@ namespace CommonRPG
         [SerializeField]
         private List<AInventory> inventoryList = null;
 
+        [SerializeField]
+        private GameObject mainInventoryObject = null;
+
         private InventorySlotItemData tempSlotItemData = new InventorySlotItemData();
 
         private bool isInventoryOpened = false;
@@ -54,19 +57,19 @@ namespace CommonRPG
             foreach (AInventory inventory in inventoryList)
             {
                 inventory.InitInventory();
-                inventory.gameObject.SetActive(true);
-                isInventoryOpened = true;
+                //inventory.gameObject.SetActive(true);
+                //isInventoryOpened = true;
             }
         }
 
         private void Start()
         {
-            foreach (AInventory inventory in inventoryList)
-            {
-                inventory.InitInventory();
-                inventory.gameObject.SetActive(false);
-                isInventoryOpened = false;
-            }
+            //foreach (AInventory inventory in inventoryList)
+            //{
+            //    inventory.InitInventory();
+            //    //inventory.gameObject.SetActive(false);
+            //    //isInventoryOpened = false;
+            //}
         }
 
         private void OnEnable()
@@ -174,16 +177,26 @@ namespace CommonRPG
         {
             isInventoryOpened = (isInventoryOpened == false);
 
-            foreach (AInventory inventory in inventoryList)
-            {
-                inventory.gameObject.SetActive(isInventoryOpened);
-            }
+            mainInventoryObject.SetActive(isInventoryOpened);
+            inventoryList[(int)EInventoryType.EquipmentScreen].gameObject.SetActive(isInventoryOpened);
 
             Time.timeScale = (isInventoryOpened) ? 0 : 1;
             Cursor.visible = isInventoryOpened;
             Cursor.lockState = (IsInventoryOpened) ? CursorLockMode.Confined : CursorLockMode.Locked;
 
             currentCoinText.text = coins.ToString();
+        }
+
+        public void OpenEquipmentInventory()
+        {
+            inventoryList[(int)EInventoryType.Equipment].gameObject.SetActive(true);
+            inventoryList[(int)EInventoryType.MiscItemInventory].gameObject.SetActive(false);
+        }
+
+        public void OpenMiscInevntory()
+        {
+            inventoryList[(int)EInventoryType.Equipment].gameObject.SetActive(false);
+            inventoryList[(int)EInventoryType.MiscItemInventory].gameObject.SetActive(true);
         }
 
         private void OnPointerEnterToSlot(int slotIndex, EInventoryType inventoryType, Vector2 slotPos, Vector2 slotWidthAndHeight)

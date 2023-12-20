@@ -17,6 +17,25 @@ namespace CommonRPG
                 base.slotUiList[i].AllowedItemType = allowedItemType;
             }
         }
+
+        public override void SortSlotItem()
+        {
+            inventoryItemDataList.Sort();
+
+            int inventoryItemDataListCount = inventoryItemDataList.Count;
+            for (int i = 0; i < inventoryItemDataListCount; ++i)
+            {
+                if (inventoryItemDataList[i].CurrentItemCount == 0)
+                {
+                    slotUiList[i].SetSlotImageSprite(null);
+                    slotUiList[i].SetSlotItemCountText(0);
+                    continue;
+                }
+
+                slotUiList[i].SetSlotImageSprite(inventoryItemDataList[i].ItemData.SlotSprite);
+                slotUiList[i].SetSlotItemCountText(inventoryItemDataList[i].CurrentItemCount);
+            }
+        }
     }
 }
 
