@@ -81,7 +81,10 @@ namespace CommonRPG
                     inventorySlotUiList[i].OnPointerEnterDelegate += OnPointerEnterToSlot;
                     inventorySlotUiList[i].OnPointerExitDelegate += OnPointerExitFromSlot;
 
+                    inventorySlotUiList[i].OnRightMouseDownDelegate += OnRgihtMouseButtonDown;
+
                     inventorySlotUiList[i].OnEndDragDelegate += ExchangeOrMoveOrMergeItem;
+
                 }
             }
         }
@@ -97,6 +100,8 @@ namespace CommonRPG
                 {
                     inventorySlotUiList[i].OnPointerEnterDelegate -= OnPointerEnterToSlot;
                     inventorySlotUiList[i].OnPointerExitDelegate -= OnPointerExitFromSlot;
+
+                    inventorySlotUiList[i].OnRightMouseDownDelegate -= OnRgihtMouseButtonDown;
 
                     inventorySlotUiList[i].OnEndDragDelegate -= ExchangeOrMoveOrMergeItem;
                 }
@@ -196,6 +201,10 @@ namespace CommonRPG
         {
             GameManager.HideItemInfoWindow();
         }
-    }
 
+        private void OnRgihtMouseButtonDown(int slotIndex, EInventoryType inventoryType)
+        {
+            inventoryList[(int)inventoryType].AbandonItem(slotIndex);
+        }
+    }
 }

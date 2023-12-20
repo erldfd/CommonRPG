@@ -153,6 +153,17 @@ namespace CommonRPG
             }
         }
 
+        public virtual void AbandonItem(int slotIndex)
+        {
+            if (inventoryItemDataList[slotIndex].ItemData.ItemName == EItemName.None) 
+            {
+                return;
+            }
+
+            GameManager.SpawnItem(inventoryItemDataList[slotIndex].ItemData.ItemName, GameManager.GetPlayer().transform.position, GameManager.GetPlayer().transform.rotation, true);
+            DeleteItem(slotIndex, 1);
+        }
+
         public virtual void UseItem(int slotIndex)
         {
 

@@ -35,16 +35,19 @@ namespace CommonRPG
             }
         }
         /// <summary>
-        /// arg : int slotIndex
+        /// args : int slotIndex, EInventoryType thisInventoryType
         /// </summary>
-        public event Action<int> OnPointerDownDelegate = null;
-
+        public event Action<int, EInventoryType> OnLeftMouseDownDelegate = null;
+        /// <summary>
+        /// args : int slotIndex, EInventoryType thisInventoryType
+        /// </summary>
+        public event Action<int, EInventoryType> OnRightMouseDownDelegate = null;
         /// <summary>
         /// args : int slotIndex, EInventoryType thisInventoryType Vector2 slotPosition, Vector2 slotWidthAndHeight
         /// </summary>
         public event Action<int, EInventoryType, Vector2, Vector2> OnPointerEnterDelegate = null;
         /// <summary>
-        /// arg : int slotIndex
+        /// args : int slotIndex
         /// </summary>
         public event Action<int> OnPointerExitDelegate = null;
         /// <summary>
@@ -102,12 +105,24 @@ namespace CommonRPG
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            if (OnPointerDownDelegate == null)
+            if (eventData.button == PointerEventData.InputButton.Left)
             {
-                return;
-            }
+                if (OnLeftMouseDownDelegate == null)
+                {
+                    return;
+                }
 
-            OnPointerDownDelegate.Invoke(SlotIndex);
+                OnLeftMouseDownDelegate.Invoke(SlotIndex, CurrentSlotInventoryType);
+            }
+            else if (eventData.button == PointerEventData.InputButton.Right) 
+            {
+                if (OnRightMouseDownDelegate == null) 
+                {
+                    return;
+                }
+
+                OnRightMouseDownDelegate.Invoke(SlotIndex, CurrentSlotInventoryType);
+            }
         }
 
         public void OnPointerUp(PointerEventData eventData)
