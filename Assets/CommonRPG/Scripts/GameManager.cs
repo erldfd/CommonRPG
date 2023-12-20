@@ -1,8 +1,6 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEditor.Experimental.GraphView.GraphView;
-using static UnityEditor.Progress;
 
 namespace CommonRPG
 {
@@ -15,6 +13,13 @@ namespace CommonRPG
 
         [SerializeField]
         private InventoryManager inventoryManager = null;
+        public static InventoryManager InventoryManager
+        {
+            get
+            {
+                return instance.inventoryManager;
+            }
+        }
 
         [SerializeField]
         private UnitManager unitManager = null;
@@ -47,9 +52,9 @@ namespace CommonRPG
         [SerializeField]
         private ItemDropDataScriptableObject itemDropData = null;
 
-        [Header("etc.")]
-        [SerializeField]
-        private AInventory playerInventory = null;
+        //[Header("etc.")]
+        //[SerializeField]
+        //private AInventory playerInventory = null;
 
         private void Awake()
         {
@@ -63,7 +68,7 @@ namespace CommonRPG
             Debug.Assert(statWindow);
             Debug.Assert(itemInfoWindow);
 
-            Debug.Assert(playerInventory);
+            //Debug.Assert(playerInventory);
 
             DontDestroyOnLoad(gameObject);
 
@@ -75,16 +80,16 @@ namespace CommonRPG
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
 
-            SetTimer(1, 0, 0, () => { playerInventory.ObtainItem(1, 1, itemData.ItemDataList[(int)EItemName.TheSecondSword].Data); }, true);
+            SetTimer(1, 0, 0, () => { InventoryManager.ObtainItem(EInventoryType.Equipment ,1, 1, itemData.ItemDataList[(int)EItemName.TheSecondSword].Data); }, true);
             SetTimer(2, 0, 0, () => 
             { 
                 
-                int count = playerInventory.ObtainItem(5, itemData.ItemDataList[(int)EItemName.TheFirstSword].Data);
+                int count = InventoryManager.ObtainItem(EInventoryType.Equipment, 5, itemData.ItemDataList[(int)EItemName.TheFirstSword].Data);
 
             }, true);
 
-            SetTimer(3, 0, 0, () => { playerInventory.DeleteItem(2, 1); }, true);
-            SetTimer(4, 0, 0, () => { playerInventory.DeleteItem(3, 1); }, true);
+            SetTimer(3, 0, 0, () => { InventoryManager.DeleteItem(EInventoryType.Equipment, 2, 1); }, true);
+            SetTimer(4, 0, 0, () => { InventoryManager.DeleteItem(EInventoryType.Equipment, 3, 1); }, true);
             SetTimer(4, 0, 0, () => { SpawnItem(EItemName.TheFirstSword, Vector3.zero, Quaternion.identity, true); }, true);
         }
 

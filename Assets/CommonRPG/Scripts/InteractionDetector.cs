@@ -54,13 +54,15 @@ namespace CommonRPG
 
             foreach (AItem item in itemSet) 
             {
-                itemSet.Remove(item);
+                int itemAddFailCount = GameManager.InventoryManager.ObtainItem(EInventoryType.Equipment, 1, item.Data);
 
-                //TODO : Obtain item
+                if (itemAddFailCount == 0)
+                {
+                    itemSet.Remove(item);
+                    Destroy(item.gameObject);
+                }
 
-                Destroy(item.gameObject);
                 break;
-                
             }
 
             if (itemSet.Count == 0) 
