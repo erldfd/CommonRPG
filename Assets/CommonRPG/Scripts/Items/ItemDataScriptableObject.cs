@@ -9,7 +9,7 @@ namespace CommonRPG
         None = 0,
         TheFirstSword,
         TheSecondSword,
-        Weapon3,
+        HpPotion,
     }
 
     [Flags]

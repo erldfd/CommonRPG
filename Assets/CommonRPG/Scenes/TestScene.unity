@@ -645,6 +645,10 @@ PrefabInstance:
       propertyPath: weaponEquipmentTransform
       value: 
       objectReference: {fileID: 789098337}
+    - target: {fileID: 4413508771356092558, guid: e0af3701fca2c1a408fc2de9284e0ec5, type: 3}
+      propertyPath: statComponent
+      value: 
+      objectReference: {fileID: 1323139175}
     - target: {fileID: 4524318132807879589, guid: e0af3701fca2c1a408fc2de9284e0ec5, type: 3}
       propertyPath: m_Name
       value: GameManager
@@ -1069,6 +1073,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8855052669661678444, guid: 03e3dd7f1c29c0d429d341124e457061, type: 3}
   m_PrefabInstance: {fileID: 1454218836}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1323139175 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1261190126354225858, guid: 03e3dd7f1c29c0d429d341124e457061, type: 3}
+  m_PrefabInstance: {fileID: 1454218836}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e00c48549997d940b50d3d431b40a70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1454218836
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -9,6 +9,7 @@ namespace CommonRPG
         None = -1,
         Equipment = 0,
         EquipmentScreen = 1,
+        MiscItemInventory,
     }
 
     public abstract class AInventory : MonoBehaviour, IComparable<AInventory>
