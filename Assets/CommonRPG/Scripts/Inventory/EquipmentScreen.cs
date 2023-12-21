@@ -103,6 +103,21 @@ namespace CommonRPG
             base.SetSlotItemCount(slotIndex, newItemCount);
             slotUiList[slotIndex].SetSlotItemCountText("");
         }
+
+        /// <summary>
+        /// This method is overridden. Actual function is Unequipping item
+        /// </summary>
+        public override void AbandonItem(int slotIndex)
+        {
+            int emptySlotIndex = GameManager.InventoryManager.GetEmptySlotInex(EInventoryType.Equipment);
+            if (emptySlotIndex == -1) 
+            {
+                Debug.Log("Inventory is full");
+                return;
+            }
+
+            GameManager.InventoryManager.ExchangeOrMoveOrMergeItem(slotIndex, emptySlotIndex, InventoryType, EInventoryType.Equipment);
+        }
     }
 }
 

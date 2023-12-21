@@ -44,6 +44,11 @@ namespace CommonRPG
         /// args : int slotIndex, EInventoryType thisInventoryType
         /// </summary>
         public event Action<int, EInventoryType> OnRightMouseDownDelegate = null;
+
+        /// <summary>
+        /// args : int slotIndex, EInventoryType thisInventoryType
+        /// </summary>
+        public event Action<int, EInventoryType> OnLeftMouseDoubleClickDelegate = null;
         /// <summary>
         /// args : int slotIndex, EInventoryType thisInventoryType Vector2 slotPosition, Vector2 slotWidthAndHeight
         /// </summary>
@@ -71,6 +76,8 @@ namespace CommonRPG
         private RectTransform rectTransform = null;
         private Vector2 widthAndHeight = Vector2.zero;
 
+        private float doubleClickTime = 0.5f;
+        private float currentDoubleClickTime = 0;
         private void Awake()
         {
             //slotImage = transform.GetChild((int)EInvntorySlotElementOrder.SlotImage).GetComponent<UnityEngine.UI.Image>();
@@ -89,6 +96,14 @@ namespace CommonRPG
 
             rectTransform = GetComponent<RectTransform>();
             widthAndHeight = new Vector2(rectTransform.rect.width, rectTransform.rect.height);
+        }
+
+        private void Update()
+        {
+            if (currentDoubleClickTime > 0) 
+            {
+                currentDoubleClickTime -= Time.unscaledDeltaTime;
+            }
         }
 
         public void SetSlotImageSprite(Sprite newSprite)
@@ -110,14 +125,33 @@ namespace CommonRPG
 
         public void OnPointerDown(PointerEventData eventData)
         {
+            if (currentDoubleClickTime <= 0) 
+            {
+                currentDoubleClickTime = doubleClickTime;
+            }
+
             if (eventData.button == PointerEventData.InputButton.Left)
             {
-                if (OnLeftMouseDownDelegate == null)
+                if (currentDoubleClickTime == doubleClickTime) 
                 {
-                    return;
+                    if (OnLeftMouseDownDelegate == null)
+                    {
+                        return;
+                    }
+                    
+                    OnLeftMouseDownDelegate.Invoke(SlotIndex, CurrentSlotInventoryType);
                 }
+                else
+                {
+                    if (OnLeftMouseDoubleClickDelegate == null) 
+                    {
+                        return;
+                    }
 
-                OnLeftMouseDownDelegate.Invoke(SlotIndex, CurrentSlotInventoryType);
+                    currentDoubleClickTime = 0;
+                    OnLeftMouseDoubleClickDelegate.Invoke(SlotIndex, CurrentSlotInventoryType);
+                }
+                
             }
             else if (eventData.button == PointerEventData.InputButton.Right) 
             {

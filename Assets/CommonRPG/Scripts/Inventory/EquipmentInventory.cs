@@ -24,6 +24,11 @@ namespace CommonRPG
             }
         }
 
+        public override void UseSlotItem(int slotIndex)
+        {
+            GameManager.InventoryManager.ExchangeOrMoveOrMergeItem(slotIndex, 0, InventoryType, EInventoryType.EquipmentScreen);
+        }
+
         public override void SortSlotItem()
         {
             inventoryItemDataList.Sort();

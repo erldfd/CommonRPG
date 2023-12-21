@@ -26,14 +26,14 @@ namespace CommonRPG
                 int previousLevel = level;
                 level = value;
 
-                uninvestedStatPoint += UNINVESTED_STAT_POINT_PER_LEVEL_UP * (level - previousLevel);
+                UninvestedStatPoint += UNINVESTED_STAT_POINT_PER_LEVEL_UP * (level - previousLevel);
                 MaxExpOfCurrentLevel = GameManager.GetLevelMaxExpData(level);
 
-                currentHealthPoint = totalHealth;
-                currentManaPoint = totalMana;
+                CurrentHealthPoint = totalHealth;
+                CurrentManaPoint = totalMana;
 
-                GameManager.SetPlayerHealthBarFillRatio(currentHealthPoint / totalHealth);
-                GameManager.SetPlayerManaBarFillRatio(currentManaPoint / totalMana);
+                GameManager.SetPlayerHealthBarFillRatio(CurrentHealthPoint / totalHealth);
+                GameManager.SetPlayerManaBarFillRatio(CurrentManaPoint / totalMana);
                 GameManager.SetPlayerLevelText(level);
 
                 OnLevelUpdate.Invoke(level - previousLevel);
@@ -189,6 +189,7 @@ namespace CommonRPG
             set
             {
                 currentManaPoint = value;
+                GameManager.SetPlayerManaBarFillRatio(CurrentManaPoint / TotalMana);
             }
         }
 
@@ -203,7 +204,7 @@ namespace CommonRPG
             set
             {
                 baseHealthPoint = value;
-                totalHealth = baseHealthPoint + weaponHealthBonus + statBonusHealthPoint;
+                TotalHealth = baseHealthPoint + weaponHealthBonus + statBonusHealthPoint;
             }
         }
 
@@ -218,7 +219,7 @@ namespace CommonRPG
             set
             {
                 baseManaPoint = value;
-                totalMana = baseManaPoint + weaponManaBonus + statBonusManaPoint;
+                TotalMana = baseManaPoint + weaponManaBonus + statBonusManaPoint;
             }
         }
 
@@ -233,7 +234,7 @@ namespace CommonRPG
             set
             {
                 baseAttackPower = value;
-                totalAttackPower = baseAttackPower + weaponAttackPowerBonus + statBonusAttackPower;
+                TotalAttackPower = baseAttackPower + weaponAttackPowerBonus + statBonusAttackPower;
             }
         }
 
@@ -248,7 +249,7 @@ namespace CommonRPG
             set
             {
                 baseDefense = value;
-                totalDefense = baseDefense + weaponDefenseBonus + statBonusDefense;
+                TotalDefense = baseDefense + weaponDefenseBonus + statBonusDefense;
             }
         }
 
@@ -263,7 +264,7 @@ namespace CommonRPG
             set
             {
                 statBonusHealthPoint = value;
-                totalHealth = statBonusHealthPoint + baseHealthPoint + weaponHealthBonus;
+                TotalHealth = statBonusHealthPoint + baseHealthPoint + weaponHealthBonus;
             }
         }
 
@@ -278,7 +279,7 @@ namespace CommonRPG
             set
             {
                 statBonusManaPoint = value;
-                totalMana = statBonusManaPoint + baseManaPoint + weaponManaBonus;
+                TotalMana = statBonusManaPoint + baseManaPoint + weaponManaBonus;
             }
         }
 
@@ -293,7 +294,7 @@ namespace CommonRPG
             set
             {
                 statBonusAttackPower = value;
-                totalAttackPower = statBonusAttackPower + baseAttackPower + weaponAttackPowerBonus;
+                TotalAttackPower = statBonusAttackPower + baseAttackPower + weaponAttackPowerBonus;
             }
         }
 
@@ -308,7 +309,7 @@ namespace CommonRPG
             set
             {
                 statBonusDefense = value;
-                totalDefense = statBonusDefense + baseDefense + weaponDefenseBonus;
+                TotalDefense = statBonusDefense + baseDefense + weaponDefenseBonus;
             }
         }
 
@@ -323,7 +324,7 @@ namespace CommonRPG
             set
             {
                 weaponHealthBonus = value;
-                totalHealth = baseHealthPoint + weaponHealthBonus + statBonusHealthPoint;
+                TotalHealth = baseHealthPoint + weaponHealthBonus + statBonusHealthPoint;
             }
         }
 
@@ -338,7 +339,7 @@ namespace CommonRPG
             set
             {
                 weaponManaBonus = value;
-                totalMana = baseManaPoint + weaponManaBonus + statBonusManaPoint;
+                TotalMana = baseManaPoint + weaponManaBonus + statBonusManaPoint;
             }
         }
 
@@ -353,7 +354,7 @@ namespace CommonRPG
             set
             {
                 weaponAttackPowerBonus = value;
-                totalAttackPower = baseAttackPower + weaponAttackPowerBonus + statBonusAttackPower;
+                TotalAttackPower = baseAttackPower + weaponAttackPowerBonus + statBonusAttackPower;
             }
         }
 
@@ -368,7 +369,7 @@ namespace CommonRPG
             set
             {
                 weaponDefenseBonus = value;
-                totalDefense = baseDefense + weaponDefenseBonus + statBonusDefense;
+                TotalDefense = baseDefense + weaponDefenseBonus + statBonusDefense;
             }
         }
 
@@ -480,7 +481,7 @@ namespace CommonRPG
                     }
                     default:
                     {
-                        Debug.LogError("WierdStatType Detected");
+                        Debug.LogError("WeirdStatType Detected");
                         break;
                     }
                 }

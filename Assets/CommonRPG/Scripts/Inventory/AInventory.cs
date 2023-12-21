@@ -96,8 +96,8 @@ namespace CommonRPG
         {
             int TotalItemAddCount = itemAddCount;
 
-            int equipmentItemdataListCount = inventoryItemDataList.Count;
-            for (int i = 0; i < equipmentItemdataListCount; ++i)
+            int inventoryItemdataListCount = inventoryItemDataList.Count;
+            for (int i = 0; i < inventoryItemdataListCount; ++i)
             {
                 InventorySlotItemData data = inventoryItemDataList[i];
 
@@ -126,7 +126,7 @@ namespace CommonRPG
                 }
                 else
                 {
-                    data.CurrentItemCount = TotalItemAddCount;
+                    data.CurrentItemCount += TotalItemAddCount;
                     TotalItemAddCount = 0;
                 }
 
@@ -139,6 +139,24 @@ namespace CommonRPG
             }
 
             return TotalItemAddCount;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>if inventory is full, return -1</returns>
+        public int GetEmptySlotIndex()
+        {
+            int invetoryItemDtatListCount = InventoryItemDataList.Count;
+            for (int i = 0; i < invetoryItemDtatListCount; ++i) 
+            {
+                if (InventoryItemDataList[i].CurrentItemCount == 0)
+                {
+                    return i;
+                }
+            }
+
+            return -1;
         }
 
         public virtual void DeleteItem(int slotIndex, int deleteCount)
@@ -165,7 +183,7 @@ namespace CommonRPG
             DeleteItem(slotIndex, 1);
         }
 
-        public virtual void UseItem(int slotIndex)
+        public virtual void UseSlotItem(int slotIndex)
         {
 
         }
@@ -230,8 +248,7 @@ namespace CommonRPG
 
         public void CopyFrom(InventorySlotItemData previousData)
         {
-            itemData = previousData.ItemData;
-            currnentItemCount = previousData.CurrentItemCount;
+            CopyFrom(previousData.ItemData, previousData.CurrentItemCount);
         }
 
         public void CopyFrom(in SItemData previousData, int previousItemCount)
@@ -240,14 +257,12 @@ namespace CommonRPG
             currnentItemCount = previousItemCount;
         }
 
-        public InventorySlotItemData()
-        {
-            ItemData.ItemName = EItemName.None;
-        }
-
         public void UseSlotItem()
         {
-
+            if (CurrentItemCount <= 0) 
+            {
+                return;
+            }
         }
 
         public int CompareTo(InventorySlotItemData other)

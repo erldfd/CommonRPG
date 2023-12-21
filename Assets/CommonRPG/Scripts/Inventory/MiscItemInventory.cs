@@ -1,5 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
+
+
 using UnityEngine;
 
 namespace CommonRPG
@@ -35,6 +35,50 @@ namespace CommonRPG
                 slotUiList[i].SetSlotImageSprite(inventoryItemDataList[i].ItemData.SlotSprite);
                 slotUiList[i].SetSlotItemCountText(inventoryItemDataList[i].CurrentItemCount);
             }
+        }
+
+        public override void UseSlotItem(int slotIndex)
+        {
+            InventorySlotItemData slotItemData = InventoryItemDataList[slotIndex];
+
+            if (slotItemData.CurrentItemCount == 0)
+            {
+                return;
+            }
+
+            EItemName itemName = slotItemData.ItemData.ItemName;
+            
+            switch (itemName)
+            {
+                case EItemName.HpPotion:
+                {
+                    StatComponent playerStatComponent = GameManager.GetPlayer().StatComponent;
+
+                    if (playerStatComponent.CurrentHealthPoint >= playerStatComponent.TotalHealth) 
+                    {
+                        Debug.Log("Health is already full");
+                        return;
+                    }
+
+                    playerStatComponent.CurrentHealthPoint += slotItemData.ItemData.HPBonus;
+
+                    if (playerStatComponent.CurrentHealthPoint >= playerStatComponent.TotalHealth) 
+                    {
+                        playerStatComponent.CurrentHealthPoint = playerStatComponent.TotalHealth;
+                    }
+
+                    GameManager.SetPlayerHealthBarFillRatio(playerStatComponent.CurrentHealthPoint / playerStatComponent.TotalHealth);
+                    GameManager.UpdateStatWindow();
+                    break;
+                }
+                default:
+                {
+                    Debug.LogAssertion("Weird item name");
+                    break;
+                }
+            }
+
+            DeleteItem(slotIndex, 1);
         }
     }
 }

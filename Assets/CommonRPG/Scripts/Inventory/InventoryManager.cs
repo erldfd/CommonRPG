@@ -85,6 +85,7 @@ namespace CommonRPG
                     inventorySlotUiList[i].OnPointerExitDelegate += OnPointerExitFromSlot;
 
                     inventorySlotUiList[i].OnRightMouseDownDelegate += OnRgihtMouseButtonDown;
+                    inventorySlotUiList[i].OnLeftMouseDoubleClickDelegate += OnLeftMouseDoubleClick;
 
                     inventorySlotUiList[i].OnEndDragDelegate += ExchangeOrMoveOrMergeItem;
 
@@ -105,6 +106,7 @@ namespace CommonRPG
                     inventorySlotUiList[i].OnPointerExitDelegate -= OnPointerExitFromSlot;
 
                     inventorySlotUiList[i].OnRightMouseDownDelegate -= OnRgihtMouseButtonDown;
+                    inventorySlotUiList[i].OnLeftMouseDoubleClickDelegate -= OnLeftMouseDoubleClick;
 
                     inventorySlotUiList[i].OnEndDragDelegate -= ExchangeOrMoveOrMergeItem;
                 }
@@ -173,6 +175,11 @@ namespace CommonRPG
             inventoryList[(int)inventoryType].DeleteItem(slotIndex, deleteCount);
         }
 
+        public void UseSlotItem(int slotIndex, EInventoryType inventoryType)
+        {
+            inventoryList[(int)inventoryType].UseSlotItem(slotIndex);
+        }
+
         public void OpenAndCloseMainInventory()
         {
             isInventoryOpened = (isInventoryOpened == false);
@@ -198,6 +205,14 @@ namespace CommonRPG
             inventoryList[(int)EInventoryType.Equipment].gameObject.SetActive(false);
             inventoryList[(int)EInventoryType.MiscItemInventory].gameObject.SetActive(true);
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns> if inventory is full, return -1</returns>
+        public int GetEmptySlotInex(EInventoryType inventoryType)
+        {
+            return inventoryList[(int)inventoryType].GetEmptySlotIndex();
+        }
 
         private void OnPointerEnterToSlot(int slotIndex, EInventoryType inventoryType, Vector2 slotPos, Vector2 slotWidthAndHeight)
         {
@@ -218,6 +233,11 @@ namespace CommonRPG
         private void OnRgihtMouseButtonDown(int slotIndex, EInventoryType inventoryType)
         {
             inventoryList[(int)inventoryType].AbandonItem(slotIndex);
+        }
+
+        private void OnLeftMouseDoubleClick(int slotIndex, EInventoryType inventoryType)
+        {
+            UseSlotItem(slotIndex, inventoryType);
         }
     }
 }
