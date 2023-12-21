@@ -180,6 +180,17 @@ namespace CommonRPG
             inventoryList[(int)inventoryType].UseSlotItem(slotIndex);
         }
 
+        public void UseQuickSlot(EInputKey inputKey)
+        {
+            QuickSlot quickSlot = (QuickSlot)inventoryList[(int)EInventoryType.QuickSlot];
+            if (quickSlot == null) 
+            {
+                return;
+            }
+
+            quickSlot.UseQuickSlot(inputKey);
+        }
+
         public void OpenAndCloseMainInventory()
         {
             isInventoryOpened = (isInventoryOpened == false);

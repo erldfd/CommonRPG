@@ -1,9 +1,11 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace CommonRPG
 {
+    
     public abstract class ACharacter : AUnit, IDamageable
     {
         [Header("Equipment")]
@@ -77,7 +79,6 @@ namespace CommonRPG
             Debug.Assert(inputActionAsset);
 
             Debug.Assert(interactionDetector);
-
         }
 
         protected override void Start()
@@ -114,6 +115,7 @@ namespace CommonRPG
 
             inputActionAsset.FindActionMap("PlayerInput").FindAction("Interaction").performed += OnInteraction;
 
+            inputActionAsset.FindActionMap("PlayerInput").FindAction("UsingQuickSlot").performed += OnUseQuickSlot;
 
         }
 
@@ -133,6 +135,8 @@ namespace CommonRPG
             inputActionAsset.FindActionMap("PlayerInput").FindAction("OpenInventory").performed -= OnOpenInventory;
 
             inputActionAsset.FindActionMap("PlayerInput").FindAction("Interaction").performed -= OnInteraction;
+
+            inputActionAsset.FindActionMap("PlayerInput").FindAction("UsingQuickSlot").performed -= OnUseQuickSlot;
         }
 
         public virtual void ObtainExp(float amount)
@@ -213,8 +217,51 @@ namespace CommonRPG
         protected virtual void OnInteraction(InputAction.CallbackContext context)
         {
             interactionDetector.Interact();
-            Debug.Log("Interaction detected");
+            Debug.Log($"{context.control.name}, {context.control.displayName}");
+            
         }
+
+        protected virtual void OnUseQuickSlot(InputAction.CallbackContext context)
+        {
+            EInputKey inputKey = context.control.displayName.ToInputKey();
+            GameManager.InventoryManager.UseQuickSlot(inputKey);
+        }
+        
     }
 
+    public enum EInputKey
+    {
+        Key1,
+        Key2,
+        Key3,
+    }
+
+    public static class DisplayNameToKey
+    {
+        public static EInputKey ToInputKey(this string inputKey)
+        {
+            switch (inputKey)
+            {
+                case "1":
+                {
+                    return EInputKey.Key1;
+                }
+                case "2":
+                {
+                    return EInputKey.Key2;
+                }
+                case "3":
+                {
+                    return EInputKey.Key3;
+                }
+                default:
+                {
+                    Debug.LogAssertion("Not Declared input");
+                    throw new ArgumentOutOfRangeException(nameof(inputKey), inputKey, null);
+                }
+            }
+        }
+    }
 }
+
+
