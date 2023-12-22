@@ -93,6 +93,7 @@ namespace CommonRPG
             Debug.Assert(knightAnimController);
 
             knightAnimController.PlayHitAnim();
+            //animController.ani.Play("Drinking", 0);
         }
 
         protected override void OnNormalAttack(InputAction.CallbackContext context)
@@ -172,7 +173,8 @@ namespace CommonRPG
             KnightAnimController knightAnimController = (KnightAnimController)animController;
             Debug.Assert(knightAnimController);
 
-            bool isAttackPossible = (isDead == false && knightAnimController.IsHit == false && characterWeapon != null && Time.timeScale != 0);
+            bool isAttackPossible = (isDead == false && knightAnimController.IsHit == false && characterWeapon != null && Time.timeScale != 0 &&
+                                        knightAnimController.IsDrinking == false);
             return isAttackPossible;
         }
     }

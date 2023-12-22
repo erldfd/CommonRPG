@@ -39,6 +39,12 @@ namespace CommonRPG
 
         public override void UseSlotItem(int slotIndex)
         {
+            KnightAnimController animController = (KnightAnimController)GameManager.GetPlayer().AnimController;
+            if (animController == null || animController.IsDrinking || animController.IsHit)
+            {
+                return;
+            }
+
             InventorySlotItemData slotItemData = InventoryItemDataList[slotIndex];
 
             if (slotItemData.CurrentItemCount == 0)
@@ -69,6 +75,9 @@ namespace CommonRPG
 
                     GameManager.SetPlayerHealthBarFillRatio(playerStatComponent.CurrentHealthPoint / playerStatComponent.TotalHealth);
                     GameManager.UpdateStatWindow();
+
+                    animController.PlayDrinkAnim();
+
                     break;
                 }
                 default:

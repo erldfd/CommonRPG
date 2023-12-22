@@ -32,6 +32,12 @@ namespace CommonRPG
 
         public void UseMiscItem(int slotIndex)
         {
+            KnightAnimController animController = (KnightAnimController)GameManager.GetPlayer().AnimController;
+            if (animController == null || animController.IsDrinking || animController.IsHit)
+            {
+                return;
+            }
+
             InventorySlotItemData slotItemData = InventoryItemDataList[slotIndex];
 
             if (slotItemData.CurrentItemCount == 0)
@@ -62,12 +68,15 @@ namespace CommonRPG
 
                     GameManager.SetPlayerHealthBarFillRatio(playerStatComponent.CurrentHealthPoint / playerStatComponent.TotalHealth);
                     GameManager.UpdateStatWindow();
+
+                    animController.PlayDrinkAnim();
+
                     break;
                 }
                 default:
                 {
                     Debug.LogAssertion("Weird item name");
-                    break;
+                    return;
                 }
             }
 

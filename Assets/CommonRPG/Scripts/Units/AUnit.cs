@@ -35,6 +35,7 @@ namespace CommonRPG
 
         [SerializeField]
         protected AAnimController animController = null;
+        public AAnimController AnimController { get { return animController; } }
 
         protected virtual void Awake()
         {

@@ -2592,6 +2592,7 @@ MonoBehaviour:
   animator: {fileID: 9036980633323257398}
   hitAnimName: GetHit01_SwordAndShield
   deathAnimName: Die01_SwordAndShield
+  drinkAnimName: Drinking
   comboAttackAnimList:
   - Attack01_SwordAndShiled
   - Attack02_SwordAndShiled
