@@ -31,6 +31,9 @@ namespace CommonRPG
         {
             base.Awake();
 
+            Debug.Assert(base.statComponent);
+            Debug.Assert(base.animController);
+
             aiController = GetComponent<AIController>();
             Debug.Assert(aiController);
         }

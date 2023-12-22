@@ -39,8 +39,7 @@ namespace CommonRPG
 
         protected virtual void Awake()
         {
-            Debug.Assert(statComponent);
-            Debug.Assert(animController);
+            
         }
 
         protected virtual void Start()

@@ -73,6 +73,10 @@ namespace CommonRPG
         protected override void Awake()
         {
             base.Awake();
+
+            Debug.Assert(base.statComponent);
+            Debug.Assert(base.animController);
+
             Debug.Assert(MovementComp);
             Debug.Assert(characterCamera);
 

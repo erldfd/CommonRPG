@@ -115,6 +115,12 @@ namespace CommonRPG
 
         public void ExchangeOrMoveOrMergeItem(int firstSlotIndex, int secondSlotIndex, EInventoryType firstInventoryType, EInventoryType secondInventoryType)
         {
+            if (firstInventoryType == EInventoryType.MerchantInventory || secondInventoryType == EInventoryType.MerchantInventory) 
+            {
+                TradeWithMerchant();
+                return;
+            }
+
             AInventory firstInventory = inventoryList[(int)firstInventoryType];
             AInventory secondInventory = inventoryList[(int)secondInventoryType];
 
@@ -154,6 +160,11 @@ namespace CommonRPG
             tempSlotItemData.CopyFrom(firstSlotItemData);
             firstInventory.SetItemInSlot(firstSlotIndex, secondSlotItemData);
             secondInventory.SetItemInSlot(secondSlotIndex, tempSlotItemData);
+        }
+
+        public void TradeWithMerchant()
+        {
+
         }
 
         public void ObtainItem(EInventoryType inventoryType, int slotIndex, int itemAddCount, in SItemData itemData)
