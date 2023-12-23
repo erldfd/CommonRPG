@@ -6,6 +6,11 @@ namespace CommonRPG
 {
     public class MiscItemInventory : AInventory
     {
+        protected override void Awake()
+        {
+            base.Awake();
+        }
+
         public override void InitInventory()
         {
             base.InitInventory();

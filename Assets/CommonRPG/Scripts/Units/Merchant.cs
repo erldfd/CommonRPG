@@ -9,5 +9,9 @@ namespace CommonRPG
     {
         [SerializeField]
         private List<InventorySlotItemData> merchantGoodsDataList;
+        public List<InventorySlotItemData> MerchantGoodsDataList
+        {
+            get { return merchantGoodsDataList; }
+        }
     }
 }

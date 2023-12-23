@@ -9,7 +9,8 @@ namespace CommonRPG
         [SerializeField]
         private CapsuleCollider interactionCollider = null;
 
-        private HashSet<AItem> itemSet = new HashSet<AItem>();
+        private HashSet<AItem> interactionFieldItemSet = new HashSet<AItem>();
+        private HashSet<Merchant> interactionMerchantSet = new HashSet<Merchant>();
 
         private void Awake()
         {
@@ -19,70 +20,133 @@ namespace CommonRPG
         private void OnTriggerEnter(Collider other)
         {
             AItem item = other.GetComponent<AItem>();
-            if (itemSet.Contains(item)) 
+            if (item) 
             {
+                if (interactionFieldItemSet.Contains(item))
+                {
+                    return;
+                }
+
+                interactionFieldItemSet.Add(item);
+                GameManager.SetActiveInteractioUI(true);
+
                 return;
             }
 
-            itemSet.Add(item);
-            GameManager.SetActiveInteractioUI(true);
+            Merchant merchant = other.GetComponent<Merchant>();
+            if (merchant)
+            {
+                if (interactionMerchantSet.Contains(merchant))
+                {
+                    return;
+                }
+
+                interactionMerchantSet.Add(merchant);
+                GameManager.SetActiveInteractioUI(true);
+
+                return;
+            }
         }
 
         private void OnTriggerExit(Collider other)
         {
             AItem item = other.GetComponent<AItem>();
-            if (itemSet.Contains(item) == false)
+            if (item) 
             {
-                Debug.LogAssertion("Why is this item not contained in set?");
+                if (interactionFieldItemSet.Contains(item) == false)
+                {
+                    Debug.LogAssertion("Why is this item not contained in set?");
+                    return;
+                }
+
+                interactionFieldItemSet.Remove(item);
+
+                if (interactionFieldItemSet.Count == 0)
+                {
+                    GameManager.SetActiveInteractioUI(false);
+                }
+
                 return;
             }
 
-            itemSet.Remove(item);
-
-            if (itemSet.Count == 0) 
+            Merchant merchant = other.GetComponent<Merchant>();
+            if (merchant) 
             {
-                GameManager.SetActiveInteractioUI(false);
-            }
+                if (interactionMerchantSet.Contains(merchant) == false)
+                {
+                    Debug.LogAssertion("Wrong access");
+                    return;
+                }
+
+                interactionMerchantSet.Remove(merchant);
+
+                if (interactionMerchantSet.Count == 0)
+                {
+                    GameManager.SetActiveInteractioUI(false);
+                    GameManager.InventoryManager.OpenAndCloseMerchantInventory(false);
+                }
+
+                return;
+            }    
+            
         }
 
         public void Interact()
         {
-            if (itemSet.Count == 0) 
+            if (interactionFieldItemSet.Count > 0) 
             {
+                foreach (AItem item in interactionFieldItemSet)
+                {
+                    int itemAddFailCount = 0;
+
+                    if (item.Data.ItemType == EItemType.Weapon)
+                    {
+                        itemAddFailCount = GameManager.InventoryManager.ObtainItem(EInventoryType.Equipment, 1, item.Data);
+                    }
+                    else if (item.Data.ItemType == EItemType.Misc)
+                    {
+                        itemAddFailCount = GameManager.InventoryManager.ObtainItem(EInventoryType.MiscItemInventory, 1, item.Data);
+                    }
+
+                    if (itemAddFailCount == 0)
+                    {
+                        interactionFieldItemSet.Remove(item);
+                        Destroy(item.gameObject);
+                    }
+
+                    break;
+                }
+
+                if (interactionFieldItemSet.Count == 0)
+                {
+                    GameManager.SetActiveInteractioUI(false);
+                }
+
                 return;
             }
 
-            foreach (AItem item in itemSet) 
+            if (interactionMerchantSet.Count > 0) 
             {
-                int itemAddFailCount = 0;
+                foreach (Merchant merchant in interactionMerchantSet)
+                {
+                    List<InventorySlotItemData> merchantGoodsDataList = merchant.MerchantGoodsDataList;
+                    int merchantGoodsDataListCount = merchantGoodsDataList.Count;
 
-                if (item.Data.ItemType == EItemType.Weapon)
-                {
-                    itemAddFailCount = GameManager.InventoryManager.ObtainItem(EInventoryType.Equipment, 1, item.Data);
-                }
-                else if (item.Data.ItemType == EItemType.Misc) 
-                {
-                    itemAddFailCount = GameManager.InventoryManager.ObtainItem(EInventoryType.MiscItemInventory, 1, item.Data);
-                }
-                 
-                if (itemAddFailCount == 0)
-                {
-                    itemSet.Remove(item);
-                    Destroy(item.gameObject);
+                    GameManager.InventoryManager.DisplayMerchantGoods(merchantGoodsDataList);
+                    GameManager.InventoryManager.OpenAndCloseMerchantInventory(true);
+                    GameManager.SetActiveInteractioUI(false);
+
+                    break;
                 }
 
-                break;
-            }
-
-            if (itemSet.Count == 0) 
-            {
-                GameManager.SetActiveInteractioUI(false);
+                return;
             }
         }
 
         public void InitInteraction()
         {
-            itemSet.Clear();
+            interactionFieldItemSet.Clear();
+            interactionMerchantSet.Clear();
         }
     }
 }

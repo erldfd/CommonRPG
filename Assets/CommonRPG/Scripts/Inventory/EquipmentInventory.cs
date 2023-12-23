@@ -6,7 +6,6 @@ namespace CommonRPG
 {
     public class EquipmentInventory : AInventory
     {
-
         protected override void Awake()
         {
             base.Awake();
@@ -26,7 +25,8 @@ namespace CommonRPG
 
         public override void UseSlotItem(int slotIndex)
         {
-            GameManager.InventoryManager.ExchangeOrMoveOrMergeItem(slotIndex, 0, InventoryType, EInventoryType.EquipmentScreen);
+            EquipmentScreen.EEquipmentSlot weaponEquipSlot = EquipmentScreen.EEquipmentSlot.Weapon;
+            GameManager.InventoryManager.ExchangeOrMoveOrMergeItem(slotIndex, (int)weaponEquipSlot, InventoryType, EInventoryType.EquipmentScreen);
         }
 
         public override void SortSlotItem()

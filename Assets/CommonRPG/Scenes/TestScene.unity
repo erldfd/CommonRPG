@@ -187,45 +187,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 178528610}
-  - component: {fileID: 178528609}
-  m_Layer: 0
-  m_Name: TextMerchant
+  m_Layer: 12
+  m_Name: TestMerchant
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &178528609
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 178528608}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d06035e68ae66f64cbe8cb19a5ddb9f9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  unitName: TestMerchant
-  isDead: 0
-  statComponent: {fileID: 0}
-  movementComponent: {fileID: 0}
-  animController: {fileID: 0}
-  merchantGoodsDataList:
-  - itemData:
-      ItemName: 0
-      ItemType: 0
-      ItemGrade: 0
-      SlotSprite: {fileID: 0}
-      MaxItemCount: 0
-      Damage: 0
-      Defense: 0
-      HPBonus: 0
-      MPBonus: 0
-      BuyPrice: 0
-      SellPrice: 0
-      ItemDiscription: 
 --- !u!4 &178528610
 Transform:
   m_ObjectHideFlags: 0
@@ -1712,7 +1680,8 @@ GameObject:
   - component: {fileID: 1903854502}
   - component: {fileID: 1903854501}
   - component: {fileID: 1903854500}
-  m_Layer: 0
+  - component: {fileID: 1903854503}
+  m_Layer: 12
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1807,6 +1776,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1903854498}
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1903854503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1903854498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d06035e68ae66f64cbe8cb19a5ddb9f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unitName: TestMerchant
+  isDead: 0
+  statComponent: {fileID: 0}
+  movementComponent: {fileID: 0}
+  animController: {fileID: 0}
+  merchantGoodsDataList:
+  - itemData:
+      ItemName: 3
+      ItemType: 4
+      ItemGrade: 0
+      SlotSprite: {fileID: 21300000, guid: b8cdb46b0a004ca44b43e7e466eeb7b6, type: 3}
+      MaxItemCount: 100
+      Damage: 0
+      Defense: 0
+      HPBonus: 50
+      MPBonus: 0
+      BuyPrice: 20
+      SellPrice: 10
+      ItemDiscription: first Selling Poition
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

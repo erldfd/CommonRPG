@@ -22,6 +22,7 @@ namespace CommonRPG
 
         [SerializeField]
         protected EItemType allowedItemType = EItemType.None;
+        public EItemType AllowedItemType { get { return allowedItemType; } }
 
         [SerializeField]
         protected List<InventorySlotUI> slotUiList = null;

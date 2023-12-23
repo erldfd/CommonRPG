@@ -69,7 +69,7 @@ MonoBehaviour:
       Defense: 0
       HPBonus: 50
       MPBonus: 0
-      BuyPrice: 200
-      SellPrice: 100
+      BuyPrice: 20
+      SellPrice: 10
       ItemDiscription: The First Hp Potion
     itemPrefab: {fileID: 7111628234224559682, guid: 7cafb89b5a0f61f479d0a748962abbbc, type: 3}

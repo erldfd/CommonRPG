@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Inventory Background
   layers:
   - Default
   - TransparentFX
@@ -17,7 +18,7 @@ TagManager:
   - Not in Reflection
   - EquipedItem
   - FieldItem
-  - 
+  - NPC
   - 
   - 
   - 

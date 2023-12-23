@@ -117,7 +117,7 @@ namespace CommonRPG
         {
             if (firstInventoryType == EInventoryType.MerchantInventory || secondInventoryType == EInventoryType.MerchantInventory) 
             {
-                TradeWithMerchant();
+                TradeWithMerchant(firstSlotIndex, firstInventoryType, secondInventoryType);
                 return;
             }
 
@@ -162,9 +162,89 @@ namespace CommonRPG
             secondInventory.SetItemInSlot(secondSlotIndex, tempSlotItemData);
         }
 
-        public void TradeWithMerchant()
+        public void TradeWithMerchant(int slotIndexFrom, EInventoryType inventoryTypeFrom, EInventoryType inventoryTypeTo)
         {
+            if (inventoryTypeFrom == inventoryTypeTo) 
+            {
+                return;
+            }
 
+            AInventory inventoryFrom = inventoryList[(int)inventoryTypeFrom];
+            InventorySlotItemData slotItemDataFrom = inventoryFrom.InventoryItemDataList[slotIndexFrom];
+
+            
+            AInventory inventoryTo = inventoryList[(int)inventoryTypeTo];
+
+            if ((slotItemDataFrom.ItemData.ItemType & inventoryTo.AllowedItemType) != slotItemDataFrom.ItemData.ItemType) 
+            {
+                Debug.Log("ItemType is Not Matched");
+                return;
+            }
+
+            // buy
+            if (inventoryTypeFrom == EInventoryType.MerchantInventory)
+            {
+                int buyPrice = slotItemDataFrom.ItemData.BuyPrice;
+
+                if (buyPrice > Coins || inventoryTo.GetEmptySlotIndex() == -1) 
+                {
+                    Debug.Log("Fail to buy");
+                    return;
+                    // fail to buy item
+                }
+
+                // need to confirm if you will buy this item or not and amount...
+                Coins -= buyPrice;
+
+                int buyAmount = 1;
+                inventoryTo.ObtainItem(inventoryTo.GetEmptySlotIndex(), buyAmount, slotItemDataFrom.ItemData);
+                
+            }
+            // sell
+            else if (inventoryTypeTo == EInventoryType.MerchantInventory) 
+            {
+                int sellPrice = slotItemDataFrom.ItemData.SellPrice;
+
+                // need to confirm if you will sell this item or not and amount
+                Coins += sellPrice;
+
+                int sellAmount = 1;
+                inventoryFrom.DeleteItem(slotIndexFrom, sellAmount);
+            }
+        }
+
+        public void DisplayMerchantGoods(List<InventorySlotItemData> goodsList)
+        {
+            AInventory merchantInventory = inventoryList[(int)EInventoryType.MerchantInventory];
+            int inventorySlotCount = merchantInventory.InventoryItemDataList.Count;
+            int goodsCount = goodsList.Count;
+
+            for (int i = 0; i < inventorySlotCount; ++i) 
+            {
+                MerchantInventorySlotUI merchantSlotUI = (MerchantInventorySlotUI)merchantInventory.SlotUiList[i];
+
+                if (merchantSlotUI == null)
+                {
+                    Debug.LogAssertion("This is not merchantSlotUI");
+                    return;
+                }
+
+                if (i < goodsCount)
+                {
+                    goodsList[i].CurrentItemCount = 1;
+                    merchantInventory.SetItemInSlot(i, goodsList[i]);
+
+                    merchantSlotUI.SetSellItemNameInfoText(goodsList[i].ItemData.ItemName.ToString());
+                    merchantSlotUI.SetSellItemPriceInfoText(goodsList[i].ItemData.BuyPrice.ToString());
+
+                    continue;
+                }
+
+                merchantInventory.SetSlotItemCount(i, 0);
+
+                merchantSlotUI.SetSellItemNameInfoText("");
+                merchantSlotUI.SetSellItemPriceInfoText("");
+            }
         }
 
         public void ObtainItem(EInventoryType inventoryType, int slotIndex, int itemAddCount, in SItemData itemData)
@@ -227,6 +307,12 @@ namespace CommonRPG
             inventoryList[(int)EInventoryType.Equipment].gameObject.SetActive(false);
             inventoryList[(int)EInventoryType.MiscItemInventory].gameObject.SetActive(true);
         }
+
+        public void OpenAndCloseMerchantInventory(bool ShouldOpen)
+        {
+            inventoryList[(int)EInventoryType.MerchantInventory].gameObject.SetActive(ShouldOpen);
+        }
+
         /// <summary>
         /// 
         /// </summary>

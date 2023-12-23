@@ -63,6 +63,7 @@ namespace CommonRPG
         public event Action<int> OnBeginDragDelegate = null;
         /// <summary>
         /// args : int thisSlotIndex, int otherSlotIndex, EInventoryType thisInventoryType, EInventoryType otherInventoryType
+        /// if otherSlotIndex == -1, it means item is dropped at inventory background
         /// </summary>
         public event Action<int, int, EInventoryType, EInventoryType> OnEndDragDelegate = null;
 
@@ -253,15 +254,39 @@ namespace CommonRPG
 
             //Debug.Log($"OnEndDrag, Current Raycast : {eventData.pointerCurrentRaycast}");
 
-            InventorySlotUI otherSlotUI = eventData.pointerCurrentRaycast.gameObject.transform.parent.GetComponent<InventorySlotUI>();
+            GameObject hitObject = eventData.pointerCurrentRaycast.gameObject;
+            InventorySlotUI otherSlotUI = hitObject.transform.parent.GetComponent<InventorySlotUI>();
+
+            int otherIndex;
+            EInventoryType inventoryType;
+
             if (otherSlotUI == null)
             {
-                Debug.Log($"OnDragEnd otherSlotUI == null, gameobject : {eventData.pointerCurrentRaycast.gameObject}");
+                InventoryBackground inventoryBackground = hitObject.GetComponent<InventoryBackground>();
+                if (inventoryBackground && inventoryBackground.CurrentInventoryType != CurrentSlotInventoryType) 
+                {
+                    otherIndex = -1;
+                    inventoryType = inventoryBackground.CurrentInventoryType;
+                }
+                else
+                {
+                    return;
+                }
+            }
+            else
+            {
+                otherIndex = otherSlotUI.SlotIndex;
+                inventoryType = otherSlotUI.CurrentSlotInventoryType;
+            }
+
+            if (OnEndDragDelegate == null) 
+            {
+                Debug.Log("OnEndDragDelegate == null");
                 return;
             }
 
             //Debug.Log($"firstSlotIndex : {SlotIndex}, secondSlotIndex : {otherSlotUI.SlotIndex}, firstSlotInventoryType : {CurrentSlotInventoryType}, secondSlotInventoryType : {otherSlotUI.CurrentSlotInventoryType}");
-            OnEndDragDelegate.Invoke(SlotIndex, otherSlotUI.SlotIndex, CurrentSlotInventoryType, otherSlotUI.CurrentSlotInventoryType);
+            OnEndDragDelegate.Invoke(SlotIndex, otherIndex, CurrentSlotInventoryType, inventoryType);
         }
     }
 
