@@ -49,6 +49,9 @@ namespace CommonRPG
         [SerializeField]
         private TextMeshProUGUI currentCoinText = null;
 
+        [SerializeField]
+        private TradeAmountDecisionWindow tradeAmountDecisionWindow = null;
+
         private void Awake()
         {
             Debug.Assert(inventoryList.Count > 0);
@@ -60,6 +63,8 @@ namespace CommonRPG
                 //inventory.gameObject.SetActive(true);
                 //isInventoryOpened = true;
             }
+
+            Debug.Assert(tradeAmountDecisionWindow);
         }
 
         private void Start()
@@ -88,9 +93,10 @@ namespace CommonRPG
                     inventorySlotUiList[i].OnLeftMouseDoubleClickDelegate += OnLeftMouseDoubleClick;
 
                     inventorySlotUiList[i].OnEndDragDelegate += ExchangeOrMoveOrMergeItem;
-
                 }
             }
+
+            tradeAmountDecisionWindow.OnTradeAcceptButtonClickedDelegate += OnTradeSucceeded;
         }
 
         private void OnDisable()
@@ -111,6 +117,8 @@ namespace CommonRPG
                     inventorySlotUiList[i].OnEndDragDelegate -= ExchangeOrMoveOrMergeItem;
                 }
             }
+
+            tradeAmountDecisionWindow.OnTradeAcceptButtonClickedDelegate += OnTradeSucceeded;
         }
 
         public void ExchangeOrMoveOrMergeItem(int firstSlotIndex, int secondSlotIndex, EInventoryType firstInventoryType, EInventoryType secondInventoryType)
@@ -172,7 +180,6 @@ namespace CommonRPG
             AInventory inventoryFrom = inventoryList[(int)inventoryTypeFrom];
             InventorySlotItemData slotItemDataFrom = inventoryFrom.InventoryItemDataList[slotIndexFrom];
 
-            
             AInventory inventoryTo = inventoryList[(int)inventoryTypeTo];
 
             if ((slotItemDataFrom.ItemData.ItemType & inventoryTo.AllowedItemType) != slotItemDataFrom.ItemData.ItemType) 
@@ -193,11 +200,13 @@ namespace CommonRPG
                     // fail to buy item
                 }
 
-                // need to confirm if you will buy this item or not and amount...
-                Coins -= buyPrice;
+                tradeAmountDecisionWindow.ReadyToShowWindow(slotIndexFrom, slotItemDataFrom, inventoryTypeFrom, inventoryTypeTo, Coins, buyPrice);
+                tradeAmountDecisionWindow.gameObject.SetActive(true);
+                //// need to confirm if you will buy this item or not and amount...
+                //Coins -= buyPrice;
 
-                int buyAmount = 1;
-                inventoryTo.ObtainItem(inventoryTo.GetEmptySlotIndex(), buyAmount, slotItemDataFrom.ItemData);
+                //int buyAmount = 1;
+                //inventoryTo.ObtainItem(inventoryTo.GetEmptySlotIndex(), buyAmount, slotItemDataFrom.ItemData);
                 
             }
             // sell
@@ -205,11 +214,13 @@ namespace CommonRPG
             {
                 int sellPrice = slotItemDataFrom.ItemData.SellPrice;
 
-                // need to confirm if you will sell this item or not and amount
-                Coins += sellPrice;
+                tradeAmountDecisionWindow.ReadyToShowWindow(slotIndexFrom, slotItemDataFrom, inventoryTypeFrom, inventoryTypeTo, Coins, sellPrice);
+                tradeAmountDecisionWindow.gameObject.SetActive(true);
+                //// need to confirm if you will sell this item or not and amount
+                //Coins += sellPrice;
 
-                int sellAmount = 1;
-                inventoryFrom.DeleteItem(slotIndexFrom, sellAmount);
+                //int sellAmount = 1;
+                //inventoryFrom.DeleteItem(slotIndexFrom, sellAmount);
             }
         }
 
@@ -346,6 +357,26 @@ namespace CommonRPG
         private void OnLeftMouseDoubleClick(int slotIndex, EInventoryType inventoryType)
         {
             UseSlotItem(slotIndex, inventoryType);
+        }
+
+        private void OnTradeSucceeded(int tradeSlotIndexFrom, InventorySlotItemData tradeSlotItemData, EInventoryType tradeInventoryTypeFrom, EInventoryType tradeInventoryTypeTo, int totalPrice, int tradeAmount)
+        {
+            AInventory inventoryFrom = inventoryList[(int)tradeInventoryTypeFrom];
+            AInventory inventoryTo = inventoryList[(int)tradeInventoryTypeTo];
+
+            // buy
+            if (tradeInventoryTypeFrom == EInventoryType.MerchantInventory)
+            {
+                Coins -= totalPrice;
+                inventoryTo.ObtainItem(inventoryTo.GetEmptySlotIndex(), tradeAmount, tradeSlotItemData.ItemData);
+
+            }
+            // sell
+            else if (tradeInventoryTypeTo == EInventoryType.MerchantInventory)
+            {
+                Coins += totalPrice;
+                inventoryFrom.DeleteItem(tradeSlotIndexFrom, tradeAmount);
+            }
         }
     }
 }
