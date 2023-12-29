@@ -27,7 +27,42 @@ namespace CommonRPG
         {
             inventoryItemDataList.Sort();
 
+            InventorySlotItemData standardItem = inventoryItemDataList[0];
             int inventoryItemDataListCount = inventoryItemDataList.Count;
+
+            // merge
+            for (int i = 1; i < inventoryItemDataListCount; ++i) 
+            {
+                if (inventoryItemDataList[i].CurrentItemCount == 0)
+                {
+                    continue;
+                }
+
+                if (standardItem.ItemData.ItemName == inventoryItemDataList[i].ItemData.ItemName) 
+                {
+                    int remainingSpace = standardItem.ItemData.MaxItemCount - standardItem.CurrentItemCount;
+
+                    if (remainingSpace >= inventoryItemDataList[i].CurrentItemCount) 
+                    {
+                        standardItem.CurrentItemCount += inventoryItemDataList[i].CurrentItemCount;
+                        inventoryItemDataList[i].CurrentItemCount = 0;
+                        inventoryItemDataList[i].ItemData.ItemType = EItemType.None;
+                    }
+                    else
+                    {
+                        standardItem.CurrentItemCount += remainingSpace;
+                        inventoryItemDataList[i].CurrentItemCount -= remainingSpace;
+                        standardItem = inventoryItemDataList[i];
+                    }
+                }
+                else
+                {
+                    standardItem = inventoryItemDataList[i];
+                }
+            }
+
+            inventoryItemDataList.Sort();
+
             for (int i = 0; i < inventoryItemDataListCount; ++i)
             {
                 if (inventoryItemDataList[i].CurrentItemCount == 0)
