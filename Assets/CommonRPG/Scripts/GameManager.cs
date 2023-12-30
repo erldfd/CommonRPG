@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -52,6 +53,10 @@ namespace CommonRPG
         [SerializeField]
         private ItemDropDataScriptableObject itemDropData = null;
 
+        [SerializeField]
+        private CraftingRecipeDataScriptableObject craftingRecipeData = null;
+        private Dictionary<int, CraftingRecipeNode> itemRecipeTable = null;
+
         //[Header("etc.")]
         //[SerializeField]
         //private AInventory playerInventory = null;
@@ -73,6 +78,10 @@ namespace CommonRPG
             DontDestroyOnLoad(gameObject);
 
             itemDropData.ReadyToUse();
+
+            craftingRecipeData.ArrangeRecipes();
+            craftingRecipeData.PrintCurrentTable();
+            itemRecipeTable = craftingRecipeData.RecipeTable;
         }
 
         private void Start()

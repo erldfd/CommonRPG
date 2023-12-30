@@ -60,6 +60,7 @@ MonoBehaviour:
   monsterData: {fileID: 11400000, guid: 7297ba9bed65ac04ab88c259c22b044f, type: 2}
   levelMaxExpData: {fileID: 11400000, guid: c01f689a18ae71d409da863306221c81, type: 2}
   itemDropData: {fileID: 11400000, guid: b3e11f75556b61745939e611dcfb67c3, type: 2}
+  craftingRecipeData: {fileID: 11400000, guid: 44137c2502ca9fe49b74d02e25d2092e, type: 2}
 --- !u!114 &1325510393791179235
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -404,8 +405,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: baf8bcdf73fb11a4cb340335243c98a7, type: 3}
---- !u!224 &1268106283704230065 stripped
-RectTransform:
+--- !u!4 &1268106283704230065 stripped
+Transform:
   m_CorrespondingSourceObject: {fileID: 8848924211400739409, guid: baf8bcdf73fb11a4cb340335243c98a7, type: 3}
   m_PrefabInstance: {fileID: 7733954196395043552}
   m_PrefabAsset: {fileID: 0}

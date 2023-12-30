@@ -129,6 +129,16 @@ namespace CommonRPG
                 return;
             }
 
+            if (secondInventoryType == EInventoryType.WeaponItemCraftingStation) 
+            {
+                if (secondSlotIndex == (int)WeaponItemCraftingStation.EWeaponItemCraftingSlot.CraftedItemSlot) 
+                {
+                    return;
+                }
+
+                // TODO: ready to craft..
+            }
+
             AInventory firstInventory = inventoryList[(int)firstInventoryType];
             AInventory secondInventory = inventoryList[(int)secondInventoryType];
 

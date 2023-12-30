@@ -11,7 +11,8 @@ namespace CommonRPG
         EquipmentScreen = 1,
         MiscItemInventory,
         QuickSlot,
-        MerchantInventory
+        MerchantInventory,
+        WeaponItemCraftingStation
     }
 
     public abstract class AInventory : MonoBehaviour, IComparable<AInventory>
