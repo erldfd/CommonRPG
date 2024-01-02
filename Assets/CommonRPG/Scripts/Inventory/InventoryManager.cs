@@ -133,6 +133,16 @@ namespace CommonRPG
             AInventory firstInventory = inventoryList[(int)firstInventoryType];
             AInventory secondInventory = inventoryList[(int)secondInventoryType];
 
+            if (secondSlotIndex == -1) 
+            {
+                secondSlotIndex = secondInventory.GetEmptySlotIndex();
+                if (secondSlotIndex == -1) 
+                {
+                    Debug.Log("Fail to exchange... inventory is full");
+                    return;
+                }
+            }
+
             InventorySlotItemData firstSlotItemData = firstInventory.InventoryItemDataList[firstSlotIndex];
             InventorySlotItemData secondSlotItemData = secondInventory.InventoryItemDataList[secondSlotIndex];
 

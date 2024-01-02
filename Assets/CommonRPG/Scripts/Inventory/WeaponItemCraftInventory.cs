@@ -83,14 +83,14 @@ namespace CommonRPG
             int inventoryItemDataListCount = InventoryItemDataList.Count;
             if (inventoryItemDataListCount == 0)
             {
-                Debug.Log("Crafting fail");
+                Debug.Log("Crafting Access Denied");
                 return;
             }
 
             int resultSlotIndex = SlotUiList.Count - 1;
             if (SlotUiList[resultSlotIndex].IsEmpty == false)
             {
-                Debug.Log("Crafting fail");
+                Debug.Log("Crafting Access Denied");
                 return;
             }
 
@@ -108,9 +108,14 @@ namespace CommonRPG
 
             SItemRecipeResultInfo recipeResultInfo;
             bool isSucceeded = GameManager.TryGetRecipe(materialInfoList, out recipeResultInfo);
+
             if (isSucceeded == false) 
             {
-                Debug.Log("Crafting fail");
+                int randomIndex = Random.Range(0, resultSlotIndex);
+
+                DeleteItem(randomIndex, 9999);
+                materialInfoList[randomIndex].SetInfos(EItemName.None, 0);
+
                 return;
             }
 
@@ -120,6 +125,12 @@ namespace CommonRPG
             slotItemData.CopyFrom(GameManager.GetItemData(recipeResultInfo.ResultItem).Data, recipeResultInfo.ItemCount);
 
             SetItemInSlot(resultSlotIndex, slotItemData);
+
+            for (int i = 0; i < resultSlotIndex; ++i) 
+            {
+                DeleteItem(i, 9999);
+                materialInfoList[i].SetInfos(EItemName.None, 0);
+            }
         }
     }
 }

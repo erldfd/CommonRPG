@@ -73,7 +73,6 @@ namespace CommonRPG
             {
                 byte[] hash = sha.ComputeHash(data);
 
-                // 해시코드를 16진수 문자열로 변환
                 hashCodeStringBuilder.Clear();
                 foreach (byte b in hash)
                 {
