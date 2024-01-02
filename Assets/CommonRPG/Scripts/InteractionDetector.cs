@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 namespace CommonRPG
 {
@@ -9,8 +10,9 @@ namespace CommonRPG
         [SerializeField]
         private CapsuleCollider interactionCollider = null;
 
-        private HashSet<AItem> interactionFieldItemSet = new HashSet<AItem>();
-        private HashSet<Merchant> interactionMerchantSet = new HashSet<Merchant>();
+        //private HashSet<AItem> interactionFieldItemSet = new HashSet<AItem>();
+        //private HashSet<Merchant> interactionMerchantSet = new HashSet<Merchant>();
+        private HashSet<MonoBehaviour> interactionSet = new HashSet<MonoBehaviour>();
 
         private void Awake()
         {
@@ -22,12 +24,12 @@ namespace CommonRPG
             AItem item = other.GetComponent<AItem>();
             if (item) 
             {
-                if (interactionFieldItemSet.Contains(item))
+                if (interactionSet.Contains(item))
                 {
                     return;
                 }
 
-                interactionFieldItemSet.Add(item);
+                interactionSet.Add(item);
                 GameManager.SetActiveInteractioUI(true);
 
                 return;
@@ -36,12 +38,26 @@ namespace CommonRPG
             Merchant merchant = other.GetComponent<Merchant>();
             if (merchant)
             {
-                if (interactionMerchantSet.Contains(merchant))
+                if (interactionSet.Contains(merchant))
                 {
                     return;
                 }
 
-                interactionMerchantSet.Add(merchant);
+                interactionSet.Add(merchant);
+                GameManager.SetActiveInteractioUI(true);
+
+                return;
+            }
+
+            CraftingStation craftingStation = other.GetComponent<CraftingStation>();
+            if (craftingStation) 
+            {
+                if (interactionSet.Contains(craftingStation))
+                {
+                    return;
+                }
+
+                interactionSet.Add(craftingStation);
                 GameManager.SetActiveInteractioUI(true);
 
                 return;
@@ -53,15 +69,15 @@ namespace CommonRPG
             AItem item = other.GetComponent<AItem>();
             if (item) 
             {
-                if (interactionFieldItemSet.Contains(item) == false)
+                if (interactionSet.Contains(item) == false)
                 {
                     Debug.LogAssertion("Why is this item not contained in set?");
                     return;
                 }
 
-                interactionFieldItemSet.Remove(item);
+                interactionSet.Remove(item);
 
-                if (interactionFieldItemSet.Count == 0)
+                if (interactionSet.Count == 0)
                 {
                     GameManager.SetActiveInteractioUI(false);
                 }
@@ -72,31 +88,58 @@ namespace CommonRPG
             Merchant merchant = other.GetComponent<Merchant>();
             if (merchant) 
             {
-                if (interactionMerchantSet.Contains(merchant) == false)
+                if (interactionSet.Contains(merchant) == false)
                 {
                     Debug.LogAssertion("Wrong access");
                     return;
                 }
 
-                interactionMerchantSet.Remove(merchant);
+                interactionSet.Remove(merchant);
+                GameManager.InventoryManager.OpenAndCloseMerchantInventory(false);
 
-                if (interactionMerchantSet.Count == 0)
+                if (interactionSet.Count == 0)
                 {
                     GameManager.SetActiveInteractioUI(false);
-                    GameManager.InventoryManager.OpenAndCloseMerchantInventory(false);
                 }
 
                 return;
-            }    
+            }  
+            
+            CraftingStation craftingStation = other.GetComponent<CraftingStation>();
+            if (craftingStation) 
+            {
+                if (interactionSet.Contains(craftingStation) == false)
+                {
+                    Debug.LogAssertion("Wrong access");
+                    return;
+                }
+
+                interactionSet.Remove(craftingStation);
+                GameManager.InventoryManager.OpenAndCloseCraftInventory(false);
+
+                if (interactionSet.Count == 0)
+                {
+                    GameManager.SetActiveInteractioUI(false);
+                }
+
+                return;
+            }
             
         }
 
         public void Interact()
         {
-            if (interactionFieldItemSet.Count > 0) 
+            if (interactionSet.Count == 0) 
             {
-                foreach (AItem item in interactionFieldItemSet)
+                return;
+            }
+
+            foreach (MonoBehaviour someObject in interactionSet) 
+            {
+                if (someObject is AItem)
                 {
+                    AItem item = (AItem)someObject;
+
                     int itemAddFailCount = 0;
 
                     if (item.Data.ItemType == EItemType.Weapon)
@@ -110,27 +153,17 @@ namespace CommonRPG
 
                     if (itemAddFailCount == 0)
                     {
-                        interactionFieldItemSet.Remove(item);
+                        interactionSet.Remove(item);
                         Destroy(item.gameObject);
                     }
 
                     break;
                 }
-
-                if (interactionFieldItemSet.Count == 0)
+                else if (someObject is Merchant) 
                 {
-                    GameManager.SetActiveInteractioUI(false);
-                }
+                    Merchant merchant = (Merchant)someObject;
 
-                return;
-            }
-
-            if (interactionMerchantSet.Count > 0) 
-            {
-                foreach (Merchant merchant in interactionMerchantSet)
-                {
                     List<InventorySlotItemData> merchantGoodsDataList = merchant.MerchantGoodsDataList;
-                    int merchantGoodsDataListCount = merchantGoodsDataList.Count;
 
                     GameManager.InventoryManager.DisplayMerchantGoods(merchantGoodsDataList);
                     GameManager.InventoryManager.OpenAndCloseMerchantInventory(true);
@@ -138,15 +171,25 @@ namespace CommonRPG
 
                     break;
                 }
+                else if (someObject is CraftingStation)
+                {
+                    //CraftingStation craftingStation = (CraftingStation)someObject;
+                    GameManager.InventoryManager.OpenAndCloseCraftInventory(true);
+                    GameManager.SetActiveInteractioUI(false);
 
-                return;
+                    break;
+                }
+            }
+
+            if (interactionSet.Count == 0)
+            {
+                GameManager.SetActiveInteractioUI(false);
             }
         }
 
         public void InitInteraction()
         {
-            interactionFieldItemSet.Clear();
-            interactionMerchantSet.Clear();
+            interactionSet.Clear();
         }
     }
 }

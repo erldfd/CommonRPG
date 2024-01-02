@@ -12,7 +12,7 @@ namespace CommonRPG
         MiscItemInventory,
         QuickSlot,
         MerchantInventory,
-        WeaponItemCraftingStation
+        WeaponItemCraftInventory
     }
 
     public abstract class AInventory : MonoBehaviour, IComparable<AInventory>

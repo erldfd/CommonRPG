@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace CommonRPG
 {
-    public class WeaponItemCraftingStation : AInventory
+    public class WeaponItemCraftInventory : AInventory
     {
         public enum EWeaponItemCraftingSlot
         {

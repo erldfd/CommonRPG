@@ -1843,6 +1843,7 @@ MonoBehaviour:
   mainInventoryObject: {fileID: 4346882097317405269}
   currentCoinText: {fileID: 7598357698544317576}
   tradeAmountDecisionWindow: {fileID: 6098024191203980468}
+  craftInventory: {fileID: 5163284115135634499}
 --- !u!1 &3407702312808016003
 GameObject:
   m_ObjectHideFlags: 0
@@ -2129,7 +2130,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8164252802778896888
 RectTransform:
   m_ObjectHideFlags: 0

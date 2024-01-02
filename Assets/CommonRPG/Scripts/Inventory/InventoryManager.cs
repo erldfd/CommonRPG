@@ -52,6 +52,7 @@ namespace CommonRPG
         [SerializeField]
         private TradeAmountDecisionWindow tradeAmountDecisionWindow = null;
 
+
         private void Awake()
         {
             Debug.Assert(inventoryList.Count > 0);
@@ -331,6 +332,11 @@ namespace CommonRPG
         public int GetEmptySlotInex(EInventoryType inventoryType)
         {
             return inventoryList[(int)inventoryType].GetEmptySlotIndex();
+        }
+
+        public void OpenAndCloseCraftInventory(bool ShouldOpen)
+        {
+            inventoryList[(int)EInventoryType.WeaponItemCraftInventory].gameObject.SetActive(ShouldOpen);
         }
 
         private void OnPointerEnterToSlot(int slotIndex, EInventoryType inventoryType, Vector2 slotPos, Vector2 slotWidthAndHeight)
