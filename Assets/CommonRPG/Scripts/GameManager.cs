@@ -55,7 +55,7 @@ namespace CommonRPG
 
         [SerializeField]
         private CraftingRecipeDataScriptableObject craftingRecipeData = null;
-        private Dictionary<int, CraftingRecipeNode> itemRecipeTable = null;
+        private Dictionary<string, SItemRecipeResultInfo> itemRecipeTable = null;
 
         //[Header("etc.")]
         //[SerializeField]
@@ -73,14 +73,11 @@ namespace CommonRPG
             Debug.Assert(statWindow);
             Debug.Assert(itemInfoWindow);
 
-            //Debug.Assert(playerInventory);
-
             DontDestroyOnLoad(gameObject);
 
             itemDropData.ReadyToUse();
 
-            craftingRecipeData.ArrangeRecipes();
-            craftingRecipeData.PrintCurrentTable();
+            craftingRecipeData.CreateRecipeTable();
             itemRecipeTable = craftingRecipeData.RecipeTable;
         }
 
@@ -299,6 +296,15 @@ namespace CommonRPG
         public static void SetActiveInteractioUI(bool ShouldActivate)
         {
             instance.inGameUI.SetActiveInteractioUI(ShouldActivate);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>is it succeeded to get recipe?</returns>
+        public static bool TryGetRecipe(in List<CraftingMaterialInfo> craftingRecipes, out SItemRecipeResultInfo resultInfo)
+        {
+            return instance.itemRecipeTable.TryGetValue(instance.craftingRecipeData.GenerateCraftingHashCode(craftingRecipes), out resultInfo);
         }
     }
 }

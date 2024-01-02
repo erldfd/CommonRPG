@@ -1839,6 +1839,7 @@ MonoBehaviour:
   - {fileID: 2087065085614222424}
   - {fileID: 7622963307059495868}
   - {fileID: 4870491297139076060}
+  - {fileID: 5163284115135634499}
   mainInventoryObject: {fileID: 4346882097317405269}
   currentCoinText: {fileID: 7598357698544317576}
   tradeAmountDecisionWindow: {fileID: 6098024191203980468}
@@ -2128,7 +2129,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8164252802778896888
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2163,7 +2164,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventoryType: 5
   allowedItemType: 1
-  slotUiList: []
+  slotUiList:
+  - {fileID: 3279377280806382197}
+  - {fileID: 943381978367523410}
+  - {fileID: 4560274457524608999}
 --- !u!1 &3779296097993889307
 GameObject:
   m_ObjectHideFlags: 0
@@ -3588,7 +3592,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3359408694568056014}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5163284115135634499}
+        m_TargetAssemblyTypeName: CommonRPG.WeaponItemCraftingStation, Assembly-CSharp
+        m_MethodName: TryCrafting
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &5628640794885444825
 GameObject:
   m_ObjectHideFlags: 0
@@ -5815,6 +5831,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8342101061156362126}
     m_Modifications:
+    - target: {fileID: 3099366613906247468, guid: c847acf40430a954c83e0b708c8ced4b, type: 3}
+      propertyPath: allowedItemType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4622423900869523320, guid: c847acf40430a954c83e0b708c8ced4b, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -5877,11 +5897,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4622423900869523320, guid: c847acf40430a954c83e0b708c8ced4b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: -160
       objectReference: {fileID: 0}
     - target: {fileID: 4622423900869523320, guid: c847acf40430a954c83e0b708c8ced4b, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 170
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4622423900869523320, guid: c847acf40430a954c83e0b708c8ced4b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -5904,6 +5924,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c847acf40430a954c83e0b708c8ced4b, type: 3}
+--- !u!114 &3279377280806382197 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3099366613906247468, guid: c847acf40430a954c83e0b708c8ced4b, type: 3}
+  m_PrefabInstance: {fileID: 468824889095431513}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 546235351cd32a9499ef159e41325244, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &5091248789428064801 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4622423900869523320, guid: c847acf40430a954c83e0b708c8ced4b, type: 3}
@@ -6145,7 +6176,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3099366613906247468, guid: c847acf40430a954c83e0b708c8ced4b, type: 3}
       propertyPath: allowedItemType
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4622423900869523320, guid: c847acf40430a954c83e0b708c8ced4b, type: 3}
       propertyPath: m_Pivot.x
@@ -6209,11 +6240,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4622423900869523320, guid: c847acf40430a954c83e0b708c8ced4b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 160
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4622423900869523320, guid: c847acf40430a954c83e0b708c8ced4b, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: 170
       objectReference: {fileID: 0}
     - target: {fileID: 4622423900869523320, guid: c847acf40430a954c83e0b708c8ced4b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -6236,6 +6267,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c847acf40430a954c83e0b708c8ced4b, type: 3}
+--- !u!114 &4560274457524608999 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3099366613906247468, guid: c847acf40430a954c83e0b708c8ced4b, type: 3}
+  m_PrefabInstance: {fileID: 1462105233275277515}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 546235351cd32a9499ef159e41325244, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &6083332830979860403 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4622423900869523320, guid: c847acf40430a954c83e0b708c8ced4b, type: 3}
@@ -6541,7 +6583,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4622423900869523320, guid: c847acf40430a954c83e0b708c8ced4b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -160
+      value: 160
       objectReference: {fileID: 0}
     - target: {fileID: 4622423900869523320, guid: c847acf40430a954c83e0b708c8ced4b, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -6568,6 +6610,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c847acf40430a954c83e0b708c8ced4b, type: 3}
+--- !u!114 &943381978367523410 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3099366613906247468, guid: c847acf40430a954c83e0b708c8ced4b, type: 3}
+  m_PrefabInstance: {fileID: 2744021940553364862}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 546235351cd32a9499ef159e41325244, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &7364123603456344582 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4622423900869523320, guid: c847acf40430a954c83e0b708c8ced4b, type: 3}

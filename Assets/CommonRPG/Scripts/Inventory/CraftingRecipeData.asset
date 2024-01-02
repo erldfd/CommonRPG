@@ -15,22 +15,51 @@ MonoBehaviour:
   craftingRecipes:
   - recipeName: first recipe
     materials:
-    - recipeItemName: 1
-      neededItemCount: 1
     - recipeItemName: 2
       neededItemCount: 1
+    - recipeItemName: 1
+      neededItemCount: 1
     resultItemName: 2
+    Result:
+      ResultItem: 2
+      ItemCount: 1
   - recipeName: test2
     materials:
-    - recipeItemName: 1
-      neededItemCount: 1
     - recipeItemName: 2
       neededItemCount: 2
+    - recipeItemName: 1
+      neededItemCount: 1
     resultItemName: 3
+    Result:
+      ResultItem: 0
+      ItemCount: 0
   - recipeName: test3
+    materials:
+    - recipeItemName: 2
+      neededItemCount: 1
+    - recipeItemName: 1
+      neededItemCount: 2
+    resultItemName: 2
+    Result:
+      ResultItem: 0
+      ItemCount: 0
+  - recipeName: test4
     materials:
     - recipeItemName: 1
       neededItemCount: 1
+    - recipeItemName: 1
+      neededItemCount: 1
+    resultItemName: 3
+    Result:
+      ResultItem: 0
+      ItemCount: 0
+  - recipeName: test5
+    materials:
     - recipeItemName: 2
       neededItemCount: 1
-    resultItemName: 2
+    - recipeItemName: 2
+      neededItemCount: 1
+    resultItemName: 1
+    Result:
+      ResultItem: 0
+      ItemCount: 0

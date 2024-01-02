@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,24 +7,29 @@ namespace CommonRPG
     {
         public enum EWeaponItemCraftingSlot
         {
-            CraftedItemSlot,
             CraftingMaterialSlot1,
-            CraftingMaterialSlot2
+            CraftingMaterialSlot2,
+            CraftedItemSlot,
         }
+
+        private List<CraftingMaterialInfo> materialInfoList = new List<CraftingMaterialInfo>();
 
         public override void InitInventory()
         {
             base.InitInventory();
 
             int slotUIsLength = base.slotUiList.Count;
+            materialInfoList.Capacity = slotUIsLength;
+
             for (int i = 0; i < slotUIsLength; i++)
             {
                 base.slotUiList[i].CurrentSlotInventoryType = inventoryType;
+                materialInfoList.Add(new CraftingMaterialInfo(EItemName.None, 0));
             }
 
-            base.slotUiList[(int)EWeaponItemCraftingSlot.CraftedItemSlot].AllowedItemType = EItemType.None;
             base.slotUiList[(int)EWeaponItemCraftingSlot.CraftingMaterialSlot1].AllowedItemType = EItemType.Weapon;
             base.slotUiList[(int)EWeaponItemCraftingSlot.CraftingMaterialSlot2].AllowedItemType = EItemType.Weapon;
+            base.slotUiList[(int)EWeaponItemCraftingSlot.CraftedItemSlot].AllowedItemType = EItemType.None;
         }
 
         public override void ObtainItem(int slotIndex, int itemAddCount, in SItemData itemData)
@@ -52,6 +56,70 @@ namespace CommonRPG
             }
 
             GameManager.InventoryManager.ExchangeOrMoveOrMergeItem(slotIndex, emptySlotIndex, InventoryType, EInventoryType.Equipment);
+        }
+
+        public override void SortSlotItem()
+        {
+            inventoryItemDataList.Sort();
+
+            int inventoryItemDataListCount = inventoryItemDataList.Count;
+
+            for (int i = 0; i < inventoryItemDataListCount; ++i)
+            {
+                if (inventoryItemDataList[i].CurrentItemCount == 0)
+                {
+                    slotUiList[i].SetSlotImageSprite(null);
+                    slotUiList[i].SetSlotItemCountText(0);
+                    continue;
+                }
+
+                slotUiList[i].SetSlotImageSprite(inventoryItemDataList[i].ItemData.SlotSprite);
+                slotUiList[i].SetSlotItemCountText(inventoryItemDataList[i].CurrentItemCount);
+            }
+        }
+
+        public void TryCrafting()
+        {
+            int inventoryItemDataListCount = InventoryItemDataList.Count;
+            if (inventoryItemDataListCount == 0)
+            {
+                Debug.Log("Crafting fail");
+                return;
+            }
+
+            int resultSlotIndex = SlotUiList.Count - 1;
+            if (SlotUiList[resultSlotIndex].IsEmpty == false)
+            {
+                Debug.Log("Crafting fail");
+                return;
+            }
+
+            int index = 0;
+
+            foreach (InventorySlotItemData itemData in InventoryItemDataList) 
+            {
+                if (itemData.CurrentItemCount == 0) 
+                {
+                    continue;
+                }
+
+                materialInfoList[index++].SetInfos(itemData.ItemData.ItemName, itemData.CurrentItemCount);
+            }
+
+            SItemRecipeResultInfo recipeResultInfo;
+            bool isSucceeded = GameManager.TryGetRecipe(materialInfoList, out recipeResultInfo);
+            if (isSucceeded == false) 
+            {
+                Debug.Log("Crafting fail");
+                return;
+            }
+
+            Debug.Log($"Crafting succeeded : {recipeResultInfo.ResultItem}, {recipeResultInfo.ItemCount}");
+
+            InventorySlotItemData slotItemData = InventoryItemDataList[resultSlotIndex];
+            slotItemData.CopyFrom(GameManager.GetItemData(recipeResultInfo.ResultItem).Data, recipeResultInfo.ItemCount);
+
+            SetItemInSlot(resultSlotIndex, slotItemData);
         }
     }
 }

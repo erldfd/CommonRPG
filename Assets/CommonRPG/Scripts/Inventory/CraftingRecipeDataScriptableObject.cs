@@ -1,65 +1,34 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using UnityEngine;
-using static Unity.VisualScripting.Metadata;
 
 namespace CommonRPG
 {
-    
+
     [CreateAssetMenu(fileName = "CraftingRecipeData", menuName = "ScriptableObjects/CraftingRecipeDataScriptableObject", order = 5)]
     public class CraftingRecipeDataScriptableObject : ScriptableObject
     {
-        public const int ITEM_COUNT_MULTIPLIER = 10000;
-
         [SerializeField]
         private List<CraftingRecipe> craftingRecipes;
         /// <summary>
-        /// int : recipeKey == (int)EItemName + NeededItemCount * ITEM_COUNT_MULTIPLIER, CraftingRecipeNode : TotalRecipeInfo..
+        /// string : recipeKey, it can generate by using GenerateCraftingHashCode method
         /// </summary>
-        private Dictionary<int, CraftingRecipeNode> recipeTable = new Dictionary<int, CraftingRecipeNode>();
-        public Dictionary<int, CraftingRecipeNode> RecipeTable 
-        { 
-            get 
-            {
-                //ArrangeRecipes();
-                return recipeTable; 
-            } 
-        }
-
-        private Stack<CraftingRecipeNode> dFSStack = new Stack<CraftingRecipeNode>();
-
-        public void PrintCurrentTable()
+        private Dictionary<string, SItemRecipeResultInfo> recipeTable = new Dictionary<string, SItemRecipeResultInfo>();
+        /// <summary>
+        /// string : recipeKey, it can generate by using GenerateCraftingHashCode method
+        /// </summary>
+        public Dictionary<string, SItemRecipeResultInfo> RecipeTable
         {
-            Debug.Log("Print Start====================");
-            foreach (CraftingRecipeNode node in recipeTable.Values) 
+            get
             {
-                dFSStack.Clear();
-                dFSStack.Push(node);
-
-                while (dFSStack.Count > 0)
-                {
-                    CraftingRecipeNode current = dFSStack.Pop();
-
-                    if (current.CraftingMaterialInfo == null) 
-                    {
-                        Debug.Log($"Result : {current.ResultItemName}");
-                    }
-                    else
-                    {
-                        Debug.Log($"item : {current.CraftingMaterialInfo.RecipeItemName}, count : {current.CraftingMaterialInfo.NeededItemCount}");
-                    }
-                    
-                    for (int i = 0; i < current.Children.Count; ++i)
-                    {
-                        dFSStack.Push(current.Children[i]);
-                    }
-                }
+                return recipeTable;
             }
-            Debug.Log("Print End====================");
         }
+
+        private StringBuilder hashCodeStringBuilder = new StringBuilder();
 
         private void SortRecipes()
         {
@@ -69,104 +38,50 @@ namespace CommonRPG
             }
         }
 
-        public void ArrangeRecipes()
+        public void CreateRecipeTable()
         {
             SortRecipes();
-
             recipeTable.Clear();
 
-            foreach (CraftingRecipe craftingRecipe in craftingRecipes)
+            foreach (CraftingRecipe craftingRecipe in craftingRecipes) 
             {
-                List<CraftingMaterialInfo> craftingMaterials = craftingRecipe.Materials;
-                CraftingMaterialInfo craftingMaterial = craftingMaterials[0];
+                recipeTable.TryAdd(GenerateCraftingHashCode(craftingRecipe.Materials), craftingRecipe.Result);
+            }
+        }
 
-                int recipeKey = (int)craftingMaterial.RecipeItemName + craftingMaterial.NeededItemCount * ITEM_COUNT_MULTIPLIER;
+        public string GenerateCraftingHashCode(in List<CraftingMaterialInfo> craftingMaterials)
+        {
+            craftingMaterials.Sort();
+            hashCodeStringBuilder.Clear();
 
-                if (recipeTable.ContainsKey(recipeKey)) 
+            foreach (CraftingMaterialInfo craftingMaterial in craftingMaterials) 
+            {
+                if (craftingMaterial.RecipeItemName == EItemName.None) 
                 {
-                    CraftingRecipeNode craftingRecipeNode = recipeTable[recipeKey];
-
-                    if (craftingRecipeNode.CraftingMaterialInfo != craftingMaterial) 
-                    {
-                        Debug.LogAssertion("Weird operation dectected... craftingRecipeNode.CraftingMaterialInfo != craftingMaterial");
-                        return;
-                    }
-
-                    dFSStack.Clear();
-                    dFSStack.Push(craftingRecipeNode);
-
-                    int craftingMaterialIndex = 0;
-
-                    while (dFSStack.Count > 0)
-                    {
-                        craftingRecipeNode = dFSStack.Pop();
-
-                        if (craftingRecipeNode.CraftingMaterialInfo == craftingMaterial) 
-                        {
-                            craftingMaterialIndex++;
-
-                            if (craftingMaterial.RecipeItemName != EItemName.None && craftingMaterialIndex == craftingMaterials.Count) 
-                            {
-                                // totally same recipe
-                                break;
-                            }
-
-                            for (int i = 0; i < craftingRecipeNode.Children.Count; ++i)
-                            {
-                                dFSStack.Push(craftingRecipeNode.Children[i]);
-                            }
-
-                            if (craftingMaterialIndex < craftingMaterials.Count) 
-                            {
-                                craftingMaterial = craftingMaterials[craftingMaterialIndex];
-                            }
-                            else
-                            {
-                                // add Result Node
-                                CraftingRecipeNode resultNode = new CraftingRecipeNode(craftingRecipe.ResultItemName);
-                                craftingRecipeNode.Children.Add(resultNode);
-                                
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            // add remaining node.
-                            craftingRecipeNode = craftingRecipeNode.ParentNode;
-
-                            int craftingMaterialsCount = craftingMaterials.Count;
-                            for (int i = craftingMaterialIndex; i < craftingMaterialsCount; ++i)
-                            {
-                                CraftingRecipeNode nextCraftingRecipeNode = new CraftingRecipeNode(craftingMaterials[i]);
-                                craftingRecipeNode.Children.Add(nextCraftingRecipeNode);
-                                nextCraftingRecipeNode.ParentNode = craftingRecipeNode;
-                                craftingRecipeNode = nextCraftingRecipeNode;
-                            }
-
-                            CraftingRecipeNode lastCraftingRecipeNode = new CraftingRecipeNode(craftingRecipe.ResultItemName);
-                            craftingRecipeNode.Children.Add(lastCraftingRecipeNode);
-                            
-                            break;
-                        }
-                    }
+                    continue;
                 }
-                else
+
+                hashCodeStringBuilder.Append(craftingMaterial.RecipeItemName.ToString());
+                hashCodeStringBuilder.Append(craftingMaterial.NeededItemCount);
+            }
+
+            // 문자열을 바이트 배열로 변환 (UTF-8 인코딩 사용)
+            byte[] data = Encoding.UTF8.GetBytes(hashCodeStringBuilder.ToString());
+
+            // SHA-512 해시코드 생성
+            using (SHA512 sha = SHA512.Create())
+            {
+                byte[] hash = sha.ComputeHash(data);
+
+                // 해시코드를 16진수 문자열로 변환
+                hashCodeStringBuilder.Clear();
+                foreach (byte b in hash)
                 {
-                    CraftingRecipeNode craftingRecipeNode = new CraftingRecipeNode(craftingMaterial);
-                    recipeTable.Add(recipeKey, craftingRecipeNode);
-
-                    int craftingMaterialsCount = craftingMaterials.Count;
-                    for (int i = 1; i < craftingMaterialsCount; ++i)
-                    {
-                        CraftingRecipeNode nextCraftingRecipeNode = new CraftingRecipeNode(craftingMaterials[i]);
-                        craftingRecipeNode.Children.Add(nextCraftingRecipeNode);
-                        nextCraftingRecipeNode.ParentNode = craftingRecipeNode;
-                        craftingRecipeNode = nextCraftingRecipeNode;
-                    }
-
-                    CraftingRecipeNode lastCraftingRecipeNode = new CraftingRecipeNode(craftingRecipe.ResultItemName);
-                    craftingRecipeNode.Children.Add(lastCraftingRecipeNode);
+                    hashCodeStringBuilder.Append(b.ToString());
                 }
+
+                // 해시코드 문자열 반환
+                return hashCodeStringBuilder.ToString();
             }
         }
     }
@@ -181,9 +96,7 @@ namespace CommonRPG
         private List<CraftingMaterialInfo> materials;
         public List<CraftingMaterialInfo> Materials { get { return materials; } }
 
-        [SerializeField]
-        private EItemName resultItemName = EItemName.None;
-        public EItemName ResultItemName { get { return resultItemName; } }
+        public SItemRecipeResultInfo Result;
     }
 
     [Serializable]
@@ -197,89 +110,39 @@ namespace CommonRPG
         private int neededItemCount;
         public int NeededItemCount { get { return neededItemCount; } }
 
+        public CraftingMaterialInfo(EItemName recipeItemName, int neededItemCount)
+        {
+            this.recipeItemName = recipeItemName;
+            this.neededItemCount = neededItemCount;
+        }
+
+        public void SetInfos(EItemName recipeItemName, int neededItemCount)
+        {
+            this.recipeItemName = recipeItemName;
+            this.neededItemCount = neededItemCount;
+        }
+
         public int CompareTo(CraftingMaterialInfo other)
         {
             if (other == null || (int)RecipeItemName < (int)other.RecipeItemName)
             {
-                return -1;
+                return 1;
             }
-            else if ((int)RecipeItemName == (int)other.RecipeItemName) 
+            else if ((int)RecipeItemName == (int)other.RecipeItemName)
             {
                 return 0;
             }
             else
             {
-                return 1;
+                return -1;
             }
-        }
-
-        public static bool operator ==(CraftingMaterialInfo a, CraftingMaterialInfo b)
-        {
-            if (ReferenceEquals(a, null) && ReferenceEquals(b, null))
-            {
-                return true;
-            }
-                
-            if (ReferenceEquals(a, null) || ReferenceEquals(b, null))
-            {
-                return false;
-            }
-             
-            return (a.RecipeItemName == b.RecipeItemName) && (a.neededItemCount == b.neededItemCount);
-        }
-
-        public static bool operator !=(CraftingMaterialInfo a, CraftingMaterialInfo b)
-        {
-            return (a == b) == false;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj == null || GetType() != obj.GetType())
-                return false;
-
-            CraftingMaterialInfo other = (CraftingMaterialInfo)obj;
-            return RecipeItemName == other.RecipeItemName;
-        }
-
-        public override int GetHashCode()
-        {
-            return neededItemCount;
         }
     }
 
-    public class CraftingRecipeNode
+    [Serializable]
+    public struct SItemRecipeResultInfo
     {
-        private CraftingMaterialInfo craftingMaterialInfo = null;
-        public CraftingMaterialInfo CraftingMaterialInfo { get { return craftingMaterialInfo; } }
-
-        private EItemName resultItemName = EItemName.None;
-        public EItemName ResultItemName { get { return resultItemName; } }
-
-        private CraftingRecipeNode parentNode = null;
-        public CraftingRecipeNode ParentNode { get { return parentNode; } set { parentNode = value; } }
-
-        private List<CraftingRecipeNode> children = new List<CraftingRecipeNode>();
-        public List<CraftingRecipeNode> Children { get { return children; } }
-
-        public CraftingRecipeNode(EItemName resultItemName)
-        {
-            this.resultItemName = resultItemName;
-        }
-
-        public CraftingRecipeNode(CraftingMaterialInfo newCraftingMaterialInfo)
-        {
-            craftingMaterialInfo = newCraftingMaterialInfo;
-        }
-
-        public void AddChildren(CraftingRecipeNode newNode)
-        {
-            children.Add(newNode);
-        }
-
-        public CraftingRecipeNode MoveToChildNode(int childIndex)
-        {
-            return children[childIndex];
-        }
+        public EItemName ResultItem;
+        public int ItemCount;
     }
 }
