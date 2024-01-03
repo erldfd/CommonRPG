@@ -15,41 +15,14 @@ MonoBehaviour:
   craftingRecipes:
   - recipeName: first recipe
     materials:
-    - recipeItemName: 2
+    - recipeItemName: 1
       neededItemCount: 1
     - recipeItemName: 1
       neededItemCount: 1
     Result:
       ResultItem: 2
       ItemCount: 1
-  - recipeName: test2
-    materials:
-    - recipeItemName: 1
-      neededItemCount: 1
-    - recipeItemName: 1
-      neededItemCount: 1
-    Result:
-      ResultItem: 1
-      ItemCount: 2
-  - recipeName: test3
-    materials:
-    - recipeItemName: 2
-      neededItemCount: 1
-    - recipeItemName: 2
-      neededItemCount: 1
-    Result:
-      ResultItem: 2
-      ItemCount: 2
-  - recipeName: test4
-    materials:
-    - recipeItemName: 2
-      neededItemCount: 1
-    - recipeItemName: 1
-      neededItemCount: 1
-    Result:
-      ResultItem: 2
-      ItemCount: 3
-  - recipeName: test5
+  - recipeName: hp potion 100ea
     materials:
     - recipeItemName: 2
       neededItemCount: 1
@@ -57,4 +30,4 @@ MonoBehaviour:
       neededItemCount: 1
     Result:
       ResultItem: 3
-      ItemCount: 999
+      ItemCount: 100

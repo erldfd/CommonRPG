@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 1655.0208, g: 1841.3667, b: 2252.6196, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 33606163}
   - component: {fileID: 33606162}
   - component: {fileID: 33606161}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: CraftingStation
   m_TagString: Untagged
   m_Icon: {fileID: 0}

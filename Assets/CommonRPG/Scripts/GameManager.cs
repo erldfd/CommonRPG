@@ -23,6 +23,10 @@ namespace CommonRPG
         }
 
         [SerializeField]
+        private QuestManager questManager = null;
+        public static QuestManager QuestManager { get { return instance.questManager; } }
+
+        [SerializeField]
         private UnitManager unitManager = null;
 
         [Header("UIs")]
@@ -68,7 +72,8 @@ namespace CommonRPG
 
             Debug.Assert(timerManager);
             Debug.Assert(inventoryManager);
-            
+            Debug.Assert(questManager);
+
             Debug.Assert(inGameUI);
             Debug.Assert(statWindow);
             Debug.Assert(itemInfoWindow);

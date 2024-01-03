@@ -1,9 +1,13 @@
+using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace CommonRPG
 {
     public class MonsterBase : AUnit, IDamageable
     {
+        public static event Action<MonsterBase, AUnit> OnKilled;
+
         [SerializeField]
         protected EMonsterName monsterName = EMonsterName.None;
         public EMonsterName MonsterName
@@ -139,6 +143,7 @@ namespace CommonRPG
             if (statComponent.CurrentHealthPoint <= 0)
             {
                 monsterAnimController.PlayDeathAnim();
+                OnKilled.Invoke(this, DamageCauser);
             }
             else
             {
