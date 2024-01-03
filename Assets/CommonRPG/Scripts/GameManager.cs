@@ -311,5 +311,10 @@ namespace CommonRPG
         {
             return instance.itemRecipeTable.TryGetValue(instance.craftingRecipeData.GenerateCraftingHashCode(craftingRecipes), out resultInfo);
         }
+
+        public static void PrintAllQuests()
+        {
+            instance.questManager.PrintQuests();
+        }
     }
 }

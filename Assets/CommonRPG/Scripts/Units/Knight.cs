@@ -21,6 +21,7 @@ namespace CommonRPG
         protected override void Start()
         {
             base.Start();
+            GameManager.QuestManager.TryReceiveQuest("First Hunt Quest");
         }
 
         protected override void Update()
@@ -94,6 +95,7 @@ namespace CommonRPG
 
             knightAnimController.PlayHitAnim();
             //animController.ani.Play("Drinking", 0);
+            GameManager.PrintAllQuests();
         }
 
         protected override void OnNormalAttack(InputAction.CallbackContext context)

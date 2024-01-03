@@ -33,6 +33,19 @@ namespace CommonRPG
 
         private Dictionary<string, QuestInfo> questTable = new Dictionary<string, QuestInfo>();
         public Dictionary<string, QuestInfo> QuestTable { get { return questTable; } }
+
+        public List<QuestInfo> GetData()
+        {
+            List<QuestInfo> dataList = new List<QuestInfo>();
+
+            foreach (QuestInfo quest in questInfoList) 
+            {
+                quest.Arrange();
+                dataList.Add(new QuestInfo(quest));
+            }
+
+            return dataList;
+        }
     }
 
     [Serializable]
@@ -56,7 +69,7 @@ namespace CommonRPG
 
         [Header("Hunt Qeust")]
         [SerializeField]
-        private List<HuntData> huntQeustCompleteCondition;
+        private List<HuntData> huntQuestCompleteCondition = new List<HuntData>();
         private Dictionary<EMonsterName, int> huntQuestConditionTable = new Dictionary<EMonsterName, int>();
         public Dictionary<EMonsterName, int> HuntQuestConditionTable { get { return huntQuestConditionTable; } }
 
@@ -76,6 +89,56 @@ namespace CommonRPG
         [Header("ItemCollection Quest")]
         [SerializeField]
         private List<ItemCollectionData> itemCollectionQuestCompleteCondition;
+
+        public QuestInfo()
+        {
+            foreach (HuntData huntData in huntQuestCompleteCondition) 
+            {
+                huntQuestConditionTable.TryAdd(huntData.MonsterName, huntData.HuntCount);
+                ongoingHuntTable.TryAdd(huntData.MonsterName, 0);
+            }
+        }
+
+        public QuestInfo(QuestInfo other)
+        {
+            questName = other.questName;
+            questDescription = other.questDescription;
+            questType = other.questType;
+            questState = other.questState;
+
+            huntQuestCompleteCondition.Clear();
+
+            foreach (HuntData huntConditionData in other.huntQuestCompleteCondition) 
+            {
+                huntQuestCompleteCondition.Add(new(huntConditionData));
+            }
+
+            huntQuestConditionTable.Clear();
+
+            foreach (var keyAndValue in other.huntQuestConditionTable) 
+            {
+                huntQuestConditionTable.Add(keyAndValue.Key, keyAndValue.Value);
+            }
+
+            ongoingHuntTable.Clear();
+
+            foreach (var keyAndValue in other.ongoingHuntTable) 
+            {
+                ongoingHuntTable.Add(keyAndValue.Key, keyAndValue.Value);
+            }
+
+            //TODO: other quest type data need to copy
+        }
+
+        public void Arrange()
+        {
+            foreach (HuntData huntData in huntQuestCompleteCondition)
+            {
+                huntQuestConditionTable.TryAdd(huntData.MonsterName, huntData.HuntCount);
+                ongoingHuntTable.TryAdd(huntData.MonsterName, 0);
+            }
+        }
+
     }
 
     [Serializable]
@@ -88,6 +151,12 @@ namespace CommonRPG
         [SerializeField]
         private int huntCount;
         public int HuntCount { get { return huntCount; } set { huntCount = value; } }
+
+        public HuntData(HuntData other)
+        {
+            monsterName = other.monsterName;
+            huntCount = other.huntCount;
+        }
     }
 
     [Serializable]

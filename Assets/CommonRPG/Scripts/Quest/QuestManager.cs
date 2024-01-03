@@ -16,6 +16,7 @@ namespace CommonRPG
         /// </summary>
         private List<List<Dictionary<string, QuestInfo>>> classifiedQuestTableList = new List<List<Dictionary<string, QuestInfo>>>();
 
+        private List<string> tableKeyRemoverList = new();
         //private Dictionary<string, QuestInfo> unlockedHuntQuestTable = new Dictionary<string, QuestInfo>();
         //private Dictionary<string, QuestInfo> unlockedDestinationQuestTable = new Dictionary<string, QuestInfo>();
         //private Dictionary<string, QuestInfo> unlockedInteractionQuestTable = new Dictionary<string, QuestInfo>();
@@ -183,9 +184,25 @@ namespace CommonRPG
             return true;
         }
 
+        public void PrintQuests()
+        {
+            foreach (QuestInfo questInfo in allQuestTable.Values)
+            {
+                Debug.Log($"Quest Name : {questInfo.QuestName}, Quest Type : {questInfo.QuestType}, Quest State : {questInfo.QuestState}");
+                if (questInfo.QuestType == EQuestType.Hunt) 
+                {
+
+                    foreach (var KeyAndValue in questInfo.OngoingHuntTable) 
+                    {
+                        Debug.Log($"Current Hunt {KeyAndValue.Key} : {KeyAndValue.Value}");
+                    }
+                }
+            }
+        }
+
         private void ArrangeQuestTable()
         {
-            List<QuestInfo> questInfos = questData.QuestInfoList;
+            List<QuestInfo> questInfos = questData.GetData();
 
             foreach (QuestInfo questInfo in questInfos)
             {
@@ -214,6 +231,7 @@ namespace CommonRPG
             Debug.Log($"{monster} is killed by {Killer}");
 
             Dictionary<string, QuestInfo> ongoingHuntQuestTable = classifiedQuestTableList[(int)EQuestState.Ongoing][(int)EQuestType.Hunt];
+            tableKeyRemoverList.Clear();
 
             foreach (KeyValuePair<string, QuestInfo> questKeyValuePair in ongoingHuntQuestTable) 
             {
@@ -229,7 +247,11 @@ namespace CommonRPG
                 if (questInfo.OngoingHuntTable[monster.MonsterName] >= questInfo.HuntQuestConditionTable[monster.MonsterName])
                 {
                     // pend hunt quest
-                    ongoingHuntQuestTable.Remove(questKeyValuePair.Key);
+                    //ongoingHuntQuestTable.Remove(questKeyValuePair.Key);
+                    tableKeyRemoverList.Add(questKeyValuePair.Key);
+                    questKeyValuePair.Value.QuestState = EQuestState.Pending;
+
+                    Debug.Log($"Hunt Quest Clear : {questKeyValuePair.Value.QuestName}");
 
                     if (classifiedQuestTableList[(int)EQuestState.Pending][(int)EQuestType.Hunt].TryAdd(questKeyValuePair.Key, questInfo) == false) 
                     {
@@ -237,6 +259,11 @@ namespace CommonRPG
                         return;
                     }
                 }
+            }
+
+            foreach (string key in tableKeyRemoverList) 
+            {
+                ongoingHuntQuestTable.Remove(key);
             }
         }
     }

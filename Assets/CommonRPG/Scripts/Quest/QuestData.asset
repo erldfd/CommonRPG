@@ -12,4 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7568b0930fff1a94bb9809af1a1d992f, type: 3}
   m_Name: QuestData
   m_EditorClassIdentifier: 
-  questDataList: []
+  questInfoList:
+  - questName: First Hunt Quest
+    questDescription: It is First Hunt Quest
+    questType: 1
+    questState: 1
+    huntQuestCompleteCondition:
+    - monsterName: 0
+      huntCount: 10
+    destinationList: []
+    destinationTolerance: 0
+    itemCollectionQuestCompleteCondition: []
+  - questName: Second Hunt Quest
+    questDescription: It is Second Hunt Quest
+    questType: 1
+    questState: 1
+    huntQuestCompleteCondition:
+    - monsterName: 1
+      huntCount: 10
+    destinationList: []
+    destinationTolerance: 0
+    itemCollectionQuestCompleteCondition: []
