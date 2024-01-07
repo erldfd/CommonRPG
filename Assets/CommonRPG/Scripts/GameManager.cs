@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace CommonRPG
 {
-    [DefaultExecutionOrder(-2)]
+    [DefaultExecutionOrder(-10)]
     public class GameManager : MonoBehaviour
     {
         [Header("Managers")]

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   questInfoList:
   - questName: First Hunt Quest
-    questDescription: It is First Hunt Quest
+    questDescription: It is First Hunt Quest. Kill 10 Red Slimes
     questType: 1
     questState: 1
     huntQuestCompleteCondition:
@@ -24,12 +24,144 @@ MonoBehaviour:
     destinationTolerance: 0
     itemCollectionQuestCompleteCondition: []
   - questName: Second Hunt Quest
-    questDescription: It is Second Hunt Quest
+    questDescription: It is Second Hunt Quest. Kill 10 Blue Turtles
     questType: 1
     questState: 1
     huntQuestCompleteCondition:
     - monsterName: 1
       huntCount: 10
+    destinationList: []
+    destinationTolerance: 0
+    itemCollectionQuestCompleteCondition: []
+  - questName: Hunt Quest 3
+    questDescription: Kill a Blue Turtle and a Red Slime
+    questType: 1
+    questState: 2
+    huntQuestCompleteCondition:
+    - monsterName: 1
+      huntCount: 1
+    - monsterName: 0
+      huntCount: 1
+    destinationList: []
+    destinationTolerance: 0
+    itemCollectionQuestCompleteCondition: []
+  - questName: Hunt Quest 4
+    questDescription: Kill 2 Blue Turtle and 2 Red Slime
+    questType: 1
+    questState: 2
+    huntQuestCompleteCondition:
+    - monsterName: 1
+      huntCount: 2
+    - monsterName: 0
+      huntCount: 2
+    destinationList: []
+    destinationTolerance: 0
+    itemCollectionQuestCompleteCondition: []
+  - questName: Hunt Quest 5
+    questDescription: Kill 3 Blue Turtle and 3 Red Slime
+    questType: 1
+    questState: 2
+    huntQuestCompleteCondition:
+    - monsterName: 1
+      huntCount: 3
+    - monsterName: 0
+      huntCount: 3
+    destinationList: []
+    destinationTolerance: 0
+    itemCollectionQuestCompleteCondition: []
+  - questName: Hunt Quest 6
+    questDescription: Kill 4 Blue Turtle and 4 Red Slime
+    questType: 1
+    questState: 2
+    huntQuestCompleteCondition:
+    - monsterName: 1
+      huntCount: 4
+    - monsterName: 0
+      huntCount: 4
+    destinationList: []
+    destinationTolerance: 0
+    itemCollectionQuestCompleteCondition: []
+  - questName: Hunt Quest 7
+    questDescription: Kill 48 Blue Turtle and 48 Red Slime
+    questType: 1
+    questState: 2
+    huntQuestCompleteCondition:
+    - monsterName: 1
+      huntCount: 48
+    - monsterName: 0
+      huntCount: 48
+    destinationList: []
+    destinationTolerance: 0
+    itemCollectionQuestCompleteCondition: []
+  - questName: Hunt Quest 8
+    questDescription: Kill 98 Blue Turtle and 98 Red Slime
+    questType: 1
+    questState: 2
+    huntQuestCompleteCondition:
+    - monsterName: 1
+      huntCount: 98
+    - monsterName: 0
+      huntCount: 98
+    destinationList: []
+    destinationTolerance: 0
+    itemCollectionQuestCompleteCondition: []
+  - questName: Hunt Quest 9
+    questDescription: Kill 98 Blue Turtle and 98 Red Slime
+    questType: 1
+    questState: 2
+    huntQuestCompleteCondition:
+    - monsterName: 1
+      huntCount: 98
+    - monsterName: 0
+      huntCount: 98
+    destinationList: []
+    destinationTolerance: 0
+    itemCollectionQuestCompleteCondition: []
+  - questName: Hunt Quest 0
+    questDescription: Kill 98 Blue Turtle and 98 Red Slime
+    questType: 1
+    questState: 2
+    huntQuestCompleteCondition:
+    - monsterName: 1
+      huntCount: 98
+    - monsterName: 0
+      huntCount: 98
+    destinationList: []
+    destinationTolerance: 0
+    itemCollectionQuestCompleteCondition: []
+  - questName: Hunt Quest 10
+    questDescription: Kill 98 Blue Turtle and 98 Red Slime
+    questType: 1
+    questState: 2
+    huntQuestCompleteCondition:
+    - monsterName: 1
+      huntCount: 98
+    - monsterName: 0
+      huntCount: 98
+    destinationList: []
+    destinationTolerance: 0
+    itemCollectionQuestCompleteCondition: []
+  - questName: Hunt Quest 11
+    questDescription: Kill 98 Blue Turtle and 98 Red Slime
+    questType: 1
+    questState: 2
+    huntQuestCompleteCondition:
+    - monsterName: 1
+      huntCount: 98
+    - monsterName: 0
+      huntCount: 98
+    destinationList: []
+    destinationTolerance: 0
+    itemCollectionQuestCompleteCondition: []
+  - questName: Hunt Quest 12
+    questDescription: Kill 98 Blue Turtle and 98 Red Slime
+    questType: 1
+    questState: 2
+    huntQuestCompleteCondition:
+    - monsterName: 1
+      huntCount: 98
+    - monsterName: 0
+      huntCount: 98
     destinationList: []
     destinationTolerance: 0
     itemCollectionQuestCompleteCondition: []

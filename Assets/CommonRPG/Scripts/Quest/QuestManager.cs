@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace CommonRPG
 {
+    [DefaultExecutionOrder(-9)]
     public class QuestManager : MonoBehaviour
     {
         [SerializeField]
@@ -12,35 +13,11 @@ namespace CommonRPG
         private Dictionary<string, QuestInfo> allQuestTable = new Dictionary<string, QuestInfo>();
 
         /// <summary>
-        /// use this like -> List[(int)EQuestState][(int)EQuestType]
+        /// use this like -> List[(int)EQuestState][(int)EQuestType], and dictionary key is QuestName
         /// </summary>
         private List<List<Dictionary<string, QuestInfo>>> classifiedQuestTableList = new List<List<Dictionary<string, QuestInfo>>>();
 
         private List<string> tableKeyRemoverList = new();
-        //private Dictionary<string, QuestInfo> unlockedHuntQuestTable = new Dictionary<string, QuestInfo>();
-        //private Dictionary<string, QuestInfo> unlockedDestinationQuestTable = new Dictionary<string, QuestInfo>();
-        //private Dictionary<string, QuestInfo> unlockedInteractionQuestTable = new Dictionary<string, QuestInfo>();
-        //private Dictionary<string, QuestInfo> unlockedItemCollectionQuestTable = new Dictionary<string, QuestInfo>();
-
-        //private Dictionary<string, QuestInfo> lockedHuntQuestTable = new Dictionary<string, QuestInfo>();
-        //private Dictionary<string, QuestInfo> lockedDestinationQuestTable = new Dictionary<string, QuestInfo>();
-        //private Dictionary<string, QuestInfo> lockedInteractionQuestTable = new Dictionary<string, QuestInfo>();
-        //private Dictionary<string, QuestInfo> lockedItemCollectionQuestTable = new Dictionary<string, QuestInfo>();
-
-        //private Dictionary<string, QuestInfo> ongoingHuntQuestTable = new Dictionary<string, QuestInfo>();
-        //private Dictionary<string, QuestInfo> ongoingDestinationQuestTable = new Dictionary<string, QuestInfo>();
-        //private Dictionary<string, QuestInfo> ongoingInteractionQuestTable = new Dictionary<string, QuestInfo>();
-        //private Dictionary<string, QuestInfo> ongoingItemCollectionQuestTable = new Dictionary<string, QuestInfo>();
-
-        //private Dictionary<string, QuestInfo> pendingHuntQuestTable = new Dictionary<string, QuestInfo>();
-        //private Dictionary<string, QuestInfo> pendingDestinationQuestTable = new Dictionary<string, QuestInfo>();
-        //private Dictionary<string, QuestInfo> pendingInteractionQuestTable = new Dictionary<string, QuestInfo>();
-        //private Dictionary<string, QuestInfo> pendingItemCollectionQuestTable = new Dictionary<string, QuestInfo>();
-
-        //private Dictionary<string, QuestInfo> completedHuntQuestTable = new Dictionary<string, QuestInfo>();
-        //private Dictionary<string, QuestInfo> completedDestinationQuestTable = new Dictionary<string, QuestInfo>();
-        //private Dictionary<string, QuestInfo> completedInteractionQuestTable = new Dictionary<string, QuestInfo>();
-        //private Dictionary<string, QuestInfo> completedItemCollectionQuestTable = new Dictionary<string, QuestInfo>();
 
         private void Awake()
         {
@@ -188,16 +165,26 @@ namespace CommonRPG
         {
             foreach (QuestInfo questInfo in allQuestTable.Values)
             {
-                Debug.Log($"Quest Name : {questInfo.QuestName}, Quest Type : {questInfo.QuestType}, Quest State : {questInfo.QuestState}");
-                if (questInfo.QuestType == EQuestType.Hunt) 
+                
+                if (questInfo.QuestType == EQuestType.Hunt && questInfo.QuestState == EQuestState.Ongoing || questInfo.QuestState == EQuestState.Pending || questInfo.QuestState == EQuestState.Completed) 
                 {
-
+                    Debug.Log($"Quest Name : {questInfo.QuestName}, Quest Type : {questInfo.QuestType}, Quest State : {questInfo.QuestState}");
                     foreach (var KeyAndValue in questInfo.OngoingHuntTable) 
                     {
                         Debug.Log($"Current Hunt {KeyAndValue.Key} : {KeyAndValue.Value}");
                     }
                 }
             }
+        }
+
+        public List<Dictionary<string, QuestInfo>> GetQuestsByState(EQuestState questState)
+        {
+            if (classifiedQuestTableList.Count <= (int)questState) 
+            {
+                return null;
+            }
+
+            return classifiedQuestTableList[(int)questState];
         }
 
         private void ArrangeQuestTable()
