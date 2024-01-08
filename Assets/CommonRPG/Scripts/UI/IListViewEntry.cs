@@ -7,7 +7,7 @@ namespace CommonRPG
 {
     public interface IListViewEntry
     {
-        public abstract void OnUpdateEntry(ListViewItem updatedData);
+        
     }
 
     

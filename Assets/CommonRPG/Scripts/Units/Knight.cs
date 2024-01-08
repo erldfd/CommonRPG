@@ -93,9 +93,10 @@ namespace CommonRPG
             KnightAnimController knightAnimController = (KnightAnimController)animController;
             Debug.Assert(knightAnimController);
 
-            knightAnimController.PlayHitAnim();
+            //knightAnimController.PlayHitAnim();
             //animController.ani.Play("Drinking", 0);
             GameManager.PrintAllQuests();
+            GameManager.QuestManager.UnlockQuest("Hunt Quest 3");
         }
 
         protected override void OnNormalAttack(InputAction.CallbackContext context)

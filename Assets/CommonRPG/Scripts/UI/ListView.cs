@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 namespace CommonRPG
 {
@@ -20,7 +21,7 @@ namespace CommonRPG
         private SPadding viewportPaddng;
 
         [SerializeField]
-        private GameObject entryObject;
+        private ListViewEntry entryObject;
 
         [SerializeField]
         private SPadding entryPadding;
@@ -31,12 +32,16 @@ namespace CommonRPG
         [SerializeField]
         private bool isHorizontal = false;
 
-        //private LinkedList<IListViewEntry> entries = new();
+        private LinkedList<ListViewEntry> entries = new();
+        public LinkedList<ListViewEntry> Entries {  get { return entries; } }
+
         //private LinkedList<RectTransform> entryRectTransforms = new();
-        private LinkedList<ListViewEntryData> entryData = new();
-        public LinkedList<ListViewEntryData> EntryData { get { return entryData; } }
+        //private LinkedList<ListViewEntryData> entryData = new();
+        //public LinkedList<ListViewEntryData> EntryData { get { return entryData; } }
 
         private List<ListViewItem> listViewItemList = new();
+
+        private Queue<ListViewEntry> deactivatedEntryQueue = new();
 
         protected virtual void Awake()
         {
@@ -82,22 +87,120 @@ namespace CommonRPG
 
             if (listViewItemListCount <= entryMaxCount) 
             {
-                GameObject newEntry = Instantiate(entryObject, viewportRectTransform.transform);
-                RectTransform entryRectTransform = newEntry.GetComponent<RectTransform>();
-
-                entryRectTransform.anchorMin = new Vector2(0f, 1.0f);
-                entryRectTransform.anchorMax = new Vector2(1.0f, 1.0f);
-                entryRectTransform.pivot = new Vector2(0.5f, 1.0f);
-
-                entryRectTransform.anchoredPosition = new Vector2(0, -viewportPaddng.top - entryPadding.top - entrySize * item.Index);
-
-                IListViewEntry listViewEntry = newEntry.GetComponent<IListViewEntry>();
-                entryData.AddLast(new ListViewEntryData(listViewEntry, entryRectTransform, item.Index));
+                CreateEntry();
             }
 
-            entryData.Last.Value.Entry.OnUpdateEntry(item);
+            entries.Last.Value.ItemIndexInEntry = item.Index;
+            entries.Last.Value.OnUpdateEntry(item);
+        }
 
-            OnScroll(Vector2.zero); // for refresh
+        public void RemoveItem(ListViewItem item)
+        {
+            int removedItemIndex = item.Index;
+
+            listViewItemList.Remove(item);
+
+            ListViewEntry firstEntry = entries.First.Value;
+            ListViewEntry lastEntry = entries.Last.Value;
+
+            if (removedItemIndex > firstEntry.ItemIndexInEntry || removedItemIndex < lastEntry.ItemIndexInEntry) 
+            {
+                return;
+            }
+
+            int i = 0;
+            int listViewItemListCount = listViewItemList.Count;
+            
+            if (lastEntry.ItemIndexInEntry == 0)
+            {
+                i = firstEntry.ItemIndexInEntry;
+
+                foreach (var entry in entries)
+                {
+                    if (i <= removedItemIndex)
+                    {
+                        if (listViewItemListCount > i) 
+                        {
+                            entry.OnUpdateEntry(listViewItemList[i]);
+                        }
+                        else
+                        {
+                            entry.gameObject.SetActive(false);
+                            deactivatedEntryQueue.Enqueue(entry);
+                        }
+                    }
+
+                    i++;
+                }
+            }
+            else
+            {
+                foreach (var entry in entries)
+                {
+                    if (i >= removedItemIndex )
+                    {
+                        if (listViewItemListCount > i) 
+                        {
+                            entry.OnUpdateEntry(listViewItemList[i]);
+                        }
+                        else
+                        {
+                            entry.gameObject.SetActive(false);
+                            deactivatedEntryQueue.Enqueue(entry);
+                        }
+                    }
+
+                    i++;
+                }
+            }
+        }
+
+        private void AdjustProperEntryCount(int currentItemCount, int entryMaxCount)
+        {
+            int currentEntryCount = entries.Count;
+            int neededEntryCount = entryMaxCount - currentEntryCount;
+
+            if (currentItemCount < entryMaxCount)
+            {
+                neededEntryCount = currentItemCount;
+            }
+
+            if (neededEntryCount == 0) 
+            {
+                return;
+            }
+
+            if (neededEntryCount > 0) 
+            {
+
+            }
+        }
+
+        private void CreateEntry()
+        {
+            ListViewEntry newEntry;
+
+            if (deactivatedEntryQueue.Count > 0) 
+            {
+                newEntry = deactivatedEntryQueue.Dequeue();
+            }
+            else
+            {
+                newEntry = Instantiate(entryObject, viewportRectTransform.transform);
+                newEntry.EntryRectTransform = newEntry.GetComponent<RectTransform>();
+            }
+
+            RectTransform entryRectTransform = newEntry.EntryRectTransform;
+
+            entryRectTransform.anchorMin = new Vector2(0f, 1.0f);
+            entryRectTransform.anchorMax = new Vector2(1.0f, 1.0f);
+            entryRectTransform.pivot = new Vector2(0.5f, 1.0f);
+
+            float entrySize = entryPadding.top + entryPadding.bottom + newEntry.EntryRectTransform.rect.height;
+
+            entryRectTransform.anchoredPosition = new Vector2(0, -viewportPaddng.top - entryPadding.top - entrySize * (entries.Count - 1));
+
+            entries.AddLast(newEntry);
         }
 
         //public void DeleteAllItem()
@@ -109,50 +212,50 @@ namespace CommonRPG
         /// </summary>
         public void Init()
         {
-            int listViewItemCount = listViewItemList.Count;
+            //int listViewItemCount = listViewItemList.Count;
 
-            if (listViewItemCount == 0)
-            {
-                return;
-            }
+            //if (listViewItemCount == 0)
+            //{
+            //    return;
+            //}
 
-            float totalListViewSize = viewportRectTransform.rect.height - viewportPaddng.top - viewportPaddng.bottom;
-            float entrySize = entryObject.GetComponent<RectTransform>().rect.height + entryPadding.top + entryPadding.bottom;
+            //float totalListViewSize = viewportRectTransform.rect.height - viewportPaddng.top - viewportPaddng.bottom;
+            //float entrySize = entryObject.GetComponent<RectTransform>().rect.height + entryPadding.top + entryPadding.bottom;
 
-            int entryCount = (int)(totalListViewSize / entrySize) + 2;
+            //int entryCount = (int)(totalListViewSize / entrySize) + 2;
 
-            if (entryCount > listViewItemCount)
-            {
-                entryCount = listViewItemCount;
-            }
+            //if (entryCount > listViewItemCount)
+            //{
+            //    entryCount = listViewItemCount;
+            //}
 
-            if (entryCount == 0)
-            {
-                return;
-            }
+            //if (entryCount == 0)
+            //{
+            //    return;
+            //}
 
-            for (int i = 0; i < entryCount; ++i)
-            {
-                GameObject newEntry = Instantiate(entryObject, viewportRectTransform.transform);
-                RectTransform entryRectTransform = newEntry.GetComponent<RectTransform>();
+            //for (int i = 0; i < entryCount; ++i)
+            //{
+            //    GameObject newEntry = Instantiate(entryObject, viewportRectTransform.transform);
+            //    RectTransform entryRectTransform = newEntry.GetComponent<RectTransform>();
 
-                entryRectTransform.anchorMin = new Vector2(0f, 1.0f);
-                entryRectTransform.anchorMax = new Vector2(1.0f, 1.0f);
-                entryRectTransform.pivot = new Vector2(0.5f, 1.0f);
+            //    entryRectTransform.anchorMin = new Vector2(0f, 1.0f);
+            //    entryRectTransform.anchorMax = new Vector2(1.0f, 1.0f);
+            //    entryRectTransform.pivot = new Vector2(0.5f, 1.0f);
 
-                entryRectTransform.anchoredPosition = new Vector2(0, -viewportPaddng.top - entryPadding.top - entrySize * i);
+            //    entryRectTransform.anchoredPosition = new Vector2(0, -viewportPaddng.top - entryPadding.top - entrySize * i);
 
-                IListViewEntry listViewEntry = newEntry.GetComponent<IListViewEntry>();
-                entryData.AddLast(new ListViewEntryData(listViewEntry, entryRectTransform, i));
+            //    IListViewEntry listViewEntry = newEntry.GetComponent<IListViewEntry>();
+            //    entryData.AddLast(new ListViewEntryData(listViewEntry, entryRectTransform, i));
 
-                listViewEntry.OnUpdateEntry(listViewItemList[i]);
-            }
+            //    listViewEntry.OnUpdateEntry(listViewItemList[i]);
+            //}
         }
 
 
         private void OnScroll(Vector2 scrollPosDelta)
         {
-            if (entryData.Count == 0) 
+            if (entries.Count == 0) 
             {
                 return;
             }
@@ -164,23 +267,23 @@ namespace CommonRPG
             //    return;
             //}
 
-            ListViewEntryData firstNode = entryData.First.Value;
-            ListViewEntryData lastNode = entryData.Last.Value;
+            ListViewEntry firstNodeValue = entries.First.Value;
+            ListViewEntry lastNodeValue = entries.Last.Value;
 
-            RectTransform firstNodeEntryRectTransform = firstNode.EntryRectTransform;
-            RectTransform lastNodeEntryRectTransform = lastNode.EntryRectTransform;
+            RectTransform firstNodeEntryRectTransform = firstNodeValue.EntryRectTransform;
+            RectTransform lastNodeEntryRectTransform = lastNodeValue.EntryRectTransform;
 
             float entrySize = firstNodeEntryRectTransform.rect.height + entryPadding.top + entryPadding.bottom;
 
             int i = 0;
-            int lastIndex = entryData.Count - 1;
+            int lastIndex = entries.Count - 1;
             float bottomPosition = -viewportRectTransform.rect.height + viewportPaddng.bottom;
 
             float newPositionY = firstNodeEntryRectTransform.anchoredPosition.y - verticalDelta;
 
-            if (verticalDelta > 0 && firstNode.EntryIndex == 0 && newPositionY <= -viewportPaddng.top - entryPadding.top)
+            if (verticalDelta > 0 && firstNodeValue.ItemIndexInEntry == 0 && newPositionY <= -viewportPaddng.top - entryPadding.top)
             {
-                foreach (ListViewEntryData entry in entryData)
+                foreach (ListViewEntry entry in entries)
                 {
                     entry.EntryRectTransform.anchoredPosition = new Vector2(entry.EntryRectTransform.anchoredPosition.x, -viewportPaddng.top - entryPadding.top - entrySize * i);
                     i++;
@@ -191,9 +294,9 @@ namespace CommonRPG
 
             newPositionY = lastNodeEntryRectTransform.anchoredPosition.y - verticalDelta;
 
-            if (verticalDelta < 0 && lastNode.EntryIndex == listViewItemList.Count - 1 && newPositionY >= bottomPosition + entryPadding.bottom + lastNodeEntryRectTransform.rect.height)
+            if (verticalDelta < 0 && lastNodeValue.ItemIndexInEntry == listViewItemList.Count - 1 && newPositionY >= bottomPosition + entryPadding.bottom + lastNodeEntryRectTransform.rect.height)
             {
-                foreach (ListViewEntryData entry in entryData)
+                foreach (ListViewEntry entry in entries)
                 {
                     entry.EntryRectTransform.anchoredPosition = new Vector2(entry.EntryRectTransform.anchoredPosition.x, bottomPosition + entryPadding.bottom + lastNodeEntryRectTransform.rect.height + entrySize * (lastIndex - i));
                     i++;
@@ -202,7 +305,7 @@ namespace CommonRPG
                 return;
             }
 
-            foreach (ListViewEntryData entry in entryData)
+            foreach (ListViewEntry entry in entries)
             {
                 entry.EntryRectTransform.anchoredPosition = new Vector2(entry.EntryRectTransform.anchoredPosition.x, entry.EntryRectTransform.anchoredPosition.y - verticalDelta);
                 i++;
@@ -210,32 +313,32 @@ namespace CommonRPG
 
             if (verticalDelta < 0)
             {
-                if (lastNode.EntryIndex != listViewItemList.Count - 1 && firstNodeEntryRectTransform.anchoredPosition.y > viewportPaddng.top + entrySize)
+                if (lastNodeValue.ItemIndexInEntry != listViewItemList.Count - 1 && firstNodeEntryRectTransform.anchoredPosition.y > viewportPaddng.top + entrySize)
                 {
                     firstNodeEntryRectTransform.anchoredPosition = new Vector2(firstNodeEntryRectTransform.anchoredPosition.x, lastNodeEntryRectTransform.anchoredPosition.y - entrySize);
 
-                    firstNode.EntryIndex = lastNode.EntryIndex + 1;
+                    firstNodeValue.ItemIndexInEntry = lastNodeValue.ItemIndexInEntry + 1;
 
-                    ListViewItem updatingItem = listViewItemList[firstNode.EntryIndex];
-                    firstNode.Entry.OnUpdateEntry(updatingItem);
+                    ListViewItem updatingItem = listViewItemList[firstNodeValue.ItemIndexInEntry];
+                    firstNodeValue.OnUpdateEntry(updatingItem);
 
-                    entryData.RemoveFirst();
-                    entryData.AddLast(firstNode);
+                    entries.RemoveFirst();
+                    entries.AddLast(firstNodeValue);
                 }
             }
             else
             {
-                if (firstNode.EntryIndex != 0 && lastNodeEntryRectTransform.anchoredPosition.y < bottomPosition)
+                if (firstNodeValue.ItemIndexInEntry != 0 && lastNodeEntryRectTransform.anchoredPosition.y < bottomPosition)
                 {
                     lastNodeEntryRectTransform.anchoredPosition = new Vector2(lastNodeEntryRectTransform.anchoredPosition.x, firstNodeEntryRectTransform.anchoredPosition.y + entrySize);
 
-                    lastNode.EntryIndex = firstNode.EntryIndex - 1;
+                    lastNodeValue.ItemIndexInEntry = firstNodeValue.ItemIndexInEntry - 1;
 
-                    ListViewItem updatingItem = listViewItemList[lastNode.EntryIndex];
-                    lastNode.Entry.OnUpdateEntry(updatingItem);
+                    ListViewItem updatingItem = listViewItemList[lastNodeValue.ItemIndexInEntry];
+                    lastNodeValue.OnUpdateEntry(updatingItem);
 
-                    entryData.RemoveLast();
-                    entryData.AddFirst(lastNode);
+                    entries.RemoveLast();
+                    entries.AddFirst(lastNodeValue);
                 }
             }
 

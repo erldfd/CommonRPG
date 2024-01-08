@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 
 namespace CommonRPG
 {
-    public class QuestNameEntry : MonoBehaviour, IListViewEntry, IPointerDownHandler
+    public class QuestNameEntry : ListViewEntry, IPointerDownHandler
     {
         /// <summary>
         /// args : string questNameText, string questDescription
@@ -21,11 +21,6 @@ namespace CommonRPG
 
         private int currentItemIndex;
 
-        private void Awake()
-        {
-            
-        }
-
         public void OnPointerDown(PointerEventData eventData)
         {
             if (OnEntryClickedDelegate == null)
@@ -37,7 +32,7 @@ namespace CommonRPG
             OnEntryClickedDelegate.Invoke(questNameText.text, questDescription);
         }
 
-        void IListViewEntry.OnUpdateEntry(ListViewItem updatedData)
+        public override void OnUpdateEntry(ListViewItem updatedData)
         {
             QuestNameItem questNameItem = updatedData as QuestNameItem;
             if (questNameItem == null) 

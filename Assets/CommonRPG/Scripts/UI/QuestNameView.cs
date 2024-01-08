@@ -13,6 +13,7 @@ namespace CommonRPG
         /// args : string questName, string questDescription
         /// </summary>
         public event Action<string, string> OnQuestNameEntryClickedDelegate = null;
+
         [SerializeField]
         private ListView unlockedQuestNameView;
 
@@ -78,24 +79,23 @@ namespace CommonRPG
 
         private void OnEnable()
         {
-
-            LinkedList<ListViewEntryData> entryDataList = unlockedQuestNameView.EntryData;
-
-            BindEntryClickedDelegate(entryDataList);
-
-            entryDataList = ongoingQuestNameView.EntryData;
+            LinkedList<ListViewEntry> entryDataList = unlockedQuestNameView.Entries;
 
             BindEntryClickedDelegate(entryDataList);
 
-            entryDataList = completedQuestNameView.EntryData;
+            entryDataList = ongoingQuestNameView.Entries;
 
             BindEntryClickedDelegate(entryDataList);
 
-            void BindEntryClickedDelegate(LinkedList<ListViewEntryData> newEntryDataList)
+            entryDataList = completedQuestNameView.Entries;
+
+            BindEntryClickedDelegate(entryDataList);
+
+            void BindEntryClickedDelegate(LinkedList<ListViewEntry> newEntryDataList)
             {
-                foreach (ListViewEntryData entryList in newEntryDataList)
+                foreach (ListViewEntry entryList in newEntryDataList)
                 {
-                    QuestNameEntry questNameEntry = entryList.Entry as QuestNameEntry;
+                    QuestNameEntry questNameEntry = entryList as QuestNameEntry;
                     if (questNameEntry == null)
                     {
                         continue;
@@ -108,23 +108,23 @@ namespace CommonRPG
 
         private void OnDisable()
         {
-            LinkedList<ListViewEntryData> entryDataList = unlockedQuestNameView.EntryData;
+            LinkedList<ListViewEntry> entryDataList = unlockedQuestNameView.Entries;
 
             RemoveBindingEntryClickedDelegate(entryDataList);
 
-            entryDataList = ongoingQuestNameView.EntryData;
+            entryDataList = ongoingQuestNameView.Entries;
 
             RemoveBindingEntryClickedDelegate(entryDataList);
 
-            entryDataList = completedQuestNameView.EntryData;
+            entryDataList = completedQuestNameView.Entries;
 
             RemoveBindingEntryClickedDelegate(entryDataList);
 
-            void RemoveBindingEntryClickedDelegate(LinkedList<ListViewEntryData> newEntryDataList)
+            void RemoveBindingEntryClickedDelegate(LinkedList<ListViewEntry> newEntryDataList)
             {
-                foreach (ListViewEntryData entryList in newEntryDataList)
+                foreach (ListViewEntry entryList in newEntryDataList)
                 {
-                    QuestNameEntry questNameEntry = entryList.Entry as QuestNameEntry;
+                    QuestNameEntry questNameEntry = entryList as QuestNameEntry;
                     if (questNameEntry == null)
                     {
                         continue;
@@ -156,6 +156,52 @@ namespace CommonRPG
             completedQuestNameView.gameObject.SetActive(true);
         }
 
+        public void AddQuestName(QuestNameItem quest, EQuestState questState)
+        {
+            switch(questState)
+            {
+                case EQuestState.None:
+                {
+                    Debug.LogAssertion("Weird Quest State");
+                    break;
+                }
+                case EQuestState.Unlocked:
+                {
+                    unlockedQuestNameView.AddItem(quest);
+                    break;
+                }
+                case EQuestState.Locked:
+                {
+                    Debug.LogAssertion("Locked Quest can not be added");
+                    break;
+                }
+                case EQuestState.Ongoing:
+                {
+                    ongoingQuestNameView.AddItem(quest);
+                    break;
+                }
+                case EQuestState.Pending:
+                {
+                    ongoingQuestNameView.AddItem(quest);
+                    break;
+                }
+                case EQuestState.Completed:
+                {
+                    completedQuestNameView.AddItem(quest);
+                    break;
+                }
+                default:
+                {
+                    Debug.LogAssertion("Weird Quest State");
+                    break;
+                }
+            }
+        }
+
+        public void RemoveQuestName()
+        {
+
+        }
 
         private void OnQuestNameEntryClicked(string questName, string questDescription)
         {

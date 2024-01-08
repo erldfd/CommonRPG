@@ -10,6 +10,9 @@ namespace CommonRPG
         [SerializeField]
         private QuestDataScriptableObject questData;
 
+        [SerializeField]
+        private QuestWindow questWindow;
+
         private Dictionary<string, QuestInfo> allQuestTable = new Dictionary<string, QuestInfo>();
 
         /// <summary>
