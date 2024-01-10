@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using static UnityEditor.Progress;
+using static UnityEngine.EventSystems.EventTrigger;
 
 namespace CommonRPG
 {
@@ -110,16 +111,20 @@ namespace CommonRPG
 
             int i = 0;
             int listViewItemListCount = listViewItemList.Count;
-            
+
             if (lastEntry.ItemIndexInEntry == 0)
             {
                 i = firstEntry.ItemIndexInEntry;
 
-                foreach (var entry in entries)
+                LinkedListNode<ListViewEntry> entryNode = entries.First;
+
+                while (entryNode != null)
                 {
                     if (i <= removedItemIndex)
                     {
-                        if (listViewItemListCount > i) 
+                        ListViewEntry entry = entryNode.Value;
+
+                        if (listViewItemListCount > i)
                         {
                             entry.OnUpdateEntry(listViewItemList[i]);
                         }
@@ -127,19 +132,54 @@ namespace CommonRPG
                         {
                             entry.gameObject.SetActive(false);
                             deactivatedEntryQueue.Enqueue(entry);
+
+                            if (entryNode.Next == null) 
+                            {
+                                entries.Remove(entryNode);
+                                break;
+                            }
+
+                            entryNode = entryNode.Next;
+                            entries.Remove(entryNode.Previous);
+                            i++;
+
+                            continue;
                         }
                     }
 
                     i++;
+                    entryNode = entryNode.Next;
                 }
+
+                //foreach (var entry in entries)
+                //{
+                //    if (i <= removedItemIndex)
+                //    {
+                //        if (listViewItemListCount > i) 
+                //        {
+                //            entry.OnUpdateEntry(listViewItemList[i]);
+                //        }
+                //        else
+                //        {
+                //            entry.gameObject.SetActive(false);
+                //            deactivatedEntryQueue.Enqueue(entry);
+                //        }
+                //    }
+
+                //    i++;
+                //}
             }
             else
             {
-                foreach (var entry in entries)
+                LinkedListNode<ListViewEntry> entryNode = entries.First;
+
+                while (entryNode != null)
                 {
-                    if (i >= removedItemIndex )
+                    if (i >= removedItemIndex)
                     {
-                        if (listViewItemListCount > i) 
+                        ListViewEntry entry = entryNode.Value;
+
+                        if (listViewItemListCount > i)
                         {
                             entry.OnUpdateEntry(listViewItemList[i]);
                         }
@@ -147,12 +187,48 @@ namespace CommonRPG
                         {
                             entry.gameObject.SetActive(false);
                             deactivatedEntryQueue.Enqueue(entry);
+
+                            if (entryNode.Next == null)
+                            {
+                                entries.Remove(entryNode);
+                                break;
+                            }
+
+                            entryNode = entryNode.Next;
+                            entries.Remove(entryNode.Previous);
+                            i++;
+
+                            continue;
                         }
                     }
 
                     i++;
+                    entryNode = entryNode.Next;
                 }
+
+                //foreach (var entry in entries)
+                //{
+                //    if (i >= removedItemIndex )
+                //    {
+                //        if (listViewItemListCount > i) 
+                //        {
+                //            entry.OnUpdateEntry(listViewItemList[i]);
+                //        }
+                //        else
+                //        {
+                //            entry.gameObject.SetActive(false);
+                //            deactivatedEntryQueue.Enqueue(entry);
+                //        }
+                //    }
+
+                //    i++;
+                //}
             }
+        }
+
+        public ListViewItem GetItemFromIndex(int index)
+        {
+            return (listViewItemList.Count > index) ? listViewItemList[index] : null;
         }
 
         private void AdjustProperEntryCount(int currentItemCount, int entryMaxCount)
@@ -190,6 +266,8 @@ namespace CommonRPG
                 newEntry.EntryRectTransform = newEntry.GetComponent<RectTransform>();
             }
 
+            newEntry.gameObject.SetActive(true);
+
             RectTransform entryRectTransform = newEntry.EntryRectTransform;
 
             entryRectTransform.anchorMin = new Vector2(0f, 1.0f);
@@ -198,7 +276,7 @@ namespace CommonRPG
 
             float entrySize = entryPadding.top + entryPadding.bottom + newEntry.EntryRectTransform.rect.height;
 
-            entryRectTransform.anchoredPosition = new Vector2(0, -viewportPaddng.top - entryPadding.top - entrySize * (entries.Count - 1));
+            entryRectTransform.anchoredPosition = new Vector2(0, -viewportPaddng.top - entryPadding.top - entrySize * entries.Count);
 
             entries.AddLast(newEntry);
         }
@@ -260,6 +338,16 @@ namespace CommonRPG
                 return;
             }
 
+            float totalListViewSize = viewportRectTransform.rect.height - viewportPaddng.top - viewportPaddng.bottom;
+            float entrySize = entryObject.GetComponent<RectTransform>().rect.height + entryPadding.top + entryPadding.bottom;
+
+            int entryMaxCount = (int)(totalListViewSize / entrySize) + 2;
+
+            if (entryMaxCount > listViewItemList.Count) 
+            {
+                return;
+            }
+
             float verticalDelta = scrollPosDelta.y;
             //Debug.Log($"delta : {verticalDelta}");
             //if (Mathf.Abs(verticalDelta) < 0.01f)
@@ -272,8 +360,6 @@ namespace CommonRPG
 
             RectTransform firstNodeEntryRectTransform = firstNodeValue.EntryRectTransform;
             RectTransform lastNodeEntryRectTransform = lastNodeValue.EntryRectTransform;
-
-            float entrySize = firstNodeEntryRectTransform.rect.height + entryPadding.top + entryPadding.bottom;
 
             int i = 0;
             int lastIndex = entries.Count - 1;

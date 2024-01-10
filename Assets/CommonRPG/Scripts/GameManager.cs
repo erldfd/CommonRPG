@@ -11,6 +11,7 @@ namespace CommonRPG
         [Header("Managers")]
         [SerializeField]
         private TimerManager timerManager = null;
+        public static TimerManager TimerManager { get { return instance.timerManager; } }
 
         [SerializeField]
         private InventoryManager inventoryManager = null;
@@ -250,6 +251,7 @@ namespace CommonRPG
         {
             instance.inventoryManager.OpenAndCloseMainInventory();
             instance.statWindow.OpenAndCloseStatWindow();
+            instance.timerManager.PauseGameWorld(instance.inventoryManager.IsInventoryOpened);
 
             instance.itemInfoWindow.ShowOrHide(false);
         }

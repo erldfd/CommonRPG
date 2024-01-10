@@ -311,7 +311,7 @@ namespace CommonRPG
             mainInventoryObject.SetActive(isInventoryOpened);
             inventoryList[(int)EInventoryType.EquipmentScreen].gameObject.SetActive(isInventoryOpened);
 
-            Time.timeScale = (isInventoryOpened) ? 0 : 1;
+            //Time.timeScale = (isInventoryOpened) ? 0 : 1;
             Cursor.visible = isInventoryOpened;
             Cursor.lockState = (IsInventoryOpened) ? CursorLockMode.Confined : CursorLockMode.Locked;
 

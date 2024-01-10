@@ -207,5 +207,10 @@ namespace CommonRPG
             ActivatedTimerHandlers.AddLast(timerHandler);
             return timerHandler;
         }
+
+        public void PauseGameWorld(bool shouldPuase)
+        {
+            Time.timeScale = (shouldPuase) ? 0 : 1;
+        }
     }
 }

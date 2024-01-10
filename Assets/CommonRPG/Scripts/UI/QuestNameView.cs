@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 
 namespace CommonRPG
@@ -23,56 +24,53 @@ namespace CommonRPG
         [SerializeField]
         private ListView completedQuestNameView;
 
+        private static Dictionary<string, QuestNameItem> includedQuest = new();
+
         private void Awake()
         {
             Debug.Assert(unlockedQuestNameView);
             Debug.Assert(ongoingQuestNameView);
             Debug.Assert(completedQuestNameView);
 
-            List<Dictionary<string, QuestInfo>> questTableList = GameManager.QuestManager.GetQuestsByState(EQuestState.Unlocked);
+            //List<Dictionary<string, QuestInfo>> questTableList = GameManager.QuestManager.GetQuestsByState(EQuestState.Unlocked);
 
-            if (questTableList != null) 
-            {
-                foreach (Dictionary<string, QuestInfo> questTable in questTableList)
-                {
-                    foreach (var quest in questTable)
-                    {
-                        unlockedQuestNameView.AddItem(new QuestNameItem(quest.Key, quest.Value.QuestDescriotion));
-                    }
-                }
-            }
+            //if (questTableList != null)
+            //{
+            //    foreach (Dictionary<string, QuestInfo> questTable in questTableList)
+            //    {
+            //        foreach (var quest in questTable)
+            //        {
+            //            AddQuest(quest.Key, quest.Value.QuestDescription, EQuestState.Unlocked);
+            //        }
+            //    }
+            //}
 
-            //unlockedQuestNameView.Init();
+            //questTableList = GameManager.QuestManager.GetQuestsByState(EQuestState.Ongoing);
 
-            questTableList = GameManager.QuestManager.GetQuestsByState(EQuestState.Ongoing);
+            //if (questTableList != null)
+            //{
+            //    foreach (Dictionary<string, QuestInfo> questTable in questTableList)
+            //    {
+            //        foreach (var quest in questTable)
+            //        {
+            //            ongoingQuestNameView.AddItem(new QuestNameItem(quest.Key, quest.Value.QuestDescription));
+            //            AddQuest(quest.Key, quest.Value.QuestDescription, EQuestState.Ongoing);
+            //        }
+            //    }
+            //}
 
-            if (questTableList != null) 
-            {
-                foreach (Dictionary<string, QuestInfo> questTable in questTableList)
-                {
-                    foreach (var quest in questTable)
-                    {
-                        ongoingQuestNameView.AddItem(new QuestNameItem(quest.Key, quest.Value.QuestDescriotion));
-                    }
-                }
-            }
+            //questTableList = GameManager.QuestManager.GetQuestsByState(EQuestState.Completed);
 
-            //ongoingQuestNameView.Init();
-
-            questTableList = GameManager.QuestManager.GetQuestsByState(EQuestState.Completed);
-
-            if (questTableList != null)
-            {
-                foreach (Dictionary<string, QuestInfo> questTable in questTableList)
-                {
-                    foreach (var quest in questTable)
-                    {
-                        completedQuestNameView.AddItem(new QuestNameItem(quest.Key, quest.Value.QuestDescriotion));
-                    }
-                }
-            }
-
-           // completedQuestNameView.Init();
+            //if (questTableList != null)
+            //{
+            //    foreach (Dictionary<string, QuestInfo> questTable in questTableList)
+            //    {
+            //        foreach (var quest in questTable)
+            //        {
+            //            AddQuest(quest.Key, quest.Value.QuestDescription, EQuestState.Ongoing);
+            //        }
+            //    }
+            //}
 
             ShowUnlockedQuestWindow();
         }
@@ -97,6 +95,11 @@ namespace CommonRPG
                 {
                     QuestNameEntry questNameEntry = entryList as QuestNameEntry;
                     if (questNameEntry == null)
+                    {
+                        continue;
+                    }
+
+                    if (questNameEntry.IsOnEntryClickedDelegateBound())
                     {
                         continue;
                     }
@@ -130,6 +133,11 @@ namespace CommonRPG
                         continue;
                     }
 
+                    if (questNameEntry.IsOnEntryClickedDelegateBound() == false)
+                    {
+                        continue;
+                    }
+
                     questNameEntry.OnEntryClickedDelegate -= OnQuestNameEntryClicked;
                 }
             }
@@ -156,7 +164,25 @@ namespace CommonRPG
             completedQuestNameView.gameObject.SetActive(true);
         }
 
-        public void AddQuestName(QuestNameItem quest, EQuestState questState)
+        public void AddQuest(string questName, string questDescription, EQuestState questState)
+        {
+            if (includedQuest.ContainsKey(questName))
+            {
+                AddQuest(includedQuest[questName], questState);
+            }
+            else if (questState == EQuestState.Unlocked) 
+            {
+                QuestNameItem newQuest = new QuestNameItem(questName, questDescription);
+                AddQuest(newQuest, questState);
+                includedQuest.Add(questName, newQuest);
+            }
+            else
+            {
+                Debug.Log("Quest Add Failed.");
+            }
+        }
+
+        private void AddQuest(QuestNameItem quest, EQuestState questState)
         {
             switch(questState)
             {
@@ -168,6 +194,21 @@ namespace CommonRPG
                 case EQuestState.Unlocked:
                 {
                     unlockedQuestNameView.AddItem(quest);
+
+                    QuestNameEntry questNameEntry = unlockedQuestNameView.Entries.Last.Value as QuestNameEntry;
+                    if (questNameEntry == null)
+                    {
+                        Debug.LogAssertion("questNameEntry is null");
+                        return;
+                    }
+
+                    if (questNameEntry.IsOnEntryClickedDelegateBound())
+                    {
+                        break;
+                    }
+
+                    questNameEntry.OnEntryClickedDelegate += OnQuestNameEntryClicked;
+
                     break;
                 }
                 case EQuestState.Locked:
@@ -178,16 +219,61 @@ namespace CommonRPG
                 case EQuestState.Ongoing:
                 {
                     ongoingQuestNameView.AddItem(quest);
+                    
+                    QuestNameEntry questNameEntry = ongoingQuestNameView.Entries.Last.Value as QuestNameEntry;
+                    if (questNameEntry == null)
+                    {
+                        Debug.LogAssertion("questNameEntry is null");
+                        return;
+                    }
+
+                    if (questNameEntry.IsOnEntryClickedDelegateBound()) 
+                    {
+                        break;
+                    }
+
+                    questNameEntry.OnEntryClickedDelegate += OnQuestNameEntryClicked;
+
                     break;
                 }
                 case EQuestState.Pending:
                 {
                     ongoingQuestNameView.AddItem(quest);
+
+                    QuestNameEntry questNameEntry = ongoingQuestNameView.Entries.Last.Value as QuestNameEntry;
+                    if (questNameEntry == null)
+                    {
+                        Debug.LogAssertion("questNameEntry is null");
+                        return;
+                    }
+
+                    if (questNameEntry.IsOnEntryClickedDelegateBound())
+                    {
+                        break;
+                    }
+
+                    questNameEntry.OnEntryClickedDelegate += OnQuestNameEntryClicked;
+
                     break;
                 }
                 case EQuestState.Completed:
                 {
                     completedQuestNameView.AddItem(quest);
+
+                    QuestNameEntry questNameEntry = completedQuestNameView.Entries.Last.Value as QuestNameEntry;
+                    if (questNameEntry == null)
+                    {
+                        Debug.LogAssertion("questNameEntry is null");
+                        return;
+                    }
+
+                    if (questNameEntry.IsOnEntryClickedDelegateBound())
+                    {
+                        break;
+                    }
+
+                    questNameEntry.OnEntryClickedDelegate += OnQuestNameEntryClicked;
+
                     break;
                 }
                 default:
@@ -198,9 +284,58 @@ namespace CommonRPG
             }
         }
 
-        public void RemoveQuestName()
+        public void RemoveQuest(string questName, EQuestState questState)
         {
+            if (includedQuest.ContainsKey(questName))
+            {
+                RemoveQuest(includedQuest[questName], questState);
+            }
+            else
+            {
+                Debug.LogAssertion("Weird quest remove detected");
+            }
+        }
 
+        public void RemoveQuest(QuestNameItem quest, EQuestState questState)
+        {
+            switch (questState)
+            {
+                case EQuestState.None:
+                {
+                    Debug.LogAssertion("Weird Quest State");
+                    break;
+                }
+                case EQuestState.Unlocked:
+                {
+                    unlockedQuestNameView.RemoveItem(quest);
+                    break;
+                }
+                case EQuestState.Locked:
+                {
+                    Debug.LogAssertion("Locked Quest can not be removed");
+                    break;
+                }
+                case EQuestState.Ongoing:
+                {
+                    ongoingQuestNameView.RemoveItem(quest);
+                    break;
+                }
+                case EQuestState.Pending:
+                {
+                    ongoingQuestNameView.RemoveItem(quest);
+                    break;
+                }
+                case EQuestState.Completed:
+                {
+                    completedQuestNameView.RemoveItem(quest);
+                    break;
+                }
+                default:
+                {
+                    Debug.LogAssertion("Weird Quest State");
+                    break;
+                }
+            }
         }
 
         private void OnQuestNameEntryClicked(string questName, string questDescription)
@@ -213,8 +348,6 @@ namespace CommonRPG
     {
         public string QuestName { get; set; }
         public string QuestDescription { get; set; }
-
-        public int ItemIndex { get; set; }
 
         public QuestNameItem(string questName, string questDescription)
         {

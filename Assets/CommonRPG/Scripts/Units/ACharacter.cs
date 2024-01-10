@@ -121,6 +121,8 @@ namespace CommonRPG
 
             inputActionAsset.FindActionMap("PlayerInput").FindAction("UsingQuickSlot").performed += OnUseQuickSlot;
 
+            inputActionAsset.FindActionMap("PlayerInput").FindAction("OpenQuestWindow").performed += OnOpenQuestWindow;
+
         }
 
         protected override void OnDisable()
@@ -141,6 +143,8 @@ namespace CommonRPG
             inputActionAsset.FindActionMap("PlayerInput").FindAction("Interaction").performed -= OnInteraction;
 
             inputActionAsset.FindActionMap("PlayerInput").FindAction("UsingQuickSlot").performed -= OnUseQuickSlot;
+
+            inputActionAsset.FindActionMap("PlayerInput").FindAction("OpenQuestWindow").performed -= OnOpenQuestWindow;
         }
 
         public virtual void ObtainExp(float amount)
@@ -231,6 +235,10 @@ namespace CommonRPG
             GameManager.InventoryManager.UseQuickSlot(inputKey);
         }
         
+        protected virtual void OnOpenQuestWindow(InputAction.CallbackContext context)
+        {
+            GameManager.QuestManager.OpenAndCloseQuestWindow();
+        }
     }
 
     public enum EInputKey

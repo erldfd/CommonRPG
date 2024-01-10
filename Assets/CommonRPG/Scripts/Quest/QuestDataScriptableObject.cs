@@ -57,7 +57,7 @@ namespace CommonRPG
 
         [SerializeField]
         private string questDescription;
-        public string QuestDescriotion { get { return questDescription; } }
+        public string QuestDescription { get { return questDescription; } }
 
         [SerializeField]
         private EQuestType questType = EQuestType.None;

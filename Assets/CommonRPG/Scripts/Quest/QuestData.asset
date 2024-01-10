@@ -16,7 +16,7 @@ MonoBehaviour:
   - questName: First Hunt Quest
     questDescription: It is First Hunt Quest. Kill 10 Red Slimes
     questType: 1
-    questState: 1
+    questState: 2
     huntQuestCompleteCondition:
     - monsterName: 0
       huntCount: 10
@@ -26,7 +26,7 @@ MonoBehaviour:
   - questName: Second Hunt Quest
     questDescription: It is Second Hunt Quest. Kill 10 Blue Turtles
     questType: 1
-    questState: 1
+    questState: 2
     huntQuestCompleteCondition:
     - monsterName: 1
       huntCount: 10

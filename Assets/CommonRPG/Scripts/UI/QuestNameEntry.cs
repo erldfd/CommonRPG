@@ -49,5 +49,10 @@ namespace CommonRPG
         {
             questNameText.text = newText;
         }
+
+        public bool IsOnEntryClickedDelegateBound()
+        {
+            return OnEntryClickedDelegate != null;
+        }
     }
 }

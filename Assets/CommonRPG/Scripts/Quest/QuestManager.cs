@@ -52,6 +52,13 @@ namespace CommonRPG
             MonsterBase.OnKilled -= OnKilled;
         }
 
+        public void OpenAndCloseQuestWindow()
+        {
+            bool shouldOpen = questWindow.gameObject.activeSelf == false;
+            questWindow.gameObject.SetActive(shouldOpen);
+            GameManager.TimerManager.PauseGameWorld(shouldOpen);
+        }
+
         public void UnlockQuest(string questName)
         {
             QuestInfo questInfo;
@@ -71,7 +78,7 @@ namespace CommonRPG
 
             if (questInfo.QuestState != EQuestState.Locked)
             {
-                Debug.LogAssertion("This is not Locked Quest");
+                Debug.LogWarning("This is not Locked Quest");
                 return;
             }
 
@@ -85,7 +92,7 @@ namespace CommonRPG
 
             classifiedQuestTableList[(int)EQuestState.Locked][(int)questInfo.QuestType].Remove(questName);
 
-            //TODO: UI Change.......
+            questWindow.QuestNameView.AddQuest(questName, questInfo.QuestDescription, EQuestState.Unlocked);
         }
 
         public bool TryReceiveQuest(string questName)
@@ -121,7 +128,8 @@ namespace CommonRPG
 
             classifiedQuestTableList[(int)EQuestState.Unlocked][(int)questInfo.QuestType].Remove(questName);
 
-            //TODO: UI Change.......
+            questWindow.QuestNameView.RemoveQuest(questName, EQuestState.Unlocked);
+            questWindow.QuestNameView.AddQuest(questName, questInfo.QuestDescription, EQuestState.Ongoing);
 
             return true;
         }
@@ -159,7 +167,10 @@ namespace CommonRPG
 
             classifiedQuestTableList[(int)EQuestState.Pending][(int)questInfo.QuestType].Remove(questName);
 
-            //TODO: UI Change & Receive rewards
+            questWindow.QuestNameView.RemoveQuest(questName, EQuestState.Pending);
+            questWindow.QuestNameView.AddQuest(questName, questInfo.QuestDescription, EQuestState.Completed);
+            
+            //TODO: Receive rewards
 
             return true;
         }

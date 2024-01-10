@@ -21,7 +21,9 @@ namespace CommonRPG
         protected override void Start()
         {
             base.Start();
+            GameManager.QuestManager.UnlockQuest("First Hunt Quest");
             GameManager.QuestManager.TryReceiveQuest("First Hunt Quest");
+            GameManager.QuestManager.UnlockQuest("Second Hunt Quest");
         }
 
         protected override void Update()
@@ -40,7 +42,6 @@ namespace CommonRPG
             knightAnimController.OnAttackCheck += EnableCollider;
             knightAnimController.OnComboCheck += CheckCombo;
             knightAnimController.OnStartPlayingComboAttack += OnStartComboAttack;
-
         }
 
         protected override void OnDisable()

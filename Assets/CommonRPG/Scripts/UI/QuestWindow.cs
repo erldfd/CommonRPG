@@ -19,6 +19,7 @@ namespace CommonRPG
 
         [SerializeField]
         private QuestNameView questNameView;
+        public QuestNameView QuestNameView { get { return questNameView; } }
 
         [SerializeField]
         private QuestDescriptionWindow questDescriptionWindow;
