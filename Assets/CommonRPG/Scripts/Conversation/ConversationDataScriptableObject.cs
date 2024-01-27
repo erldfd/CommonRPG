@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static CommonRPG.ConversationMakerWindow;
 
 namespace CommonRPG
 {
@@ -9,29 +10,61 @@ namespace CommonRPG
     public class ConversationDataScriptableObject : ScriptableObject
     {
         [SerializeField]
-        private List<ConversationNode> conversations;
+        private List<DrawingNodeInfo> drawInfoNodes = new();
+        public List<DrawingNodeInfo> DrawInfoNodes { get { return drawInfoNodes; } }
 
         private Dictionary<int, ConversationNode> conversationTable = new();
-    }
+        public Dictionary<int, ConversationNode> ConversationTable
+        {
+            get { return conversationTable; }
+        }
 
-    [Serializable]
-    public class ConversationNode
-    {
-        [SerializeField]
-        private string speakerName;
-        public string SpeakerName { get { return speakerName; } set { speakerName = value; } } 
+        [Serializable]
+        public class ConversationNode
+        {
+            [SerializeField]
+            private string speakerName;
+            public string SpeakerName { get { return speakerName; } set { speakerName = value; } }
 
-        private int parentID;
-        public int ParentID { get { return parentID; } set { parentID = value; } }
+            private int parentID = 0;
+            public int ParentID { get { return parentID; } set { parentID = value; } }
 
-        private List<int> childrenIDs = new();
-        public List<int> ChildrenIDs { get { return childrenIDs; } set { childrenIDs = value; } }
+            private List<int> childrenIDs = new();
+            public List<int> ChildrenIDs { get { return childrenIDs; } set { childrenIDs = value; } }
 
-        private int myID;
-        public int MyID { get { return myID; } set { myID = value; } }
+            private int myID = 0;
+            public int MyID { get { return myID; } set { myID = value; } }
 
-        public List<string> Conversations = new List<string>();
+            public List<string> Conversations = new List<string>();
 
-        public bool IsSelectConversation = false;
+            public bool IsChoiceConversation = false;
+
+            public ConversationNode(string speakerName, int parentID, List<int> childrenIDs, int myID, List<string> conversations, bool isChoiceConversation)
+            {
+                this.speakerName = speakerName;
+                this.parentID = parentID;
+                this.childrenIDs = childrenIDs;
+                this.myID = myID;
+
+                Conversations = conversations;
+                IsChoiceConversation = isChoiceConversation;
+            }
+        }
+
+        [Serializable]
+        public class DrawingNodeInfo
+        {
+            public string SpeakerName;
+
+            public int NodeId = 0;
+            public int ParentId = 0;
+            public List<int> ChildrenIds = new();
+
+            public string NodeName;
+            public ENodeType NodeType;
+            public Rect NodeRect;
+
+            public List<string> Conversations = new();
+        }
     }
 }
