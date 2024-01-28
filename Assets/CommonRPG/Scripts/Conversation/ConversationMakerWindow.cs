@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEditor.ShaderGraph.Internal;
@@ -236,12 +237,61 @@ namespace CommonRPG
 
         private HashSet<int> existHashCode = new HashSet<int>();
 
+        private ConversationDataScriptableObject openedData;
+
         [MenuItem("Window/ConversationMakerWindow")]
-        public static void ShowWindow()
+        public static ConversationMakerWindow ShowWindow()
         {
             // MyWindow 타입의 첫 번째 EditorWindow를 반환하거나, 없다면 새 창을 생성하고 보여줍니다.
             ConversationMakerWindow window = GetWindow<ConversationMakerWindow>("Conversation Maker !");
             window.Show();
+
+            return window;
+        }
+
+        public void SetScriptableObject(ConversationDataScriptableObject scriptableObject)
+        {
+            openedData = scriptableObject;
+            conversationNameInput = scriptableObject.ConversationDataName;
+
+            drawingNodeInfoTable.Clear();
+
+            foreach (var data in openedData.DrawInfoNodes)
+            {
+                drawingNodeInfoTable.Add(data.NodeId, data);
+            }
+
+            connectionLineInfoTable.Clear();
+
+            foreach (var nodeInfo in drawingNodeInfoTable.Values) 
+            {
+                if (nodeInfo.NodeType == ENodeType.End) 
+                {
+                    continue;
+                }
+
+                //if (nodeInfo.NodeType == ENodeType.Choice) 
+                //{
+                    
+
+                //    continue;
+                //}
+
+                for (int i = 0; i < nodeInfo.ChildrenIds.Count; ++i)
+                {
+                    ConnectionLineInfo lineInfo = new ConnectionLineInfo();
+                    lineInfo.startDrawingNode = nodeInfo;
+
+                    lineInfo.endDrawingNodes.Clear();
+
+                    foreach (int childId in nodeInfo.ChildrenIds)
+                    {
+                        lineInfo.endDrawingNodes.Add(drawingNodeInfoTable[childId]);
+                    }
+
+                    connectionLineInfoTable.Add(nodeInfo.NodeId, lineInfo);
+                }
+            }
         }
 
         private void OnEnable()
@@ -350,6 +400,7 @@ namespace CommonRPG
                 newData.ConversationTable.Add(conversationNode.MyID, conversationNode);
             }
 
+            newData.ConversationDataName = conversationNameInput;
             
             AssetDatabase.CreateAsset(newData, $"Assets/CommonRPG/{conversationNameInput}.asset");
             AssetDatabase.SaveAssets();
@@ -556,8 +607,8 @@ namespace CommonRPG
                             connectionLineInfo.startNodeConnectionlocalPositions.Add(drawStartLocalPosition);
                             connectionLineInfo.endNodeConnectionlocalPositions.Add(drawEndLocalPosition);
 
-                            connectionLineInfo.startNodeWindow = drawingNodeInfoTable[drawStartNodeId];
-                            connectionLineInfo.endNodeWindows.Add(drawingNodeInfoTable[drawEndNodeId]);
+                            connectionLineInfo.startDrawingNode = drawingNodeInfoTable[drawStartNodeId];
+                            connectionLineInfo.endDrawingNodes.Add(drawingNodeInfoTable[drawEndNodeId]);
 
                             drawingNodeInfoTable[drawStartNodeId].ChildrenIds.Add(drawEndNodeId);
                             drawingNodeInfoTable[drawEndNodeId].ParentId = drawStartNodeId;
@@ -575,8 +626,8 @@ namespace CommonRPG
                         connectionLineInfo.startNodeConnectionlocalPositions.Add(drawStartLocalPosition);
                         connectionLineInfo.endNodeConnectionlocalPositions.Add(drawEndLocalPosition);
 
-                        connectionLineInfo.startNodeWindow = drawingNodeInfoTable[drawStartNodeId];
-                        connectionLineInfo.endNodeWindows.Add(drawingNodeInfoTable[drawEndNodeId]);
+                        connectionLineInfo.startDrawingNode = drawingNodeInfoTable[drawStartNodeId];
+                        connectionLineInfo.endDrawingNodes.Add(drawingNodeInfoTable[drawEndNodeId]);
 
                         drawingNodeInfoTable[drawStartNodeId].ChildrenIds.Add(drawEndNodeId);
                         drawingNodeInfoTable[drawEndNodeId].ParentId = drawStartNodeId;
@@ -645,8 +696,8 @@ namespace CommonRPG
                     connectionLineInfo.startNodeConnectionlocalPositions.Add(drawStartLocalPosition);
                     connectionLineInfo.endNodeConnectionlocalPositions.Add(drawEndLocalPosition);
 
-                    connectionLineInfo.startNodeWindow = drawingNodeInfoTable[drawStartNodeId];
-                    connectionLineInfo.endNodeWindows.Add(drawingNodeInfoTable[drawEndNodeId]);
+                    connectionLineInfo.startDrawingNode = drawingNodeInfoTable[drawStartNodeId];
+                    connectionLineInfo.endDrawingNodes.Add(drawingNodeInfoTable[drawEndNodeId]);
 
                     drawingNodeInfoTable[drawStartNodeId].ChildrenIds.Add(drawEndNodeId);
                     drawingNodeInfoTable[drawEndNodeId].ParentId = drawStartNodeId;
@@ -767,8 +818,8 @@ namespace CommonRPG
                     connectionLineInfo.startNodeConnectionlocalPositions.Add(drawStartLocalPosition);
                     connectionLineInfo.endNodeConnectionlocalPositions.Add(drawEndLocalPosition);
 
-                    connectionLineInfo.startNodeWindow = drawingNodeInfoTable[drawStartNodeId];
-                    connectionLineInfo.endNodeWindows.Add(drawingNodeInfoTable[drawEndNodeId]);
+                    connectionLineInfo.startDrawingNode = drawingNodeInfoTable[drawStartNodeId];
+                    connectionLineInfo.endDrawingNodes.Add(drawingNodeInfoTable[drawEndNodeId]);
 
                     drawingNodeInfoTable[drawStartNodeId].ChildrenIds.Add(drawEndNodeId);
                     drawingNodeInfoTable[drawEndNodeId].ParentId = drawStartNodeId;
@@ -793,12 +844,12 @@ namespace CommonRPG
 
                 for (int i = 0; i < connectionsCount; ++i)
                 {
-                    float startPositionX = line.startNodeWindow.NodeRect.x + line.startNodeConnectionlocalPositions[i].x;
-                    float startPositionY = line.startNodeWindow.NodeRect.y + line.startNodeConnectionlocalPositions[i].y;
+                    float startPositionX = line.startDrawingNode.NodeRect.x + line.startNodeConnectionlocalPositions[i].x;
+                    float startPositionY = line.startDrawingNode.NodeRect.y + line.startNodeConnectionlocalPositions[i].y;
                     Vector2 startPosition = new Vector2(startPositionX, startPositionY);
 
-                    float endPositionX = line.endNodeWindows[i].NodeRect.x + line.endNodeConnectionlocalPositions[i].x;
-                    float endPositionY = line.endNodeWindows[i].NodeRect.y + line.endNodeConnectionlocalPositions[i].y;
+                    float endPositionX = line.endDrawingNodes[i].NodeRect.x + line.endNodeConnectionlocalPositions[i].x;
+                    float endPositionY = line.endDrawingNodes[i].NodeRect.y + line.endNodeConnectionlocalPositions[i].y;
                     Vector2 endPosition = new Vector2(endPositionX, endPositionY);
 
                     Handles.DrawAAPolyLine(5, startPosition, endPosition);
@@ -833,9 +884,9 @@ namespace CommonRPG
 
         private class ConnectionLineInfo
         {
-            public DrawingNodeInfo startNodeWindow;
+            public DrawingNodeInfo startDrawingNode;
             //public NodeWindow endNodeWindow;
-            public List<DrawingNodeInfo> endNodeWindows = new();
+            public List<DrawingNodeInfo> endDrawingNodes = new();
 
             //public Vector2 startNodeConnectionlocalPosition;
             //public Vector2 endNodeConnectionlocalPosition;

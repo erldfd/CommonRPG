@@ -2,13 +2,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static CommonRPG.ConversationMakerWindow;
 
 namespace CommonRPG
 {
     [CreateAssetMenu(fileName = "ConversationData", menuName = "ScriptableObjects/ConversationDataScriptableObject", order = 6)]
     public class ConversationDataScriptableObject : ScriptableObject
     {
+
+        [SerializeField]
+        private string converstionDataName;
+        public string ConversationDataName { get { return converstionDataName; } set { converstionDataName = value; } }
+
         [SerializeField]
         private List<DrawingNodeInfo> drawInfoNodes = new();
         public List<DrawingNodeInfo> DrawInfoNodes { get { return drawInfoNodes; } }
@@ -18,6 +22,8 @@ namespace CommonRPG
         {
             get { return conversationTable; }
         }
+
+
 
         [Serializable]
         public class ConversationNode
