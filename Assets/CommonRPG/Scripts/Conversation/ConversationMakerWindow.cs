@@ -1,8 +1,6 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.Callbacks;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using static CommonRPG.ConversationDataScriptableObject;
 
@@ -263,34 +261,146 @@ namespace CommonRPG
 
             connectionLineInfoTable.Clear();
 
-            foreach (var nodeInfo in drawingNodeInfoTable.Values) 
+            foreach (var nodeInfo in drawingNodeInfoTable.Values)
             {
-                if (nodeInfo.NodeType == ENodeType.End) 
+                if (nodeInfo.NodeType == ENodeType.End)
                 {
                     continue;
                 }
 
                 //if (nodeInfo.NodeType == ENodeType.Choice) 
                 //{
-                    
+
 
                 //    continue;
                 //}
 
-                for (int i = 0; i < nodeInfo.ChildrenIds.Count; ++i)
+                if (nodeInfo.NodeType == ENodeType.Normal)
                 {
-                    ConnectionLineInfo lineInfo = new ConnectionLineInfo();
-                    lineInfo.startDrawingNode = nodeInfo;
+                    drawStartLocalPosition = new Vector2(defaultNodeConnectionOutRect.x + defaultNodeConnectionOutRect.width, defaultNodeConnectionOutRect.y + defaultNodeConnectionOutRect.height * 0.5f);
+                    Vector2 drawEndLocalPosition;
 
-                    lineInfo.endDrawingNodes.Clear();
-
-                    foreach (int childId in nodeInfo.ChildrenIds)
+                    if (drawingNodeInfoTable[nodeInfo.ChildrenIds[0]].NodeType == ENodeType.End)
                     {
-                        lineInfo.endDrawingNodes.Add(drawingNodeInfoTable[childId]);
+                        drawEndLocalPosition = new Vector2(endNodeConnectionInRect.x, endNodeConnectionInRect.y + endNodeConnectionInRect.height * 0.5f);
+                    }
+                    else
+                    {
+                        drawEndLocalPosition = new Vector2(defaultNodeConnectionInRect.x, defaultNodeConnectionInRect.y + defaultNodeConnectionInRect.height * 0.5f);
                     }
 
-                    connectionLineInfoTable.Add(nodeInfo.NodeId, lineInfo);
+                    drawStartNodeId = nodeInfo.NodeId;
+                    int drawEndNodeId = nodeInfo.ChildrenIds[0];
+
+                    ConnectionLineInfo connectionLineInfo = new ConnectionLineInfo();
+
+                    connectionLineInfo.startNodeConnectionlocalPositions.Add(drawStartLocalPosition);
+                    connectionLineInfo.endNodeConnectionlocalPositions.Add(drawEndLocalPosition);
+
+                    connectionLineInfo.startDrawingNode = drawingNodeInfoTable[drawStartNodeId];
+                    connectionLineInfo.endDrawingNodes.Add(drawingNodeInfoTable[drawEndNodeId]);
+
+                    //drawingNodeInfoTable[nodeInfo.NodeId].ChildrenIds.Add(drawEndNodeId);
+                    //drawingNodeInfoTable[drawEndNodeId].ParentId = nodeInfo.NodeId;
+
+                    connectionLineInfoTable.Add(drawStartNodeId, connectionLineInfo);
                 }
+                else if (nodeInfo.NodeType == ENodeType.Choice)
+                {
+                    int conversationsCount = nodeInfo.Conversations.Count;
+
+                    for (int i = 0; i < conversationsCount; ++i)
+                    {
+                        float margin = CHOICE_CONVERSATION_INPUT_FIELD_MARGIN_BOTTOM + CHOICE_CONVERSATION_INPUT_FIELD_SIZE_Y;
+
+                        Rect choiceConversationNodeConnectionOutRect = new Rect(FIRST_CHOICE_CONVERSATION_NODE_CONNECTION_OUT_POSITION_X, FIRST_CHOICE_CONVERSATION_NODE_CONNECTION_OUT_POSITION_Y + margin * i, CHOICE_CONVERSATION_NODE_CONNECTION_OUT_SIZE_X, CHOICE_CONVERSATION_NODE_CONNECTION_OUT_SIZE_Y);
+
+                        drawStartLocalPosition = new Vector2(choiceConversationNodeConnectionOutRect.x + choiceConversationNodeConnectionOutRect.width, choiceConversationNodeConnectionOutRect.y + choiceConversationNodeConnectionOutRect.height * 0.5f);
+                        drawStartNodeId = nodeInfo.NodeId;
+
+                        Vector2 drawEndLocalPosition;
+
+                        if (drawingNodeInfoTable[nodeInfo.ChildrenIds[0]].NodeType == ENodeType.End)
+                        {
+                            drawEndLocalPosition = new Vector2(endNodeConnectionInRect.x, endNodeConnectionInRect.y + endNodeConnectionInRect.height * 0.5f);
+                        }
+                        else
+                        {
+                            drawEndLocalPosition = new Vector2(defaultNodeConnectionInRect.x, defaultNodeConnectionInRect.y + defaultNodeConnectionInRect.height * 0.5f);
+                        }
+
+                        int drawEndNodeId = nodeInfo.ChildrenIds[i];
+
+                        ConnectionLineInfo connectionLineInfo;
+
+                        if (connectionLineInfoTable.ContainsKey(drawStartNodeId))
+                        {
+                            connectionLineInfo = connectionLineInfoTable[drawStartNodeId];
+                        }
+                        else
+                        {
+                            connectionLineInfo = new ConnectionLineInfo();
+                        }
+
+                        connectionLineInfo.startNodeConnectionlocalPositions.Add(drawStartLocalPosition);
+                        connectionLineInfo.endNodeConnectionlocalPositions.Add(drawEndLocalPosition);
+
+                        connectionLineInfo.startDrawingNode = drawingNodeInfoTable[drawStartNodeId];
+                        connectionLineInfo.endDrawingNodes.Add(drawingNodeInfoTable[drawEndNodeId]);
+
+                        //drawingNodeInfoTable[drawStartNodeId].ChildrenIds.Add(drawEndNodeId);
+                        //drawingNodeInfoTable[drawEndNodeId].ParentId = drawStartNodeId;
+
+                        if (connectionLineInfoTable.ContainsKey(drawEndNodeId) == false)
+                        {
+                            connectionLineInfoTable.Add(drawStartNodeId, connectionLineInfo);
+                        }
+                    }
+                }
+                else if (nodeInfo.NodeType == ENodeType.Start)
+                {
+                    drawStartLocalPosition = new Vector2(startNodeConnectionOutRect.x + startNodeConnectionOutRect.width, startNodeConnectionOutRect.y + startNodeConnectionOutRect.height * 0.5f);
+                    drawStartNodeId = nodeInfo.NodeId;
+
+                    Vector2 drawEndLocalPosition;
+
+                    if (drawingNodeInfoTable[nodeInfo.ChildrenIds[0]].NodeType == ENodeType.End)
+                    {
+                        drawEndLocalPosition = new Vector2(endNodeConnectionInRect.x, endNodeConnectionInRect.y + endNodeConnectionInRect.height * 0.5f);
+                    }
+                    else
+                    {
+                        drawEndLocalPosition = new Vector2(defaultNodeConnectionInRect.x, defaultNodeConnectionInRect.y + defaultNodeConnectionInRect.height * 0.5f);
+                    }
+
+                    int drawEndNodeId = nodeInfo.ChildrenIds[0];
+
+                    ConnectionLineInfo connectionLineInfo = new ConnectionLineInfo();
+
+                    connectionLineInfo.startNodeConnectionlocalPositions.Add(drawStartLocalPosition);
+                    connectionLineInfo.endNodeConnectionlocalPositions.Add(drawEndLocalPosition);
+
+                    connectionLineInfo.startDrawingNode = drawingNodeInfoTable[drawStartNodeId];
+                    connectionLineInfo.endDrawingNodes.Add(drawingNodeInfoTable[drawEndNodeId]);
+
+                    connectionLineInfoTable.Add(drawStartNodeId, connectionLineInfo);
+
+                }
+
+                //for (int i = 0; i < nodeInfo.ChildrenIds.Count; ++i)
+                //{
+                //    ConnectionLineInfo lineInfo = new ConnectionLineInfo();
+                //    lineInfo.startDrawingNode = nodeInfo;
+
+                //    lineInfo.endDrawingNodes.Clear();
+
+                //    foreach (int childId in nodeInfo.ChildrenIds)
+                //    {
+                //        lineInfo.endDrawingNodes.Add(drawingNodeInfoTable[childId]);
+                //    }
+
+                //    connectionLineInfoTable.Add(nodeInfo.NodeId, lineInfo);
+                //}
             }
         }
 
@@ -322,7 +432,7 @@ namespace CommonRPG
             backgroundRect = new Rect(BACKGROUND_POSITION_X, BACKGROUND_POSITION_Y, backgroundWidth, backgroundHeight);
             GUI.Box(backgroundRect, "");
 
-            if (GUI.Button(saveConversationDataButtonRect, "Save")) 
+            if (GUI.Button(saveConversationDataButtonRect, "Save"))
             {
                 //TODO : Save.......
                 TrySave();
@@ -379,7 +489,7 @@ namespace CommonRPG
 
         private bool TrySave()
         {
-            if (isStartNodeCreated == false) 
+            if (isStartNodeCreated == false)
             {
                 Debug.LogError("a Start Node Must Be Exist");
                 return false;
@@ -388,7 +498,7 @@ namespace CommonRPG
             ConversationDataScriptableObject newData = new();
             //ConversationDataScriptableObject newData = CreateInstance<ConversationDataScriptableObject>();
 
-            foreach (DrawingNodeInfo drawingNodeInfo in drawingNodeInfoTable.Values) 
+            foreach (DrawingNodeInfo drawingNodeInfo in drawingNodeInfoTable.Values)
             {
                 //if (drawingNodeInfo.NodeType == ENodeType.Start || drawingNodeInfo.NodeType == ENodeType.End) 
                 //{
@@ -396,12 +506,12 @@ namespace CommonRPG
                 //}
 
                 newData.DrawInfoNodes.Add(drawingNodeInfo);
-                ConversationNode conversationNode = new(drawingNodeInfo.SpeakerName, drawingNodeInfo.ParentId,  drawingNodeInfo.ChildrenIds, drawingNodeInfo.NodeId, drawingNodeInfo.Conversations, drawingNodeInfo.NodeType == ENodeType.Choice);
+                ConversationNode conversationNode = new(drawingNodeInfo.SpeakerName, drawingNodeInfo.ParentId, drawingNodeInfo.ChildrenIds, drawingNodeInfo.NodeId, drawingNodeInfo.Conversations, drawingNodeInfo.NodeType == ENodeType.Choice);
                 newData.ConversationTable.Add(conversationNode.MyID, conversationNode);
             }
 
             newData.ConversationDataName = conversationNameInput;
-            
+
             AssetDatabase.CreateAsset(newData, $"Assets/CommonRPG/{conversationNameInput}.asset");
             AssetDatabase.SaveAssets();
 
@@ -543,7 +653,7 @@ namespace CommonRPG
             DrawingNodeInfo drawingNodeInfo = drawingNodeInfoTable[id];
             ENodeType nodeType = drawingNodeInfo.NodeType;
 
-            switch(nodeType)
+            switch (nodeType)
             {
                 case ENodeType.Normal:
                 {
@@ -571,7 +681,7 @@ namespace CommonRPG
                     return;
                 }
             }
-            
+
             GUI.DragWindow();
         }
 
@@ -600,7 +710,7 @@ namespace CommonRPG
                     ConnectionLineInfo connectionLineInfo;
                     if (connectionLineInfoTable.ContainsKey(drawStartNodeId))
                     {
-                        if (drawingNodeInfoTable[drawStartNodeId].NodeType == ENodeType.Choice) 
+                        if (drawingNodeInfoTable[drawStartNodeId].NodeType == ENodeType.Choice)
                         {
                             connectionLineInfo = connectionLineInfoTable[drawStartNodeId];
 
@@ -865,7 +975,7 @@ namespace CommonRPG
 
             unsafe
             {
-                while(true)
+                while (true)
                 {
                     if (existHashCode.Contains(newHashCode))
                     {
@@ -887,7 +997,7 @@ namespace CommonRPG
             public DrawingNodeInfo startDrawingNode;
             //public NodeWindow endNodeWindow;
             public List<DrawingNodeInfo> endDrawingNodes = new();
-
+            //public DrawingNodeInfo endDrawingNode;
             //public Vector2 startNodeConnectionlocalPosition;
             //public Vector2 endNodeConnectionlocalPosition;
 
