@@ -33,6 +33,7 @@ namespace CommonRPG
         [Header("UIs")]
         [SerializeField]
         private InGameUI inGameUI = null;
+        public static InGameUI InGameUI { get { return instance.inGameUI; } }
 
         [SerializeField]
         private StatWindow statWindow = null;

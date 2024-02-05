@@ -173,8 +173,10 @@ namespace CommonRPG
                 }
                 else if (someObject is CraftingStation)
                 {
-                    //CraftingStation craftingStation = (CraftingStation)someObject;
-                    GameManager.InventoryManager.OpenAndCloseCraftInventory(true);
+                    CraftingStation craftingStation = (CraftingStation)someObject;
+                    //GameManager.InventoryManager.OpenAndCloseCraftInventory(true);
+
+                    GameManager.InGameUI.ReadyToConversate(craftingStation.ConversationData);
                     GameManager.SetActiveInteractioUI(false);
 
                     break;

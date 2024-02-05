@@ -8,6 +8,8 @@ namespace CommonRPG
 {
     public class InGameUI : MonoBehaviour
     {
+        public bool IsConversationStarted { get { return conversationUI.IsConversationStarted; } }
+
         [Header("MonsterUI")]
         [SerializeField]
         private GameObject monsterInfoUI = null;
@@ -37,6 +39,10 @@ namespace CommonRPG
         [SerializeField]
         private GameObject interactionUI = null;
 
+        [Header("Conversation")]
+        [SerializeField]
+        private ConversationUI conversationUI = null;
+
         [Header("Etc.")]
         [SerializeField]
         private GameObject pauseUI = null;
@@ -54,10 +60,22 @@ namespace CommonRPG
 
             Debug.Assert(interactionUI);
 
+            Debug.Assert(conversationUI);
+
             Debug.Assert(pauseUI);
 
             //DontDestroyOnLoad(gameObject);
         }
+
+        private void Start()
+        {
+            //conversationUI.StartConversation();
+            //GameManager.TimerManager.PauseGameWorld(true);
+            //Cursor.visible = true;
+            //Cursor.lockState = (true) ? CursorLockMode.Confined : CursorLockMode.Locked;
+        }
+
+        
 
         public void SetMonsterInfoUIVisible(bool shouldVisible)
         {
@@ -116,6 +134,48 @@ namespace CommonRPG
         public void SetActiveInteractioUI(bool ShouldActivate)
         {
             interactionUI.SetActive(ShouldActivate);
+        }
+
+        public void ReadyToConversate(ConversationDataScriptableObject conversationData)
+        {
+            conversationUI.ConversationData = conversationData;
+
+            conversationUI.StartConversation();
+            GameManager.TimerManager.PauseGameWorld(true);
+            Cursor.visible = true;
+            Cursor.lockState = (true) ? CursorLockMode.Confined : CursorLockMode.Locked;
+        }
+
+        /// <summary>
+        /// args -> string : ConversationName, int : Covnersation Node Id, int : ClickedButtonIndex
+        /// </summary>
+        public void BindEventToOnChoiceConversationButtonClickedDelegate(in Action<string, int, int> actionToBind)
+        {
+            conversationUI.OnChoiceConversationButtonClickedDelegate += actionToBind;
+        }
+
+        /// <summary>
+        /// args -> string : ConversationName, int : Covnersation Node Id, int : ClickedButtonIndex
+        /// </summary>
+        public void RemoveEventToOnChoiceConversationButtonClickedDelegate(in Action<string, int, int> actionToRemove)
+        {
+            conversationUI.OnChoiceConversationButtonClickedDelegate -= actionToRemove;
+        }
+
+        /// <summary>
+        /// string : ConversationName, int : Covnersation Node Id
+        /// </summary>
+        public void BindEventToOnConversationFinishedDelegate(in Action<string, int> actionToBind)
+        {
+            conversationUI.OnConversationFinishedDelegate += actionToBind;
+        }
+
+        /// <summary>
+        /// string : ConversationName, int : Covnersation Node Id
+        /// </summary>
+        public void RemoveEventToOnConversationFinishedDelegate(in Action<string, int> actionToRemove)
+        {
+            conversationUI.OnConversationFinishedDelegate -= actionToRemove;
         }
     }
 

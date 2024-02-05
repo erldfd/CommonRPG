@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace CommonRPG
 {
-    public class Merchant : AUnit
+    public class Merchant : NPC
     {
         [SerializeField]
         private List<InventorySlotItemData> merchantGoodsDataList;

@@ -1,0 +1,128 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17649d00f0c90fa45a2b7c0a31782817, type: 3}
+  m_Name: QuestNPCConversation
+  m_EditorClassIdentifier: 
+  converstionDataName: QuestNPCConversation
+  drawInfoNodes:
+  - SpeakerName: 
+    NodeId: 0
+    ParentId: 0
+    ChildrenIds: 45ea7e0f
+    NodeName: Start Node
+    NodeType: 2
+    NodeRect:
+      serializedVersion: 2
+      x: 13
+      y: 327
+      width: 80
+      height: 70
+    Conversations: []
+  - SpeakerName: 
+    NodeId: -1720104425
+    ParentId: 366233305
+    ChildrenIds: 
+    NodeName: End Node
+    NodeType: 3
+    NodeRect:
+      serializedVersion: 2
+      x: 1080
+      y: 252
+      width: 80
+      height: 70
+    Conversations: []
+  - SpeakerName: QuestNPC
+    NodeId: 259975749
+    ParentId: 0
+    ChildrenIds: fbf35366d946d415
+    NodeName: Choice Node
+    NodeType: 1
+    NodeRect:
+      serializedVersion: 2
+      x: 121
+      y: 262
+      width: 200
+      height: 185
+    Conversations:
+    - Quest1
+    - Quest2
+  - SpeakerName: QuestNPC
+    NodeId: 1716777979
+    ParentId: 259975749
+    ChildrenIds: 9893cfc7
+    NodeName: Normal Node
+    NodeType: 0
+    NodeRect:
+      serializedVersion: 2
+      x: 345
+      y: 80
+      width: 200
+      height: 200
+    Conversations:
+    - Please Solve Quest1 problem.. Will You?
+  - SpeakerName: Player
+    NodeId: -942697576
+    ParentId: 1716777979
+    ChildrenIds: 8440351485bc616c
+    NodeName: Choice Node
+    NodeType: 1
+    NodeRect:
+      serializedVersion: 2
+      x: 582
+      y: 79
+      width: 200
+      height: 185
+    Conversations:
+    - I will
+    - I wont
+  - SpeakerName: QeustNPC
+    NodeId: 339034244
+    ParentId: -942697576
+    ChildrenIds: 174a7999
+    NodeName: Normal Node
+    NodeType: 0
+    NodeRect:
+      serializedVersion: 2
+      x: 798
+      y: 11
+      width: 200
+      height: 200
+    Conversations:
+    - Thanks
+  - SpeakerName: QuestNPC
+    NodeId: 1818344581
+    ParentId: -942697576
+    ChildrenIds: 174a7999
+    NodeName: Normal Node
+    NodeType: 0
+    NodeRect:
+      serializedVersion: 2
+      x: 795
+      y: 207
+      width: 200
+      height: 200
+    Conversations:
+    - well.... okay.....
+  - SpeakerName: QuestNPC
+    NodeId: 366233305
+    ParentId: 259975749
+    ChildrenIds: 174a7999
+    NodeName: Normal Node
+    NodeType: 0
+    NodeRect:
+      serializedVersion: 2
+      x: 563
+      y: 448
+      width: 200
+      height: 200
+    Conversations:
+    - quest2 solve plz

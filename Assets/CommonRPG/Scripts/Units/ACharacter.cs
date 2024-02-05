@@ -70,6 +70,14 @@ namespace CommonRPG
 
         protected bool isNormalAttackPressed = false;
 
+        protected bool IsCameraMoveAllowing 
+        {
+            get 
+            {
+                return (GameManager.IsInventoryOpened() == false && GameManager.InGameUI.IsConversationStarted == false); 
+            } 
+        }
+
         protected override void Awake()
         {
             base.Awake();
@@ -166,7 +174,7 @@ namespace CommonRPG
 
         protected virtual void OnMoveMouseVertical(InputAction.CallbackContext context)
         {
-            if (GameManager.IsInventoryOpened())
+            if (IsCameraMoveAllowing == false)
             {
                 return;
             }
@@ -183,7 +191,7 @@ namespace CommonRPG
 
         protected virtual void OnMoveMouseHorizontal(InputAction.CallbackContext context)
         {
-            if (GameManager.IsInventoryOpened())
+            if (IsCameraMoveAllowing == false)
             {
                 return;
             }

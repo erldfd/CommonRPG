@@ -4,8 +4,9 @@ using UnityEngine;
 
 namespace CommonRPG
 {
-    public class CraftingStation : MonoBehaviour
+    public class TestQuestNPC : NPC
     {
-
+        
     }
 }
+

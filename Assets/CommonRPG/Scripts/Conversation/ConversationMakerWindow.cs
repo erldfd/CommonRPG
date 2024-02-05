@@ -340,6 +340,7 @@ namespace CommonRPG
                         else
                         {
                             connectionLineInfo = new ConnectionLineInfo();
+                            connectionLineInfoTable.Add(drawStartNodeId, connectionLineInfo);
                         }
 
                         connectionLineInfo.startNodeConnectionlocalPositions.Add(drawStartLocalPosition);
@@ -351,10 +352,10 @@ namespace CommonRPG
                         //drawingNodeInfoTable[drawStartNodeId].ChildrenIds.Add(drawEndNodeId);
                         //drawingNodeInfoTable[drawEndNodeId].ParentId = drawStartNodeId;
 
-                        if (connectionLineInfoTable.ContainsKey(drawEndNodeId) == false)
-                        {
-                            connectionLineInfoTable.Add(drawStartNodeId, connectionLineInfo);
-                        }
+                        //if (connectionLineInfoTable.ContainsKey(drawStartNodeId) == false)
+                        //{
+                        //    connectionLineInfoTable.Add(drawStartNodeId, connectionLineInfo);
+                        //}
                     }
                 }
                 else if (nodeInfo.NodeType == ENodeType.Start)
@@ -495,8 +496,8 @@ namespace CommonRPG
                 return false;
             }
 
-            ConversationDataScriptableObject newData = new();
-            //ConversationDataScriptableObject newData = CreateInstance<ConversationDataScriptableObject>();
+            //ConversationDataScriptableObject newData = new();
+            ConversationDataScriptableObject newData = CreateInstance<ConversationDataScriptableObject>();
 
             foreach (DrawingNodeInfo drawingNodeInfo in drawingNodeInfoTable.Values)
             {
@@ -579,7 +580,7 @@ namespace CommonRPG
             newNode.NodeRect = new Rect(currentMousePosition.x, currentMousePosition.y, startNodeWindowSize.x, startNodeWindowSize.y);
             newNode.NodeName = "Start Node";
             newNode.NodeType = ENodeType.Start;
-            newNode.NodeId = MakeRandomHashCode();
+            newNode.NodeId = 0;
 
             drawingNodeInfoTable.Add(newNode.NodeId, newNode);
             isStartNodeCreated = true;

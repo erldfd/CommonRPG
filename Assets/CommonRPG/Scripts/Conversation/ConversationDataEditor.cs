@@ -9,7 +9,8 @@ public class ConversationDataEditor : Editor
 {
     public override void OnInspectorGUI()
     {
-        //base.OnInspectorGUI();
+        base.OnInspectorGUI();
+
         if (GUILayout.Button("Open Conversation Maker Window"))
         {
             var window = ConversationMakerWindow.ShowWindow();
