@@ -176,7 +176,7 @@ namespace CommonRPG
                     CraftingStation craftingStation = (CraftingStation)someObject;
                     //GameManager.InventoryManager.OpenAndCloseCraftInventory(true);
 
-                    GameManager.InGameUI.ReadyToConversate(craftingStation.ConversationData);
+                    GameManager.InGameUI.ReadyToConversate(craftingStation.CurrentConversationData);
                     GameManager.SetActiveInteractioUI(false);
 
                     break;

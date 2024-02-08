@@ -7,13 +7,18 @@ namespace CommonRPG
     public class NPC : AUnit
     {
         [SerializeField]
-        private ConversationDataScriptableObject conversationData;
-        public ConversationDataScriptableObject ConversationData { get { return conversationData; } }
+        private List<ConversationDataScriptableObject> conversations = new List<ConversationDataScriptableObject>();
+        public List<ConversationDataScriptableObject> Conversations { get { return conversations; } }
+
+        [SerializeField]
+        private ConversationDataScriptableObject currentConversationData;
+        public ConversationDataScriptableObject CurrentConversationData { get { return currentConversationData; } }
 
         protected override void Awake()
         {
             base.Awake();
 
+            currentConversationData = conversations[0];
         }
     }
 }

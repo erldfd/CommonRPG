@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using UnityEngine;
@@ -7,6 +8,11 @@ namespace CommonRPG
     [DefaultExecutionOrder(-9)]
     public class QuestManager : MonoBehaviour
     {
+        /// <summary>
+        /// arg : string Quest Name
+        /// </summary>
+        public Action<string> OnCompleteQuestDelegate;
+
         [SerializeField]
         private QuestDataScriptableObject questData;
 
@@ -169,8 +175,12 @@ namespace CommonRPG
 
             questWindow.QuestNameView.RemoveQuest(questName, EQuestState.Pending);
             questWindow.QuestNameView.AddQuest(questName, questInfo.QuestDescription, EQuestState.Completed);
-            
+
             //TODO: Receive rewards
+            if (OnCompleteQuestDelegate != null) 
+            {
+                OnCompleteQuestDelegate.Invoke(questName);
+            }
 
             return true;
         }
