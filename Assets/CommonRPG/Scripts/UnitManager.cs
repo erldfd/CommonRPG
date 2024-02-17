@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace CommonRPG
 {
@@ -8,7 +9,17 @@ namespace CommonRPG
     {
         [SerializeField]
         private ACharacter player = null;
-        public ACharacter Player { get { return player; } }
+        public ACharacter Player {
+            get { return player; } 
+            set 
+            {
+                Debug.Assert(value);
+                player = value; 
+            } 
+        }
+
+        [SerializeField]
+        private PlayerStartPoint playerStartPoint = null;
 
         [SerializeField]
         private HashSet<Slime> activatedSlimeSet = new HashSet<Slime>();
@@ -22,8 +33,19 @@ namespace CommonRPG
 
         private void Awake()
         {
-            player = GameObject.FindGameObjectWithTag("Player").GetComponent<ACharacter>();
-            Debug.Assert(player);
+            //player = GameObject.FindGameObjectWithTag("Player").GetComponent<ACharacter>();
+            //Debug.Assert(player);
+            Debug.Log("UnitManaherAwake");
+        }
+
+        private void OnEnable()
+        {
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        private void OnDisable()
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
         }
 
         public MonsterBase SpawnMonster(MonsterData data, Vector3 position, Quaternion rotation)
@@ -91,6 +113,29 @@ namespace CommonRPG
 
             monster.ActivateAI(false);
             monster.gameObject.SetActive(false);
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
+        {
+            Debug.Log($"{scene.name} is loaded, {loadSceneMode}");
+
+            GameObject startPoint = GameObject.Find("PlayerStartPoint");
+
+            if (startPoint == null) 
+            {
+                return;
+            }
+
+            playerStartPoint = startPoint.GetComponent<PlayerStartPoint>();
+
+
+            if (Player == null) 
+            {
+                player = GameObject.FindGameObjectWithTag("Player").GetComponent<ACharacter>();
+            }
+
+            Player.transform.position = playerStartPoint.transform.position;
+            Player.transform.rotation = playerStartPoint.transform.rotation;
         }
     }
 

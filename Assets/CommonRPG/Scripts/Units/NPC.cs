@@ -18,7 +18,11 @@ namespace CommonRPG
         {
             base.Awake();
 
-            currentConversationData = conversations[0];
+            if (conversations.Count > 0) 
+            {
+                currentConversationData = conversations[0];
+            }
+            
         }
     }
 }

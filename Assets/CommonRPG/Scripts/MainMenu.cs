@@ -20,6 +20,14 @@ namespace CommonRPG
             }
         }
 
+        public void OnNewGameButtonClicked()
+        {
+            Debug.Log("NewGameButton Clicked");
+
+            asyncSceneLoadOperation = SceneManager.LoadSceneAsync(2);
+            StartCoroutine(CheckSceneLoad());
+        }
+
         public void OnTestGameButtonClicked()
         {
             Debug.Log("TestGameButton Clicked");

@@ -16,6 +16,11 @@ namespace CommonRPG
             GameManager.SetPlayerLevelText(statComponent.Level);
             GameManager.SetPlayerManaBarFillRatio(statComponent.CurrentManaPoint / statComponent.TotalMana);
             GameManager.SetPlayerNameText(base.unitName);
+
+            if (GameManager.UnitManager.Player == null)
+            {
+                GameManager.UnitManager.Player = this;
+            }
         }
 
         protected override void Start()
@@ -24,6 +29,9 @@ namespace CommonRPG
             GameManager.QuestManager.UnlockQuest("First Hunt Quest");
             GameManager.QuestManager.TryReceiveQuest("First Hunt Quest");
             GameManager.QuestManager.UnlockQuest("Second Hunt Quest");
+
+            DontDestroyOnLoad(this);
+            DontDestroyOnLoad(base.springArm);
         }
 
         protected override void Update()

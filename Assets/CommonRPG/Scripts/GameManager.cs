@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace CommonRPG
@@ -29,6 +30,7 @@ namespace CommonRPG
 
         [SerializeField]
         private UnitManager unitManager = null;
+        public static UnitManager UnitManager { get { return instance.unitManager; } }
 
         [Header("UIs")]
         [SerializeField]
@@ -90,24 +92,30 @@ namespace CommonRPG
 
         private void Start()
         {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            //Cursor.lockState = CursorLockMode.Locked;
+            //Cursor.visible = false;
 
-            SetTimer(1, 0, 0, () => { InventoryManager.ObtainItem(EInventoryType.Equipment ,1, 1, itemData.ItemDataList[(int)EItemName.TheSecondSword].Data); }, true);
-            SetTimer(2, 0, 0, () => 
-            { 
+            //SetTimer(1, 0, 0, () => { InventoryManager.ObtainItem(EInventoryType.Equipment ,1, 1, itemData.ItemDataList[(int)EItemName.TheSecondSword].Data); }, true);
+            //SetTimer(2, 0, 0, () => 
+            //{ 
                 
-                int count = InventoryManager.ObtainItem(EInventoryType.Equipment, 5, itemData.ItemDataList[(int)EItemName.TheFirstSword].Data);
+            //    int count = InventoryManager.ObtainItem(EInventoryType.Equipment, 5, itemData.ItemDataList[(int)EItemName.TheFirstSword].Data);
 
-            }, true);
+            //}, true);
 
-            SetTimer(3, 0, 0, () => { InventoryManager.DeleteItem(EInventoryType.Equipment, 2, 1); }, true);
-            SetTimer(4, 0, 0, () => { InventoryManager.DeleteItem(EInventoryType.Equipment, 3, 1); }, true);
-            SetTimer(4, 0, 0, () => { SpawnItem(EItemName.TheFirstSword, Vector3.zero, Quaternion.identity, true); }, true);
+            //SetTimer(3, 0, 0, () => { InventoryManager.DeleteItem(EInventoryType.Equipment, 2, 1); }, true);
+            //SetTimer(4, 0, 0, () => { InventoryManager.DeleteItem(EInventoryType.Equipment, 3, 1); }, true);
+            //SetTimer(4, 0, 0, () => { SpawnItem(EItemName.TheFirstSword, Vector3.zero, Quaternion.identity, true); }, true);
         }
 
         private void OnEnable()
         {
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        private void OnDisable()
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
         }
 
         public static void SetInGameUIVisible(bool shouldVisible)
@@ -318,6 +326,19 @@ namespace CommonRPG
         public static void PrintAllQuests()
         {
             instance.questManager.PrintQuests();
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
+        {
+            Debug.Log($"{scene.name} is loaded, {loadSceneMode}");
+
+            if (scene.buildIndex == 0) 
+            {
+                return;
+            }
+
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
     }
 }
