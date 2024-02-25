@@ -632,6 +632,7 @@ MonoBehaviour:
   statComponent: {fileID: 2740400675537629137}
   movementComponent: {fileID: 0}
   animController: {fileID: -7619304457020963378}
+  monsterName: -1
   attackRange: 1
   despawnTime: 3
 --- !u!114 &-7619304457020963378
@@ -666,30 +667,23 @@ MonoBehaviour:
   OnLevelUpdate:
     m_PersistentCalls:
       m_Calls: []
+  currentExp: 0
+  maxExpOfCurrentLevel: 10
+  uninvestedStatPoint: 0
+  statHpPoint: 1
+  statMpPoint: 1
+  statAttackPowerPoint: 1
+  statDefensePoint: 0
   currentHealthPoint: 20
-  OnCurrentHealthPointUpdate:
-    m_PersistentCalls:
-      m_Calls: []
   currentManaPoint: 1
-  OnCurrentManaPointUpdate:
-    m_PersistentCalls:
-      m_Calls: []
   baseHealthPoint: 20
-  OnBaseHealthUpdate:
-    m_PersistentCalls:
-      m_Calls: []
   baseManaPoint: 1
-  OnBaseManaUpdate:
-    m_PersistentCalls:
-      m_Calls: []
   baseAttackPower: 1
-  OnBaseAttackPowerUpdate:
-    m_PersistentCalls:
-      m_Calls: []
   baseDefense: 1
-  OnBaseDefenseUpdate:
-    m_PersistentCalls:
-      m_Calls: []
+  statBonusHealthPoint: 0
+  statBonusManaPoint: 0
+  statBonusAttackPower: 0
+  statBonusDefense: 0
   weaponHealthBonus: 0
   weaponManaBonus: 0
   weaponAttackPowerBonus: 0
@@ -725,7 +719,7 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1524411113276028}
   m_Enabled: 1
-  m_AgentTypeID: 0
+  m_AgentTypeID: -334000983
   m_Radius: 0.5
   m_Speed: 4
   m_Acceleration: 8

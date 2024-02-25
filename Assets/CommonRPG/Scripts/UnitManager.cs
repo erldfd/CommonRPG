@@ -19,6 +19,9 @@ namespace CommonRPG
         }
 
         [SerializeField]
+        private SpringArm springArm = null;
+
+        [SerializeField]
         private PlayerStartPoint playerStartPoint = null;
 
         [SerializeField]
@@ -128,10 +131,33 @@ namespace CommonRPG
 
             playerStartPoint = startPoint.GetComponent<PlayerStartPoint>();
 
-
             if (Player == null) 
             {
-                player = GameObject.FindGameObjectWithTag("Player").GetComponent<ACharacter>();
+                Player = GameObject.FindGameObjectWithTag("Player").GetComponent<ACharacter>();
+                springArm = GameObject.Find("SpringArm").GetComponent<SpringArm>();
+
+            }
+            else
+            {
+                GameObject[] playerObjects = GameObject.FindGameObjectsWithTag("Player");
+                for (int i = 0; i < playerObjects.Length; ++i)
+                {
+                    if (playerObjects[i] != Player.gameObject)
+                    {
+                        playerObjects[i].SetActive(false);
+                        break;
+                    }
+                }
+
+                GameObject[] cameraObjects = GameObject.FindGameObjectsWithTag("MainCamera");
+                for (int i = 0; i < cameraObjects.Length; ++i)
+                {
+                    if (cameraObjects[i].transform.root.gameObject != springArm.gameObject)
+                    {
+                        cameraObjects[i].transform.root.gameObject.SetActive(false);
+                        break;
+                    }
+                }
             }
 
             Player.transform.position = playerStartPoint.transform.position;

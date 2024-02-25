@@ -15,9 +15,11 @@ namespace CommonRPG
 
         [SerializeField]
         private Transform weaponEquipmentTransform;
+        public Transform WeaponEquipmentTransform { get { return weaponEquipmentTransform; } set { weaponEquipmentTransform = value; } }
 
         [SerializeField]
-        private Transform ShieldEquipmentTransform;
+        private Transform shieldEquipmentTransform;
+        public Transform ShieldEquipmentTransform { get { return shieldEquipmentTransform; } set { shieldEquipmentTransform = value; } }
 
         protected override void Awake()
         {
@@ -62,7 +64,7 @@ namespace CommonRPG
             }
             else if (equipmentSlot == EEquipmentSlot.Shield && itemData.ItemType == EItemType.Shield)
             {
-                GameManager.SpawnItem(itemData.ItemName, ShieldEquipmentTransform, false);
+                GameManager.SpawnItem(itemData.ItemName, shieldEquipmentTransform, false);
             }
             else
             {
@@ -87,11 +89,11 @@ namespace CommonRPG
                 }
                 else if (equipmentSlot == EEquipmentSlot.Shield)
                 {
-                    if (ShieldEquipmentTransform.childCount > 0)
+                    if (shieldEquipmentTransform.childCount > 0)
                     {
-                        for (int i = 0; i < ShieldEquipmentTransform.childCount; i++)
+                        for (int i = 0; i < shieldEquipmentTransform.childCount; i++)
                         {
-                            Destroy(ShieldEquipmentTransform.GetChild(0).gameObject);
+                            Destroy(shieldEquipmentTransform.GetChild(0).gameObject);
                         }
                     }
                 }

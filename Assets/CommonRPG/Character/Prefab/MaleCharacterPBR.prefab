@@ -2557,6 +2557,8 @@ MonoBehaviour:
   movementComponent: {fileID: 4092898106349061587}
   animController: {fileID: 2477105950301527178}
   characterWeapon: {fileID: 0}
+  weaponEquipmentTransform: {fileID: 6508871864379605767}
+  shieldEquipmentTransform: {fileID: 5514248043482254508}
   characterCamera: {fileID: 0}
   cameraMoveSensitivity: 1
   springArm: {fileID: 0}

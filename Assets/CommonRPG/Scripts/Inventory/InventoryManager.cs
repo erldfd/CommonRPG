@@ -18,6 +18,7 @@ namespace CommonRPG
 
         [SerializeField]
         private List<AInventory> inventoryList = null;
+        public List<AInventory> InventoryList { get { return inventoryList; } }
 
         [SerializeField]
         private GameObject mainInventoryObject = null;

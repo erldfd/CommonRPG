@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -95,18 +96,35 @@ namespace CommonRPG
             //Cursor.lockState = CursorLockMode.Locked;
             //Cursor.visible = false;
 
-            //SetTimer(1, 0, 0, () => { InventoryManager.ObtainItem(EInventoryType.Equipment ,1, 1, itemData.ItemDataList[(int)EItemName.TheSecondSword].Data); }, true);
-            //SetTimer(2, 0, 0, () => 
-            //{ 
-                
-            //    int count = InventoryManager.ObtainItem(EInventoryType.Equipment, 5, itemData.ItemDataList[(int)EItemName.TheFirstSword].Data);
+            SetTimer(1, 0, 0, () => { InventoryManager.ObtainItem(EInventoryType.Equipment, 1, 1, itemData.ItemDataList[(int)EItemName.TheSecondSword].Data); }, true);
+            SetTimer(2, 0, 0, () =>
+            {
 
-            //}, true);
+                int count = InventoryManager.ObtainItem(EInventoryType.Equipment, 5, itemData.ItemDataList[(int)EItemName.TheFirstSword].Data);
 
-            //SetTimer(3, 0, 0, () => { InventoryManager.DeleteItem(EInventoryType.Equipment, 2, 1); }, true);
-            //SetTimer(4, 0, 0, () => { InventoryManager.DeleteItem(EInventoryType.Equipment, 3, 1); }, true);
-            //SetTimer(4, 0, 0, () => { SpawnItem(EItemName.TheFirstSword, Vector3.zero, Quaternion.identity, true); }, true);
+            }, true);
+
+            SetTimer(3, 0, 0, () => { InventoryManager.DeleteItem(EInventoryType.Equipment, 2, 1); }, true);
+            SetTimer(4, 0, 0, () => { InventoryManager.DeleteItem(EInventoryType.Equipment, 3, 1); }, true);
+            SetTimer(4, 0, 0, () => { SpawnItem(EItemName.TheFirstSword, Vector3.zero, Quaternion.identity, true); }, true);
         }
+
+        //private void Update()
+        //{
+        //    EventSystem eventSystem = EventSystem.current;
+        //    if (eventSystem == null) 
+        //    {
+        //        Debug.Log("eventSystem == null");
+        //        return;
+        //    }
+
+        //    GameObject obj = eventSystem.currentSelectedGameObject;
+        //    if(obj)
+        //    {
+        //        Debug.Log(obj.name);
+        //    }
+            
+        //}
 
         private void OnEnable()
         {

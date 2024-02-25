@@ -17,10 +17,10 @@ namespace CommonRPG
             GameManager.SetPlayerManaBarFillRatio(statComponent.CurrentManaPoint / statComponent.TotalMana);
             GameManager.SetPlayerNameText(base.unitName);
 
-            if (GameManager.UnitManager.Player == null)
-            {
-                GameManager.UnitManager.Player = this;
-            }
+            //if (GameManager.UnitManager.Player == null)
+            //{
+            //    GameManager.UnitManager.Player = this;
+            //}
         }
 
         protected override void Start()

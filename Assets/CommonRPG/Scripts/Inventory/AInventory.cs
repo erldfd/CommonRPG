@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace CommonRPG
 {
@@ -17,6 +19,9 @@ namespace CommonRPG
 
     public abstract class AInventory : MonoBehaviour, IComparable<AInventory>
     {
+        [SerializeField]
+        protected Sprite emptySlotSprite = null;
+
         [SerializeField]
         protected EInventoryType inventoryType = EInventoryType.None;
         public EInventoryType InventoryType { get { return inventoryType; } }
@@ -63,7 +68,7 @@ namespace CommonRPG
             inventoryItemDataList[slotIndex].ItemData = itemData;
 
             Sprite slotSprite = (newItemCount == 0) ? null : itemData.SlotSprite;
-
+            
             slotUiList[slotIndex].SetSlotImageSprite(slotSprite);
             SetSlotItemCount(slotIndex, newItemCount);
         }
@@ -72,7 +77,7 @@ namespace CommonRPG
         {
             if (newItemCount == 0)
             {
-                slotUiList[slotIndex].SetSlotImageSprite(null);
+                slotUiList[slotIndex].SetSlotImageSprite(emptySlotSprite);
             }
 
             inventoryItemDataList[slotIndex].CurrentItemCount = newItemCount;

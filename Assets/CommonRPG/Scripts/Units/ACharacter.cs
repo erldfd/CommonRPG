@@ -48,6 +48,14 @@ namespace CommonRPG
             }
         }
 
+        [SerializeField]
+        private Transform weaponEquipmentTransform = null;
+        public Transform WeaponEquipmentTransform { get { return weaponEquipmentTransform; } set { weaponEquipmentTransform = value; } }
+
+        [SerializeField]
+        private Transform shieldEquipmentTransform = null;
+        public Transform ShieldEquipmentTransform { get { return shieldEquipmentTransform; } set { shieldEquipmentTransform = value; } }
+
         [Header("Camera")]
         [SerializeField]
         protected Camera characterCamera = null;

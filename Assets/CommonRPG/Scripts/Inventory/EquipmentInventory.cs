@@ -73,7 +73,7 @@ namespace CommonRPG
             {
                 if (inventoryItemDataList[i].CurrentItemCount == 0)
                 {
-                    slotUiList[i].SetSlotImageSprite(null);
+                    slotUiList[i].SetSlotImageSprite(emptySlotSprite);
                     slotUiList[i].SetSlotItemCountText(0);
                     continue;
                 }
