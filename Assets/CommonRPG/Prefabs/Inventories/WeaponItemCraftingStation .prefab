@@ -211,8 +211,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: CommonRPG.WeaponItemCraftingStation, Assembly-CSharp
+      - m_Target: {fileID: 5302906895681719491}
+        m_TargetAssemblyTypeName: CommonRPG.WeaponItemCraftInventory, Assembly-CSharp
         m_MethodName: TryCrafting
         m_Mode: 1
         m_Arguments:
