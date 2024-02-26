@@ -172,20 +172,22 @@ namespace CommonRPG
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            //Debug.Log($"OnPointerEnter, SlotIndex : {SlotIndex}");
+            Debug.Log($"OnPointerEnter, SlotIndex : {SlotIndex}");
 
             OnPointerEnterDelegate.Invoke(SlotIndex, CurrentSlotInventoryType, rectTransform.position, widthAndHeight);
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            //Debug.Log($"OnPointerExit, SlotIndex : {SlotIndex}");
+            Debug.Log($"OnPointerExit, SlotIndex : {SlotIndex}");
 
             OnPointerExitDelegate.Invoke(SlotIndex);
         }
 
         public void OnBeginDrag(PointerEventData eventData)
         {
+            Debug.Log($"OnBeginDrag, SlotIndex : {SlotIndex}");
+
             if (IsEmpty)
             {
                 return;
@@ -211,6 +213,8 @@ namespace CommonRPG
 
         public void OnDrag(PointerEventData eventData)
         {
+            Debug.Log($"OnDrag, SlotIndex : {SlotIndex}");
+
             if (IsEmpty)
             {
                 return;
@@ -226,6 +230,8 @@ namespace CommonRPG
 
         public void OnEndDrag(PointerEventData eventData)
         {
+            Debug.Log($"OnEndDrag, SlotIndex : {SlotIndex}");
+
             if (IsEmpty)
             {
                 return;

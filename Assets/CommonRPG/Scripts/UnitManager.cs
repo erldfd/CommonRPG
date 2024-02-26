@@ -8,13 +8,16 @@ namespace CommonRPG
     public class UnitManager : MonoBehaviour
     {
         [SerializeField]
-        private ACharacter player = null;
-        public ACharacter Player {
-            get { return player; } 
+        private Player playerPrefab = null;
+
+        [SerializeField]
+        private ACharacter playerCharacter = null;
+        public ACharacter PlayerCharacter {
+            get { return playerCharacter; } 
             set 
             {
                 Debug.Assert(value);
-                player = value; 
+                playerCharacter = value; 
             } 
         }
 
@@ -131,37 +134,19 @@ namespace CommonRPG
 
             playerStartPoint = startPoint.GetComponent<PlayerStartPoint>();
 
-            if (Player == null) 
+            if (PlayerCharacter == null) 
             {
-                Player = GameObject.FindGameObjectWithTag("Player").GetComponent<ACharacter>();
-                springArm = GameObject.Find("SpringArm").GetComponent<SpringArm>();
+                Player player = Instantiate(playerPrefab);
+                PlayerCharacter = player.PlayerCharacter;
+                springArm = player.SpringArm;
 
-            }
-            else
-            {
-                GameObject[] playerObjects = GameObject.FindGameObjectsWithTag("Player");
-                for (int i = 0; i < playerObjects.Length; ++i)
-                {
-                    if (playerObjects[i] != Player.gameObject)
-                    {
-                        playerObjects[i].SetActive(false);
-                        break;
-                    }
-                }
-
-                GameObject[] cameraObjects = GameObject.FindGameObjectsWithTag("MainCamera");
-                for (int i = 0; i < cameraObjects.Length; ++i)
-                {
-                    if (cameraObjects[i].transform.root.gameObject != springArm.gameObject)
-                    {
-                        cameraObjects[i].transform.root.gameObject.SetActive(false);
-                        break;
-                    }
-                }
+                EquipmentScreen equipmentScreen = (EquipmentScreen)GameManager.InventoryManager.InventoryList[(int)EInventoryType.EquipmentScreen];
+                equipmentScreen.WeaponEquipmentTransform = PlayerCharacter.WeaponEquipmentTransform;
+                equipmentScreen.ShieldEquipmentTransform = PlayerCharacter.ShieldEquipmentTransform;
             }
 
-            Player.transform.position = playerStartPoint.transform.position;
-            Player.transform.rotation = playerStartPoint.transform.rotation;
+            PlayerCharacter.transform.position = playerStartPoint.transform.position;
+            PlayerCharacter.transform.rotation = playerStartPoint.transform.rotation;
         }
     }
 

@@ -9,7 +9,7 @@ namespace CommonRPG
         [SerializeField]
         private ALevelStartingScript levelStartingScript = null;
 
-        void Start()
+        private void Start()
         {
             if (levelStartingScript == null)
             {

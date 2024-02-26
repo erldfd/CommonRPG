@@ -249,9 +249,9 @@ namespace CommonRPG
             return item;
         }
 
-        public static ACharacter GetPlayer()
+        public static ACharacter GetPlayerCharacter()
         {
-            return instance.unitManager.Player;
+            return instance.unitManager.PlayerCharacter;
         }
 
         public static void GetDragSlotImage(out Image dragSlotImage)

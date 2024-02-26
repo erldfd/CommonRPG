@@ -87,7 +87,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a45e7ee76d66cdb47af7797560965224, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
+  playerPrefab: {fileID: 3492736562356228250, guid: ac494140bc66cec4fb55010c4f603d03, type: 3}
+  playerCharacter: {fileID: 0}
+  springArm: {fileID: 0}
+  playerStartPoint: {fileID: 0}
 --- !u!114 &5423144831006820560
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -32,7 +32,7 @@ namespace CommonRPG
 
         public void UseMiscItem(int slotIndex)
         {
-            KnightAnimController animController = (KnightAnimController)GameManager.GetPlayer().AnimController;
+            KnightAnimController animController = (KnightAnimController)GameManager.GetPlayerCharacter().AnimController;
             if (animController == null || animController.IsDrinking || animController.IsHit)
             {
                 return;
@@ -51,7 +51,7 @@ namespace CommonRPG
             {
                 case EItemName.HpPotion:
                 {
-                    StatComponent playerStatComponent = GameManager.GetPlayer().StatComponent;
+                    StatComponent playerStatComponent = GameManager.GetPlayerCharacter().StatComponent;
 
                     if (playerStatComponent.CurrentHealthPoint >= playerStatComponent.TotalHealth)
                     {

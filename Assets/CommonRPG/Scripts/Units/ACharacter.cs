@@ -59,6 +59,7 @@ namespace CommonRPG
         [Header("Camera")]
         [SerializeField]
         protected Camera characterCamera = null;
+        public Camera CharacterCamera { get { return characterCamera; } set { characterCamera = value; } }
 
         [SerializeField]
         protected float cameraMoveSensitivity = 1;

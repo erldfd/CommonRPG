@@ -188,7 +188,7 @@ namespace CommonRPG
                 return;
             }
 
-            GameManager.SpawnItem(inventoryItemDataList[slotIndex].ItemData.ItemName, GameManager.GetPlayer().transform.position, GameManager.GetPlayer().transform.rotation, true);
+            GameManager.SpawnItem(inventoryItemDataList[slotIndex].ItemData.ItemName, GameManager.GetPlayerCharacter().transform.position, GameManager.GetPlayerCharacter().transform.rotation, true);
             DeleteItem(slotIndex, 1);
         }
 

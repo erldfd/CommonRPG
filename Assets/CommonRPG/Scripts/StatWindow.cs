@@ -57,7 +57,7 @@ namespace CommonRPG
         {
             if (statComponent == null) 
             {
-                statComponent = GameManager.GetPlayer().StatComponent;
+                statComponent = GameManager.GetPlayerCharacter().StatComponent;
             }
 
             statComponent.OnLevelUpdate.AddListener(OnLevelUp);

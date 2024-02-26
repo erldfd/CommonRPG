@@ -60,7 +60,7 @@ namespace CommonRPG
 
             if (equipmentSlot == EEquipmentSlot.Weapon && itemData.ItemType == EItemType.Weapon)
             {
-                GameManager.GetPlayer().CharacterWeapon = (WeaponItem)GameManager.SpawnItem(itemData.ItemName, weaponEquipmentTransform, false);
+                GameManager.GetPlayerCharacter().CharacterWeapon = (WeaponItem)GameManager.SpawnItem(itemData.ItemName, weaponEquipmentTransform, false);
             }
             else if (equipmentSlot == EEquipmentSlot.Shield && itemData.ItemType == EItemType.Shield)
             {
@@ -85,7 +85,7 @@ namespace CommonRPG
                         }
                     }
 
-                    GameManager.GetPlayer().CharacterWeapon = null;
+                    GameManager.GetPlayerCharacter().CharacterWeapon = null;
                 }
                 else if (equipmentSlot == EEquipmentSlot.Shield)
                 {

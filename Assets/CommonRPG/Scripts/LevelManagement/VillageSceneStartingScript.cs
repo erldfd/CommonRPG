@@ -9,25 +9,25 @@ namespace CommonRPG
         [SerializeField]
         private Vector3 itemSpawnPosition;
 
-        private EquipmentScreen equipmentScreen = null;
+        //private EquipmentScreen equipmentScreen = null;
         public override void StartScript()
         {
-            GameManager.SpawnItem(EItemName.TheFirstSword, itemSpawnPosition, Quaternion.identity, true);
+            //GameManager.SpawnItem(EItemName.TheFirstSword, itemSpawnPosition, Quaternion.identity, true);
 
-            if (equipmentScreen == null)
-            {
-                equipmentScreen = (EquipmentScreen)GameManager.InventoryManager.InventoryList[(int)EInventoryType.EquipmentScreen];
-            }
+            //if (equipmentScreen == null)
+            //{
+            //    equipmentScreen = (EquipmentScreen)GameManager.InventoryManager.InventoryList[(int)EInventoryType.EquipmentScreen];
+            //}
 
-            if (equipmentScreen.WeaponEquipmentTransform == null) 
-            {
-                equipmentScreen.WeaponEquipmentTransform = GameManager.GetPlayer().WeaponEquipmentTransform;
-            }
+            //if (equipmentScreen.WeaponEquipmentTransform == null) 
+            //{
+            //    equipmentScreen.WeaponEquipmentTransform = GameManager.GetPlayerCharacter().WeaponEquipmentTransform;
+            //}
 
-            if (equipmentScreen.ShieldEquipmentTransform = null) 
-            {
-                equipmentScreen.ShieldEquipmentTransform = GameManager.GetPlayer().ShieldEquipmentTransform;
-            }
+            //if (equipmentScreen.ShieldEquipmentTransform = null) 
+            //{
+            //    equipmentScreen.ShieldEquipmentTransform = GameManager.GetPlayerCharacter().ShieldEquipmentTransform;
+            //}
 
             GameManager.InGameUI.SetPlayerInfoUIVisible(true);
         }

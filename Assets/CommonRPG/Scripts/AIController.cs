@@ -74,7 +74,7 @@ namespace CommonRPG
             agent = GetComponent<NavMeshAgent>();
             Debug.Assert(agent);
 
-            tempTargetTransform = GameManager.GetPlayer().transform;
+            tempTargetTransform = GameManager.GetPlayerCharacter().transform;
         }
 
 

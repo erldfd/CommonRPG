@@ -29,9 +29,6 @@ namespace CommonRPG
             GameManager.QuestManager.UnlockQuest("First Hunt Quest");
             GameManager.QuestManager.TryReceiveQuest("First Hunt Quest");
             GameManager.QuestManager.UnlockQuest("Second Hunt Quest");
-
-            DontDestroyOnLoad(this);
-            DontDestroyOnLoad(base.springArm);
         }
 
         protected override void Update()
