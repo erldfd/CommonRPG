@@ -8,6 +8,7 @@ namespace CommonRPG
 {
     public class StatWindow : MonoBehaviour
     {
+        [Header("Simple Infos")]
         [SerializeField]
         private TextMeshProUGUI simpleHpInfo = null;
 
@@ -26,6 +27,7 @@ namespace CommonRPG
         [SerializeField]
         private TextMeshProUGUI expInfo = null;
 
+        [Header("Detail Infos")]
         [SerializeField]
         private TextMeshProUGUI detailHpInfo = null;
 
@@ -38,6 +40,7 @@ namespace CommonRPG
         [SerializeField]
         private TextMeshProUGUI detailArmorInfo = null;
 
+        [Header("Buttons")]
         [SerializeField]
         private Button investToHpButton = null;
 
@@ -50,8 +53,15 @@ namespace CommonRPG
         [SerializeField]
         private Button investToArmorButton = null;
 
+        [Header("etc.")]
         [SerializeField]
         private StatComponent statComponent = null;
+
+        [SerializeField]
+        private Sprite activatedInvestButtonSprite;
+
+        [SerializeField]
+        private Sprite deactivatedInvestButtonSprite;
 
         private void OnEnable()
         {
@@ -99,6 +109,29 @@ namespace CommonRPG
 
             statPointsInfo.text = statComponent.UninvestedStatPoint.ToString();
             expInfo.text = $"{statComponent.CurrentExp:F1} / {statComponent.MaxExpOfCurrentLevel:F1}";
+
+            float currentExpRatio = statComponent.CurrentExp / statComponent.MaxExpOfCurrentLevel;
+            GameManager.InGameUI.SetPlayerExpBarFillRatio(currentExpRatio);
+
+            SetActiveInvestButtons(statComponent.UninvestedStatPoint > 0);
+        }
+
+        private void SetActiveInvestButtons(bool shouldActivate)
+        {
+            if (shouldActivate) 
+            {
+                investToArmorButton.image.sprite = activatedInvestButtonSprite;
+                investToDamageButton.image.sprite = activatedInvestButtonSprite;
+                investToHpButton.image.sprite = activatedInvestButtonSprite;
+                investToMpButton.image.sprite = activatedInvestButtonSprite;
+            }
+            else
+            {
+                investToArmorButton.image.sprite = deactivatedInvestButtonSprite;
+                investToDamageButton.image.sprite = deactivatedInvestButtonSprite;
+                investToHpButton.image.sprite = deactivatedInvestButtonSprite;
+                investToMpButton.image.sprite = deactivatedInvestButtonSprite;
+            }
         }
 
         private void OnInvestToHp()
@@ -108,7 +141,9 @@ namespace CommonRPG
             detailHpInfo.text = $"{statComponent.BaseHealthPoint} + {statComponent.StatHpPoint} * {StatComponent.STAT_HP_POINT_COEFFICIENT} + {statComponent.WeaponHealthBonus} + 0";
             statPointsInfo.text = statComponent.UninvestedStatPoint.ToString();
 
-            GameManager.SetPlayerHealthBarFillRatio(statComponent.CurrentHealthPoint / statComponent.TotalHealth);
+            SetActiveInvestButtons(statComponent.UninvestedStatPoint > 0);
+
+            GameManager.InGameUI.SetPlayerHealthBarFillRatio(statComponent.CurrentHealthPoint / statComponent.TotalHealth);
         }
 
         private void OnInvestToMp()
@@ -118,7 +153,9 @@ namespace CommonRPG
             detailMpInfo.text = $"{statComponent.BaseManaPoint} + {statComponent.StatMpPoint} * {StatComponent.STAT_MP_POINT_COEFFICIENT} + {statComponent.WeaponManaBonus} + 0";
             statPointsInfo.text = statComponent.UninvestedStatPoint.ToString();
 
-            GameManager.SetPlayerManaBarFillRatio(statComponent.CurrentManaPoint / statComponent.TotalMana);
+            SetActiveInvestButtons(statComponent.UninvestedStatPoint > 0);
+
+            GameManager.InGameUI.SetPlayerManaBarFillRatio(statComponent.CurrentManaPoint / statComponent.TotalMana);
         }
 
         private void OnInvestToDamage()
@@ -127,6 +164,8 @@ namespace CommonRPG
             simpleDamageInfo.text = $"{statComponent.TotalAttackPower}";
             detailDamageInfo.text = $"{statComponent.BaseAttackPower} + {statComponent.StatAttackPowerPoint} * {StatComponent.STAT_ATTACK_POWER_POINT_COEFFICIENT} + {statComponent.WeaponAttackPowerBonus} + 0";
             statPointsInfo.text = statComponent.UninvestedStatPoint.ToString();
+
+            SetActiveInvestButtons(statComponent.UninvestedStatPoint > 0);
         }
 
         private void OnInvestToArmor()
@@ -135,6 +174,8 @@ namespace CommonRPG
             simpleArmorInfo.text = $"{statComponent.TotalDefense}";
             detailArmorInfo.text = $"{statComponent.BaseDefense} + {statComponent.StatDefensePoint} * {StatComponent.STAT_DEFENSE_POINT_COEFFICIENT} + {statComponent.WeaponDefenseBonus} + 0";
             statPointsInfo.text = statComponent.UninvestedStatPoint.ToString();
+
+            SetActiveInvestButtons(statComponent.UninvestedStatPoint > 0);
         }
 
         /// <summary>
@@ -144,6 +185,11 @@ namespace CommonRPG
         {
             statPointsInfo.text = statComponent.UninvestedStatPoint.ToString();
             expInfo.text = $"{statComponent.CurrentExp:F1} / {statComponent.MaxExpOfCurrentLevel:F1}";
+
+            float currentExpRatio = statComponent.CurrentExp / statComponent.MaxExpOfCurrentLevel;
+            GameManager.InGameUI.SetPlayerExpBarFillRatio(currentExpRatio);
+
+            SetActiveInvestButtons(statComponent.UninvestedStatPoint > 0);
             Debug.Log("Level Up!!!!!!!!!!!!!!!!!!");
         }
 

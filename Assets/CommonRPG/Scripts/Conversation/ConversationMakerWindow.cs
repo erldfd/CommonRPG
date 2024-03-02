@@ -424,6 +424,16 @@ namespace CommonRPG
 
         void OnGUI()
         {
+            //EditorWindow currentWindow = focusedWindow;
+            //if (currentWindow != null)
+            //{
+            //    Debug.Log("현재 선택된 윈도우: " + currentWindow.titleContent.text);
+            //}
+            //else
+            //{
+            //    Debug.Log("선택된 윈도우가 없습니다.");
+            //}
+
             GUI.Label(conversationNameRect, "Conversation Name :");
             conversationNameInput = GUI.TextField(conversationNameInputFieldRect, conversationNameInput);
 
@@ -513,26 +523,19 @@ namespace CommonRPG
 
             newData.ConversationDataName = conversationNameInput;
 
+            string assetPath = $"Assets/CommonRPG/{conversationNameInput}.asset";
+
+            string assetGUID = AssetDatabase.AssetPathToGUID(assetPath);
+
+            if (string.IsNullOrEmpty(assetGUID) == false)
+            {
+                AssetDatabase.DeleteAsset(assetPath);
+            }
+
             AssetDatabase.CreateAsset(newData, $"Assets/CommonRPG/{conversationNameInput}.asset");
             AssetDatabase.SaveAssets();
 
             return false;
-        }
-
-        [OnOpenAsset(1)]
-        public static bool step1(int instanceID, int line, int col)
-        {
-            string name = EditorUtility.InstanceIDToObject(instanceID).name;
-            Debug.Log("Open Asset step: 1 (" + name + ")");
-            Debug.Log($"line ? :{line}  colum ? :{col}");
-            return false; // we did not handle the open
-        }
-
-        [OnOpenAsset(2)]
-        public static bool step2(int instanceID, int line)
-        {
-            Debug.Log("Open Asset step: 2 (" + instanceID + ")");
-            return false; // we did not handle the open
         }
 
         private void ReadyToCreateNormalConversationNode()

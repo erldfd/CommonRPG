@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering.HighDefinition;
+using UnityEngine.UI;
 
 namespace CommonRPG
 {
-    public class QuestNameEntry : ListViewEntry, IPointerDownHandler
+    public class QuestNameEntry : AListViewEntry, IPointerDownHandler 
     {
         /// <summary>
         /// args : string questNameText, string questDescription
@@ -17,9 +19,25 @@ namespace CommonRPG
         [SerializeField]
         private TextMeshProUGUI questNameText;
 
+        [SerializeField]
+        private Image questNameEntryImage;
+
         private string questDescription;
 
-        private int currentItemIndex;
+        private bool isPending;
+
+        private Color notPendingColor = new Color(255, 255, 255, 255);
+        private Color pendingColor = new Color(255, 208, 0, 255);
+
+        //private void OnEnable()
+        //{
+        //    GameManager.QuestManager.OnPendingQuestDelegate += OnPendingQuest;
+        //}
+
+        //private void OnDisable()
+        //{
+        //    GameManager.QuestManager.OnPendingQuestDelegate -= OnPendingQuest;
+        //}
 
         public void OnPointerDown(PointerEventData eventData)
         {
@@ -42,7 +60,12 @@ namespace CommonRPG
 
             SetQuestNameText(questNameItem.QuestName);
             questDescription = questNameItem.QuestDescription;
-            currentItemIndex = questNameItem.Index;
+            isPending = questNameItem.IsPending;
+
+            SetQuestNameEntryColor(isPending);
+
+            GameManager.QuestManager.OnPendingQuestDelegate -= OnPendingQuest;
+            GameManager.QuestManager.OnPendingQuestDelegate += OnPendingQuest;
         }
 
         public void SetQuestNameText(string newText)
@@ -53,6 +76,32 @@ namespace CommonRPG
         public bool IsOnEntryClickedDelegateBound()
         {
             return OnEntryClickedDelegate != null;
+        }
+
+        /// <summary>
+        /// if quest state is pending or not , quest name entry color changes to pending color or not pending color
+        /// </summary>
+        /// <param name="isPending"></param>
+        private void SetQuestNameEntryColor(bool isPending)
+        {
+            if(isPending)
+            {
+                questNameEntryImage.color = pendingColor;
+            }
+            else
+            {
+                questNameEntryImage.color = notPendingColor;
+            }
+        }
+
+        private void OnPendingQuest(int questId)
+        {
+            int currentQuestId = GameManager.QuestManager.QuestNameIdTable[questNameText.text];
+
+            if (currentQuestId == questId) 
+            {
+                SetQuestNameEntryColor(true);
+            }
         }
     }
 }

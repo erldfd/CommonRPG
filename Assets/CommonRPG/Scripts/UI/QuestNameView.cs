@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor.PackageManager.Requests;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace CommonRPG
 {
@@ -77,7 +78,7 @@ namespace CommonRPG
 
         private void OnEnable()
         {
-            LinkedList<ListViewEntry> entryDataList = unlockedQuestNameView.Entries;
+            LinkedList<AListViewEntry> entryDataList = unlockedQuestNameView.Entries;
 
             BindEntryClickedDelegate(entryDataList);
 
@@ -89,9 +90,9 @@ namespace CommonRPG
 
             BindEntryClickedDelegate(entryDataList);
 
-            void BindEntryClickedDelegate(LinkedList<ListViewEntry> newEntryDataList)
+            void BindEntryClickedDelegate(LinkedList<AListViewEntry> newEntryDataList)
             {
-                foreach (ListViewEntry entryList in newEntryDataList)
+                foreach (AListViewEntry entryList in newEntryDataList)
                 {
                     QuestNameEntry questNameEntry = entryList as QuestNameEntry;
                     if (questNameEntry == null)
@@ -111,7 +112,7 @@ namespace CommonRPG
 
         private void OnDisable()
         {
-            LinkedList<ListViewEntry> entryDataList = unlockedQuestNameView.Entries;
+            LinkedList<AListViewEntry> entryDataList = unlockedQuestNameView.Entries;
 
             RemoveBindingEntryClickedDelegate(entryDataList);
 
@@ -123,9 +124,9 @@ namespace CommonRPG
 
             RemoveBindingEntryClickedDelegate(entryDataList);
 
-            void RemoveBindingEntryClickedDelegate(LinkedList<ListViewEntry> newEntryDataList)
+            void RemoveBindingEntryClickedDelegate(LinkedList<AListViewEntry> newEntryDataList)
             {
-                foreach (ListViewEntry entryList in newEntryDataList)
+                foreach (AListViewEntry entryList in newEntryDataList)
                 {
                     QuestNameEntry questNameEntry = entryList as QuestNameEntry;
                     if (questNameEntry == null)
@@ -349,10 +350,13 @@ namespace CommonRPG
         public string QuestName { get; set; }
         public string QuestDescription { get; set; }
 
+        public bool IsPending { get; set; }
+
         public QuestNameItem(string questName, string questDescription)
         {
             QuestName = questName;
             QuestDescription = questDescription;
+            IsPending = false;
         }
     }
 }

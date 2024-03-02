@@ -12,10 +12,13 @@ namespace CommonRPG
             base.Awake();
 
             float currentHpRatio = Mathf.Clamp01(statComponent.CurrentHealthPoint / statComponent.TotalHealth);
-            GameManager.SetPlayerHealthBarFillRatio(currentHpRatio);
-            GameManager.SetPlayerLevelText(statComponent.Level);
-            GameManager.SetPlayerManaBarFillRatio(statComponent.CurrentManaPoint / statComponent.TotalMana);
-            GameManager.SetPlayerNameText(base.unitName);
+            GameManager.InGameUI.SetPlayerHealthBarFillRatio(currentHpRatio);
+            GameManager.InGameUI.SetPlayerLevelText(statComponent.Level);
+            GameManager.InGameUI.SetPlayerManaBarFillRatio(statComponent.CurrentManaPoint / statComponent.TotalMana);
+            GameManager.InGameUI.SetPlayerNameText(base.unitName);
+
+            float currentExpRatio = statComponent.CurrentExp / statComponent.MaxExpOfCurrentLevel;
+            GameManager.InGameUI.SetPlayerExpBarFillRatio(currentExpRatio);
 
             //if (GameManager.UnitManager.Player == null)
             //{
@@ -26,9 +29,9 @@ namespace CommonRPG
         protected override void Start()
         {
             base.Start();
-            GameManager.QuestManager.UnlockQuest("First Hunt Quest");
-            GameManager.QuestManager.TryReceiveQuest("First Hunt Quest");
-            GameManager.QuestManager.UnlockQuest("Second Hunt Quest");
+            //GameManager.QuestManager.UnlockQuest("First Hunt Quest");
+            //GameManager.QuestManager.TryReceiveQuest("First Hunt Quest");
+           // GameManager.QuestManager.UnlockQuest("Second Hunt Quest");
         }
 
         protected override void Update()
@@ -69,7 +72,7 @@ namespace CommonRPG
 
             statComponent.CurrentHealthPoint -= actualDamageAmount;
             float currentHpRatio = Mathf.Clamp01(statComponent.CurrentHealthPoint / statComponent.TotalHealth);
-            GameManager.SetPlayerHealthBarFillRatio(currentHpRatio);
+            GameManager.InGameUI.SetPlayerHealthBarFillRatio(currentHpRatio);
 
             //Debug.Log($"Damage is Taked : {DamageAmount}, CurrentHp : {statComponent.CurrentHealthPoint}");
 
@@ -101,8 +104,8 @@ namespace CommonRPG
 
             //knightAnimController.PlayHitAnim();
             //animController.ani.Play("Drinking", 0);
-            GameManager.PrintAllQuests();
-            GameManager.QuestManager.UnlockQuest("Hunt Quest 3");
+            //GameManager.PrintAllQuests();
+            //GameManager.QuestManager.UnlockQuest("Hunt Quest 3");
         }
 
         protected override void OnNormalAttack(InputAction.CallbackContext context)

@@ -212,5 +212,11 @@ namespace CommonRPG
         {
             Time.timeScale = (shouldPuase) ? 0 : 1;
         }
+
+        /// <returns>return Time.timeScale == 0</returns>
+        public bool IsGameWorldPaused()
+        {
+            return (Time.timeScale == 0);
+        }
     }
 }

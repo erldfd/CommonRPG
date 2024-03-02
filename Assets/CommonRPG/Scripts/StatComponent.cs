@@ -32,9 +32,9 @@ namespace CommonRPG
                 CurrentHealthPoint = totalHealth;
                 CurrentManaPoint = totalMana;
 
-                GameManager.SetPlayerHealthBarFillRatio(CurrentHealthPoint / totalHealth);
-                GameManager.SetPlayerManaBarFillRatio(CurrentManaPoint / totalMana);
-                GameManager.SetPlayerLevelText(level);
+                GameManager.InGameUI.SetPlayerHealthBarFillRatio(CurrentHealthPoint / totalHealth);
+                GameManager.InGameUI.SetPlayerManaBarFillRatio(CurrentManaPoint / totalMana);
+                GameManager.InGameUI.SetPlayerLevelText(level);
 
                 OnLevelUpdate.Invoke(level - previousLevel);
             }
@@ -189,7 +189,7 @@ namespace CommonRPG
             set
             {
                 currentManaPoint = value;
-                GameManager.SetPlayerManaBarFillRatio(CurrentManaPoint / TotalMana);
+                GameManager.InGameUI.SetPlayerManaBarFillRatio(CurrentManaPoint / TotalMana);
             }
         }
 

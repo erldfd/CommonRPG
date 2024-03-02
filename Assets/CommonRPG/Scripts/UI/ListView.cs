@@ -22,7 +22,7 @@ namespace CommonRPG
         private SPadding viewportPaddng;
 
         [SerializeField]
-        private ListViewEntry entryObject;
+        private AListViewEntry entryObject;
 
         [SerializeField]
         private SPadding entryPadding;
@@ -33,8 +33,8 @@ namespace CommonRPG
         [SerializeField]
         private bool isHorizontal = false;
 
-        private LinkedList<ListViewEntry> entries = new();
-        public LinkedList<ListViewEntry> Entries {  get { return entries; } }
+        private LinkedList<AListViewEntry> entries = new();
+        public LinkedList<AListViewEntry> Entries {  get { return entries; } }
 
         //private LinkedList<RectTransform> entryRectTransforms = new();
         //private LinkedList<ListViewEntryData> entryData = new();
@@ -42,7 +42,7 @@ namespace CommonRPG
 
         private List<ListViewItem> listViewItemList = new();
 
-        private Queue<ListViewEntry> deactivatedEntryQueue = new();
+        private Queue<AListViewEntry> deactivatedEntryQueue = new();
 
         protected virtual void Awake()
         {
@@ -101,8 +101,8 @@ namespace CommonRPG
 
             listViewItemList.Remove(item);
 
-            ListViewEntry firstEntry = entries.First.Value;
-            ListViewEntry lastEntry = entries.Last.Value;
+            AListViewEntry firstEntry = entries.First.Value;
+            AListViewEntry lastEntry = entries.Last.Value;
 
             if (removedItemIndex > firstEntry.ItemIndexInEntry || removedItemIndex < lastEntry.ItemIndexInEntry) 
             {
@@ -116,13 +116,13 @@ namespace CommonRPG
             {
                 i = firstEntry.ItemIndexInEntry;
 
-                LinkedListNode<ListViewEntry> entryNode = entries.First;
+                LinkedListNode<AListViewEntry> entryNode = entries.First;
 
                 while (entryNode != null)
                 {
                     if (i <= removedItemIndex)
                     {
-                        ListViewEntry entry = entryNode.Value;
+                        AListViewEntry entry = entryNode.Value;
 
                         if (listViewItemListCount > i)
                         {
@@ -171,13 +171,13 @@ namespace CommonRPG
             }
             else
             {
-                LinkedListNode<ListViewEntry> entryNode = entries.First;
+                LinkedListNode<AListViewEntry> entryNode = entries.First;
 
                 while (entryNode != null)
                 {
                     if (i >= removedItemIndex)
                     {
-                        ListViewEntry entry = entryNode.Value;
+                        AListViewEntry entry = entryNode.Value;
 
                         if (listViewItemListCount > i)
                         {
@@ -254,7 +254,7 @@ namespace CommonRPG
 
         private void CreateEntry()
         {
-            ListViewEntry newEntry;
+            AListViewEntry newEntry;
 
             if (deactivatedEntryQueue.Count > 0) 
             {
@@ -355,8 +355,8 @@ namespace CommonRPG
             //    return;
             //}
 
-            ListViewEntry firstNodeValue = entries.First.Value;
-            ListViewEntry lastNodeValue = entries.Last.Value;
+            AListViewEntry firstNodeValue = entries.First.Value;
+            AListViewEntry lastNodeValue = entries.Last.Value;
 
             RectTransform firstNodeEntryRectTransform = firstNodeValue.EntryRectTransform;
             RectTransform lastNodeEntryRectTransform = lastNodeValue.EntryRectTransform;
@@ -369,7 +369,7 @@ namespace CommonRPG
 
             if (verticalDelta > 0 && firstNodeValue.ItemIndexInEntry == 0 && newPositionY <= -viewportPaddng.top - entryPadding.top)
             {
-                foreach (ListViewEntry entry in entries)
+                foreach (AListViewEntry entry in entries)
                 {
                     entry.EntryRectTransform.anchoredPosition = new Vector2(entry.EntryRectTransform.anchoredPosition.x, -viewportPaddng.top - entryPadding.top - entrySize * i);
                     i++;
@@ -382,7 +382,7 @@ namespace CommonRPG
 
             if (verticalDelta < 0 && lastNodeValue.ItemIndexInEntry == listViewItemList.Count - 1 && newPositionY >= bottomPosition + entryPadding.bottom + lastNodeEntryRectTransform.rect.height)
             {
-                foreach (ListViewEntry entry in entries)
+                foreach (AListViewEntry entry in entries)
                 {
                     entry.EntryRectTransform.anchoredPosition = new Vector2(entry.EntryRectTransform.anchoredPosition.x, bottomPosition + entryPadding.bottom + lastNodeEntryRectTransform.rect.height + entrySize * (lastIndex - i));
                     i++;
@@ -391,7 +391,7 @@ namespace CommonRPG
                 return;
             }
 
-            foreach (ListViewEntry entry in entries)
+            foreach (AListViewEntry entry in entries)
             {
                 entry.EntryRectTransform.anchoredPosition = new Vector2(entry.EntryRectTransform.anchoredPosition.x, entry.EntryRectTransform.anchoredPosition.y - verticalDelta);
                 i++;

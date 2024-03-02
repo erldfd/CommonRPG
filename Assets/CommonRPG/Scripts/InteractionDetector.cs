@@ -35,32 +35,44 @@ namespace CommonRPG
                 return;
             }
 
-            Merchant merchant = other.GetComponent<Merchant>();
-            if (merchant)
+            //Merchant merchant = other.GetComponent<Merchant>();
+            //if (merchant)
+            //{
+            //    if (interactionSet.Contains(merchant))
+            //    {
+            //        return;
+            //    }
+
+            //    interactionSet.Add(merchant);
+            //    GameManager.SetActiveInteractioUI(true);
+
+            //    return;
+            //}
+
+            //CraftingStation craftingStation = other.GetComponent<CraftingStation>();
+            //if (craftingStation) 
+            //{
+            //    if (interactionSet.Contains(craftingStation))
+            //    {
+            //        return;
+            //    }
+
+            //    interactionSet.Add(craftingStation);
+            //    GameManager.SetActiveInteractioUI(true);
+
+            //    return;
+            //}
+
+            NPC nPC = other.GetComponent<NPC>();
+            if (nPC) 
             {
-                if (interactionSet.Contains(merchant))
+                if (interactionSet.Contains(nPC)) 
                 {
                     return;
                 }
 
-                interactionSet.Add(merchant);
+                interactionSet.Add(nPC);
                 GameManager.SetActiveInteractioUI(true);
-
-                return;
-            }
-
-            CraftingStation craftingStation = other.GetComponent<CraftingStation>();
-            if (craftingStation) 
-            {
-                if (interactionSet.Contains(craftingStation))
-                {
-                    return;
-                }
-
-                interactionSet.Add(craftingStation);
-                GameManager.SetActiveInteractioUI(true);
-
-                return;
             }
         }
 
@@ -85,37 +97,65 @@ namespace CommonRPG
                 return;
             }
 
-            Merchant merchant = other.GetComponent<Merchant>();
-            if (merchant) 
-            {
-                if (interactionSet.Contains(merchant) == false)
-                {
-                    Debug.LogAssertion("Wrong access");
-                    return;
-                }
+            //Merchant merchant = other.GetComponent<Merchant>();
+            //if (merchant) 
+            //{
+            //    if (interactionSet.Contains(merchant) == false)
+            //    {
+            //        Debug.LogAssertion("Wrong access");
+            //        return;
+            //    }
 
-                interactionSet.Remove(merchant);
-                GameManager.InventoryManager.OpenAndCloseMerchantInventory(false);
+            //    interactionSet.Remove(merchant);
+            //    GameManager.InventoryManager.OpenAndCloseMerchantInventory(false);
 
-                if (interactionSet.Count == 0)
-                {
-                    GameManager.SetActiveInteractioUI(false);
-                }
+            //    if (interactionSet.Count == 0)
+            //    {
+            //        GameManager.SetActiveInteractioUI(false);
+            //    }
 
-                return;
-            }  
+            //    return;
+            //}  
             
-            CraftingStation craftingStation = other.GetComponent<CraftingStation>();
-            if (craftingStation) 
+            //CraftingStation craftingStation = other.GetComponent<CraftingStation>();
+            //if (craftingStation) 
+            //{
+            //    if (interactionSet.Contains(craftingStation) == false)
+            //    {
+            //        Debug.LogAssertion("Wrong access");
+            //        return;
+            //    }
+
+            //    interactionSet.Remove(craftingStation);
+            //    GameManager.InventoryManager.OpenAndCloseCraftInventory(false);
+
+            //    if (interactionSet.Count == 0)
+            //    {
+            //        GameManager.SetActiveInteractioUI(false);
+            //    }
+
+            //    return;
+            //}
+
+            NPC nPC = other.GetComponent<NPC>();
+            if(nPC)
             {
-                if (interactionSet.Contains(craftingStation) == false)
+                if (interactionSet.Contains(nPC) == false)
                 {
                     Debug.LogAssertion("Wrong access");
                     return;
                 }
 
-                interactionSet.Remove(craftingStation);
-                GameManager.InventoryManager.OpenAndCloseCraftInventory(false);
+                interactionSet.Remove(nPC);
+
+                if (nPC is Merchant)
+                {
+                    GameManager.InventoryManager.OpenAndCloseMerchantInventory(false);
+                }
+                else if (nPC is CraftingStation) 
+                {
+                    GameManager.InventoryManager.OpenAndCloseCraftInventory(false);
+                }
 
                 if (interactionSet.Count == 0)
                 {
@@ -159,28 +199,35 @@ namespace CommonRPG
 
                     break;
                 }
-                else if (someObject is Merchant) 
+                else if (someObject is NPC) 
                 {
-                    Merchant merchant = (Merchant)someObject;
-
-                    List<InventorySlotItemData> merchantGoodsDataList = merchant.MerchantGoodsDataList;
-
-                    GameManager.InventoryManager.DisplayMerchantGoods(merchantGoodsDataList);
-                    GameManager.InventoryManager.OpenAndCloseMerchantInventory(true);
-                    GameManager.SetActiveInteractioUI(false);
-
+                    NPC npc = (NPC)someObject;
+                    npc.InteractWithPlayer();
                     break;
                 }
-                else if (someObject is CraftingStation)
-                {
-                    CraftingStation craftingStation = (CraftingStation)someObject;
-                    GameManager.InventoryManager.OpenAndCloseCraftInventory(true);
 
-                    //GameManager.InGameUI.ReadyToConversate(craftingStation.CurrentConversationData);
-                    GameManager.SetActiveInteractioUI(false);
+                //else if (someObject is Merchant) 
+                //{
+                //    Merchant merchant = (Merchant)someObject;
 
-                    break;
-                }
+                //    List<InventorySlotItemData> merchantGoodsDataList = merchant.MerchantGoodsDataList;
+
+                //    GameManager.InventoryManager.DisplayMerchantGoods(merchantGoodsDataList);
+                //    GameManager.InventoryManager.OpenAndCloseMerchantInventory(true);
+                //    GameManager.SetActiveInteractioUI(false);
+
+                //    break;
+                //}
+                //else if (someObject is CraftingStation)
+                //{
+                //    CraftingStation craftingStation = (CraftingStation)someObject;
+                //    GameManager.InventoryManager.OpenAndCloseCraftInventory(true);
+
+                //    GameManager.InGameUI.ReadyToConversate(craftingStation.CurrentConversationData);
+                //    GameManager.SetActiveInteractioUI(false);
+
+                //    break;
+                //}
             }
 
             if (interactionSet.Count == 0)

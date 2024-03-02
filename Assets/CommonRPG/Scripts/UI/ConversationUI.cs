@@ -191,9 +191,10 @@ namespace CommonRPG
         {
             Close();
             isConversationStarted = false;
-            GameManager.TimerManager.PauseGameWorld(false);
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
+            //GameManager.TimerManager.TryPuaseGameWorld();
+            //Cursor.visible = false;
+            //Cursor.lockState = CursorLockMode.Locked;
+            GameManager.TryUseOrNotUIInteractionState();
 
             if (OnConversationFinishedDelegate != null) 
             {

@@ -43,8 +43,8 @@ namespace CommonRPG
                     statComponent.CurrentManaPoint = statComponent.TotalMana;
                 }
 
-                GameManager.SetPlayerHealthBarFillRatio(statComponent.CurrentHealthPoint / statComponent.TotalHealth);
-                GameManager.SetPlayerManaBarFillRatio(statComponent.CurrentManaPoint / statComponent.TotalMana);
+                GameManager.InGameUI.SetPlayerHealthBarFillRatio(statComponent.CurrentHealthPoint / statComponent.TotalHealth);
+                GameManager.InGameUI.SetPlayerManaBarFillRatio(statComponent.CurrentManaPoint / statComponent.TotalMana);
             }
         }
 
@@ -83,7 +83,7 @@ namespace CommonRPG
         {
             get 
             {
-                return (GameManager.IsInventoryOpened() == false && GameManager.InGameUI.IsConversationStarted == false); 
+                return (GameManager.IsInventoryOpened() == false && GameManager.InGameUI.IsConversationStarted == false && GameManager.QuestManager.IsQuestWindowOpened() == false); 
             } 
         }
 
@@ -166,7 +166,11 @@ namespace CommonRPG
 
         public virtual void ObtainExp(float amount)
         {
-            statComponent.CurrentExp += amount;
+            StatComponent.CurrentExp += amount;
+
+            float currentExpRatio = StatComponent.CurrentExp / StatComponent.MaxExpOfCurrentLevel;
+            GameManager.InGameUI.SetPlayerExpBarFillRatio(currentExpRatio);
+
             //Debug.Log($"exp obtained : {amount}");
         }
 
@@ -178,7 +182,7 @@ namespace CommonRPG
 
         protected virtual void OnPauseAndResume(InputAction.CallbackContext context)
         {
-            Debug.Log("PauseAndResume");
+            //Debug.Log("PauseAndResume");
         }
 
         protected virtual void OnMoveMouseVertical(InputAction.CallbackContext context)

@@ -17,6 +17,7 @@ namespace CommonRPG
         protected override void OnEnable()
         {
             base.OnEnable();
+
             GameManager.InGameUI.BindEventToOnChoiceConversationButtonClickedDelegate(OnChoiceConversationButtonClicked);
             GameManager.InGameUI.BindEventToOnConversationFinishedDelegate(OnConversationFinished);
         }
@@ -24,8 +25,24 @@ namespace CommonRPG
         protected override void OnDisable()
         {
             base.OnDisable();
+
             GameManager.InGameUI.RemoveEventToOnChoiceConversationButtonClickedDelegate(OnChoiceConversationButtonClicked);
             GameManager.InGameUI.RemoveEventToOnConversationFinishedDelegate(OnConversationFinished);
+        }
+
+        public override void InteractWithPlayer()
+        {
+            base.InteractWithPlayer();
+
+            if (CurrentConversationData)
+            {
+                GameManager.InGameUI.ReadyToConversate(CurrentConversationData);
+                GameManager.SetActiveInteractioUI(false);
+                return;
+            }
+
+            GameManager.InventoryManager.OpenAndCloseCraftInventory(true);
+            GameManager.SetActiveInteractioUI(false);
         }
 
         private void OnChoiceConversationButtonClicked(string conversationDataName, int nodeId, int clickedButtonIndex)

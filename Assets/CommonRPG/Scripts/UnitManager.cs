@@ -27,14 +27,10 @@ namespace CommonRPG
         [SerializeField]
         private PlayerStartPoint playerStartPoint = null;
 
-        [SerializeField]
         private HashSet<Slime> activatedSlimeSet = new HashSet<Slime>();
-        [SerializeField]
         private Queue<Slime> deactivatedSlimeQueue = new Queue<Slime>();
 
-        [SerializeField]
         private HashSet<Turtle> activatedTurtleSet = new HashSet<Turtle>();
-        [SerializeField]
         private Queue<Turtle> deactivatedTurtleQueue = new Queue<Turtle>();
 
         private void Awake()
@@ -121,12 +117,23 @@ namespace CommonRPG
             monster.gameObject.SetActive(false);
         }
 
+        public void ClearMonsterPool()
+        {
+            activatedSlimeSet.Clear();
+            deactivatedSlimeQueue.Clear();
+
+            activatedTurtleSet.Clear();
+            deactivatedTurtleQueue.Clear();
+        }
+
         private void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
         {
             Debug.Log($"{scene.name} is loaded, {loadSceneMode}");
 
-            GameObject startPoint = GameObject.Find("PlayerStartPoint");
+            ClearMonsterPool();
 
+            GameObject startPoint = GameObject.Find("PlayerStartPoint");
+            
             if (startPoint == null) 
             {
                 return;

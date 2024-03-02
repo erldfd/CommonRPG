@@ -17,11 +17,25 @@ namespace CommonRPG
         [SerializeField]
         private Button abandonQuestButton;
 
+        [SerializeField]
+        private Image completeSignImage;
+
         private void Awake()
         {
             Debug.Assert(questNameText);
             Debug.Assert(questDescriptionText);
             Debug.Assert(abandonQuestButton);
+            Debug.Assert(completeSignImage);
+        }
+
+        private void OnEnable()
+        {
+            GameManager.QuestManager.OnPendingQuestDelegate += OnPendingQuest;
+        }
+
+        private void OnDisable()
+        {
+            GameManager.QuestManager.OnPendingQuestDelegate -= OnPendingQuest;
         }
 
         public void SetQuestName(string newString)
@@ -32,6 +46,21 @@ namespace CommonRPG
         public void SetQuestDescription(string newString)
         {
             questDescriptionText.text = newString;
+        }
+
+        public void SetActiveAbandonQuestButton(bool shouldActivate)
+        {
+            abandonQuestButton.gameObject.SetActive(shouldActivate);
+        }
+
+        public void SetActiveCompleteSignImage(bool shouldActivate)
+        {
+            completeSignImage.gameObject.SetActive(shouldActivate);
+        }
+
+        private void OnPendingQuest(int questId)
+        {
+            SetActiveCompleteSignImage(true);
         }
     }
 }
