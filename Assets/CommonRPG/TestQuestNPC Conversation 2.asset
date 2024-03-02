@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17649d00f0c90fa45a2b7c0a31782817, type: 3}
+  m_Name: TestQuestNPC Conversation 2
+  m_EditorClassIdentifier: 
+  converstionDataName: TestQuestNPC Cnversation 2
+  drawInfoNodes:
+  - SpeakerName: TestQuestNPC
+    NodeId: 1010466409
+    ParentId: 0
+    ChildrenIds: 1cca5d6c
+    NodeName: Normal Node
+    NodeType: 0
+    NodeRect:
+      serializedVersion: 2
+      x: 259
+      y: 223
+      width: 200
+      height: 200
+    Conversations:
+    - I Think You didn't kill Red Slime Enough.
+  - SpeakerName: 
+    NodeId: 0
+    ParentId: 0
+    ChildrenIds: 697e3a3c
+    NodeName: Start Node
+    NodeType: 2
+    NodeRect:
+      serializedVersion: 2
+      x: 67
+      y: 290
+      width: 80
+      height: 70
+    Conversations: []
+  - SpeakerName: 
+    NodeId: 1818085916
+    ParentId: 1010466409
+    ChildrenIds: 
+    NodeName: End Node
+    NodeType: 3
+    NodeRect:
+      serializedVersion: 2
+      x: 596
+      y: 285
+      width: 80
+      height: 70
+    Conversations: []

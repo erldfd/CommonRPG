@@ -66,7 +66,7 @@ namespace CommonRPG
                         playerStatComponent.CurrentHealthPoint = playerStatComponent.TotalHealth;
                     }
 
-                    GameManager.SetPlayerHealthBarFillRatio(playerStatComponent.CurrentHealthPoint / playerStatComponent.TotalHealth);
+                    GameManager.InGameUI.SetPlayerHealthBarFillRatio(playerStatComponent.CurrentHealthPoint / playerStatComponent.TotalHealth);
                     GameManager.UpdateStatWindow();
 
                     animController.PlayDrinkAnim();

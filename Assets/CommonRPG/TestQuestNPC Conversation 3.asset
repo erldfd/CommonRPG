@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17649d00f0c90fa45a2b7c0a31782817, type: 3}
+  m_Name: TestQuestNPC Conversation 3
+  m_EditorClassIdentifier: 
+  converstionDataName: TestQuestNOC Conversation 3
+  drawInfoNodes:
+  - SpeakerName: 
+    NodeId: 0
+    ParentId: 0
+    ChildrenIds: 797dffec
+    NodeName: Start Node
+    NodeType: 2
+    NodeRect:
+      serializedVersion: 2
+      x: 116
+      y: 270
+      width: 80
+      height: 70
+    Conversations: []
+  - SpeakerName: 
+    NodeId: -834636258
+    ParentId: -2091282503
+    ChildrenIds: 
+    NodeName: End Node
+    NodeType: 3
+    NodeRect:
+      serializedVersion: 2
+      x: 926
+      y: 279
+      width: 80
+      height: 70
+    Conversations: []
+  - SpeakerName: TestQuestNPC
+    NodeId: -318800519
+    ParentId: 0
+    ChildrenIds: b98f5983
+    NodeName: Normal Node
+    NodeType: 0
+    NodeRect:
+      serializedVersion: 2
+      x: 273
+      y: 206
+      width: 200
+      height: 200
+    Conversations:
+    - 'Oh You killed Red Slime enough !!
+
+      Thanks.'
+  - SpeakerName: TestQuestNPC
+    NodeId: -2091282503
+    ParentId: -318800519
+    ChildrenIds: 1e7640ce
+    NodeName: Normal Node
+    NodeType: 0
+    NodeRect:
+      serializedVersion: 2
+      x: 583
+      y: 213
+      width: 200
+      height: 200
+    Conversations:
+    - 'Reward
+
+
+      10 exp
+
+      10 coins
+
+      10 red potion'

@@ -287,11 +287,11 @@ namespace CommonRPG
             }    
             else if (itemData.ItemGrade == other.itemData.ItemGrade)
             {
-                if (itemData.ItemName < other.itemData.ItemName) 
+                if (itemData.ItemName < other.itemData.ItemName)
                 {
                     return 1;
                 }
-                else if(itemData.ItemName == other.itemData.ItemName)
+                else if (itemData.ItemName == other.itemData.ItemName) 
                 {
                     return 0;
                 }

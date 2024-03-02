@@ -1,0 +1,120 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17649d00f0c90fa45a2b7c0a31782817, type: 3}
+  m_Name: TestQuestNPC Conversation 1
+  m_EditorClassIdentifier: 
+  converstionDataName: TestQuestNPC Conversation 1
+  drawInfoNodes:
+  - SpeakerName: 
+    NodeId: 0
+    ParentId: 0
+    ChildrenIds: da595b50
+    NodeName: Start Node
+    NodeType: 2
+    NodeRect:
+      serializedVersion: 2
+      x: 18
+      y: 260
+      width: 80
+      height: 70
+    Conversations: []
+  - SpeakerName: 
+    NodeId: 678450243
+    ParentId: 2139858583
+    ChildrenIds: 
+    NodeName: End Node
+    NodeType: 3
+    NodeRect:
+      serializedVersion: 2
+      x: 1097
+      y: 303
+      width: 80
+      height: 70
+    Conversations: []
+  - SpeakerName: TestQuestNPC
+    NodeId: 1348164058
+    ParentId: 0
+    ChildrenIds: e2a435d0
+    NodeName: Choice Node
+    NodeType: 1
+    NodeRect:
+      serializedVersion: 2
+      x: 116
+      y: 226
+      width: 200
+      height: 200
+    Conversations:
+    - Slime Hunt Quest 1
+  - SpeakerName: TestQuestNPC
+    NodeId: -801790750
+    ParentId: 1348164058
+    ChildrenIds: 66a41475
+    NodeName: Normal Node
+    NodeType: 0
+    NodeRect:
+      serializedVersion: 2
+      x: 337
+      y: 265
+      width: 200
+      height: 200
+    Conversations:
+    - 'These days, There are So Many Red Slime in GreenField..
+
+
+      Can You Hunt
+      Slimes for our Village?'
+  - SpeakerName: TestQuestNPC
+    NodeId: 1609310612
+    ParentId: 1964287078
+    ChildrenIds: 43547028
+    NodeName: Normal Node
+    NodeType: 0
+    NodeRect:
+      serializedVersion: 2
+      x: 820
+      y: 126
+      width: 200
+      height: 200
+    Conversations:
+    - 'Thanks. I think 10 Slime is proper.
+
+
+      Good Luck.'
+  - SpeakerName: Player
+    NodeId: 1964287078
+    ParentId: -801790750
+    ChildrenIds: 9421ec5f97a68b7f
+    NodeName: Choice Node
+    NodeType: 1
+    NodeRect:
+      serializedVersion: 2
+      x: 554
+      y: 288
+      width: 200
+      height: 185
+    Conversations:
+    - Well.. Okay.
+    - No. I dont like kill animals.
+  - SpeakerName: TestQuestNPC
+    NodeId: 2139858583
+    ParentId: 1964287078
+    ChildrenIds: 43547028
+    NodeName: Normal Node
+    NodeType: 0
+    NodeRect:
+      serializedVersion: 2
+      x: 802
+      y: 381
+      width: 200
+      height: 200
+    Conversations:
+    - ..
