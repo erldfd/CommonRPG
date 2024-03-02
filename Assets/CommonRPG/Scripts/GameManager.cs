@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -104,9 +105,9 @@ namespace CommonRPG
 
             }, true);
 
-            SetTimer(3, 0, 0, () => { InventoryManager.DeleteItem(EInventoryType.Equipment, 2, 1); }, true);
-            SetTimer(4, 0, 0, () => { InventoryManager.DeleteItem(EInventoryType.Equipment, 3, 1); }, true);
-            SetTimer(4, 0, 0, () => { SpawnItem(EItemName.TheFirstSword, Vector3.zero, Quaternion.identity, true); }, true);
+            //SetTimer(3, 0, 0, () => { InventoryManager.DeleteItem(EInventoryType.Equipment, 2, 1); }, true);
+            //SetTimer(4, 0, 0, () => { InventoryManager.DeleteItem(EInventoryType.Equipment, 3, 1); }, true);
+            //SetTimer(4, 0, 0, () => { SpawnItem(EItemName.TheFirstSword, Vector3.zero, Quaternion.identity, true); }, true);
         }
 
         //private void Update()
@@ -141,50 +142,6 @@ namespace CommonRPG
             instance.inGameUI.gameObject.SetActive(shouldVisible);
         }
 
-        public static void SetMonsterInfoUIVisible(bool shouldVisible)
-        {
-            instance.inGameUI.SetMonsterInfoUIVisible(shouldVisible);
-        }
-
-        public static void SetMonsterNameText(string NewName)
-        {
-            instance.inGameUI.SetMonsterNameText(NewName);
-        }
-
-        public static void SetMonsterHealthBarFillRatio(float ratio)
-        {
-            instance.inGameUI.SetMonsterHealthBarFillRatio(ratio);
-        }
-
-        public static void SetPlayerInfoUIVisible(bool shouldVisible)
-        {
-            instance.inGameUI.SetPlayerInfoUIVisible(shouldVisible);
-        }
-
-        public static void SetPlayerNameText(string NewName)
-        {
-            instance.inGameUI.SetPlayerNameText(NewName);
-        }
-
-        public static void SetPlayerHealthBarFillRatio(float ratio)
-        {
-            instance.inGameUI.SetPlayerHealthBarFillRatio(ratio);
-        }
-
-        public static void SetPlayerManaBarFillRatio(float ratio)
-        {
-            instance.inGameUI.SetPlayerManaBarFillRatio(ratio);
-        }
-
-        public static void SetPlayerLevelText(int NewLevel)
-        {
-            instance.inGameUI.SetPlayerLevelText(NewLevel);
-        }
-
-        public static void SetPauseUIVisible(bool shouldVisible)
-        {
-            instance.inGameUI.SetPauseUIVisible(shouldVisible);
-        }
 
         public static TimerHandler SetTimer(float startTime, float interval, int repeatNumber, Action function, bool isActive)
         {
@@ -197,7 +154,7 @@ namespace CommonRPG
         }
 
         /// <summary>
-        /// this is attach to transform
+        /// this is attach to transform.
         /// if itemName is None, return null
         /// </summary>
         public static AItem SpawnItem(EItemName itemName, Transform transform, bool isFieldItem)
@@ -278,7 +235,7 @@ namespace CommonRPG
         {
             instance.inventoryManager.OpenAndCloseMainInventory();
             instance.statWindow.OpenAndCloseStatWindow();
-            instance.timerManager.PauseGameWorld(instance.inventoryManager.IsInventoryOpened);
+            TryUseOrNotUIInteractionState();
 
             instance.itemInfoWindow.ShowOrHide(false);
         }
@@ -332,9 +289,6 @@ namespace CommonRPG
             instance.inGameUI.SetActiveInteractioUI(ShouldActivate);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
         /// <returns>is it succeeded to get recipe?</returns>
         public static bool TryGetRecipe(in List<CraftingMaterialInfo> craftingRecipes, out SItemRecipeResultInfo resultInfo)
         {
@@ -346,6 +300,40 @@ namespace CommonRPG
             instance.questManager.PrintQuests();
         }
 
+        public static void ObtainItem(EInventoryType inventoryType, EItemName itemName, int itemCount)
+        {
+            instance.inventoryManager.ObtainItem(inventoryType, itemCount, instance.itemData.ItemDataList[(int)itemName].Data);
+        }    
+
+        /// <returns> succeeded to visible cursor</returns>
+        public static bool TryVisibleCursor()
+        {
+            bool shouldVisible = (IsInventoryOpened() || InGameUI.IsConversationStarted || QuestManager.IsQuestWindowOpened());
+            Cursor.visible = shouldVisible;
+            return shouldVisible;
+        }
+
+        /// <summary>
+        /// <para>if succeeded to use UI Interaction state, pause game world, cursor is visible and confined.</para>
+        /// <para>or unpause game world, cursor is invisible and Locked.</para>
+        /// </summary>
+        /// <returns> succeeded to use UI interaction state</returns>
+        public static bool TryUseOrNotUIInteractionState()
+        {
+            bool shouldUseUIInteractionState = (IsInventoryOpened() || InGameUI.IsConversationStarted || QuestManager.IsQuestWindowOpened());
+
+            Cursor.visible = shouldUseUIInteractionState;
+            Cursor.lockState = (shouldUseUIInteractionState) ? CursorLockMode.Confined : CursorLockMode.Locked;
+
+            TimerManager.PauseGameWorld(shouldUseUIInteractionState);
+
+            IsUsingUIInteractionState = shouldUseUIInteractionState;
+
+            return shouldUseUIInteractionState;
+        }
+
+        public static bool IsUsingUIInteractionState { get; private set; }
+
         private void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
         {
             Debug.Log($"{scene.name} is loaded, {loadSceneMode}");
@@ -355,8 +343,10 @@ namespace CommonRPG
                 return;
             }
 
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            //Cursor.lockState = CursorLockMode.Locked;
+            //Cursor.visible = false;
+
+            TryUseOrNotUIInteractionState();
         }
     }
 }

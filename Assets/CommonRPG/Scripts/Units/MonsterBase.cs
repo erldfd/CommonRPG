@@ -30,7 +30,11 @@ namespace CommonRPG
         protected AIController aiController = null;
 
         protected TimerHandler monsterUITimerHandler = null;
-        
+
+        protected float afterImageHpProgressBarFillRatio = 0;
+        public float AfterImageHpProgressBarFillRatio { get; }
+
+
         protected override void Awake()
         {
             base.Awake();
@@ -93,22 +97,36 @@ namespace CommonRPG
             }
 
             float actualDamageAmount = DamageAmount - statComponent.TotalDefense;
-            if(actualDamageAmount < 1)
+            if (actualDamageAmount < 1) 
             {
                 actualDamageAmount = 1;
             }
+
+            float beforeHpRatio = statComponent.CurrentHealthPoint / statComponent.TotalHealth;
 
             statComponent.CurrentHealthPoint -= actualDamageAmount;
             //Debug.Log($"Damage is Taked : {DamageAmount}, CurrentHp : {statComponent.CurrentHealthPoint}");
 
             float currentHpRatio = Mathf.Clamp01(statComponent.CurrentHealthPoint / statComponent.TotalHealth);
-            GameManager.SetMonsterHealthBarFillRatio(currentHpRatio);
-            GameManager.SetMonsterInfoUIVisible(true);
-            GameManager.SetMonsterNameText(base.unitName);
+            //GameManager.InGameUI.SetMonsterHealthBarFillRatio(0, currentHpRatio);
+
+            float afterimageChangeTime = 1;
+            GameManager.InGameUI.DisplayDecrasingMonsterHealthBar(currentHpRatio, beforeHpRatio, afterimageChangeTime, this);
+            GameManager.InGameUI.SetMonsterInfoUIVisible(true);
+            GameManager.InGameUI.SetMonsterNameText(base.unitName);
+
+            float offsetY = 1;
+            Vector3 damageDisplayPosition = new Vector3(transform.position.x, transform.position.y + offsetY, transform.position.z);
+
+            GameManager.InGameUI.DisplayDamageNumber(actualDamageAmount, damageDisplayPosition);
 
             if (monsterUITimerHandler == null)
             {
-                monsterUITimerHandler = GameManager.SetTimer(3, 1, 0, () => { GameManager.SetMonsterInfoUIVisible(false); }, true);
+                monsterUITimerHandler = GameManager.SetTimer(3, 1, 0, () => {
+
+                    GameManager.InGameUI.SetMonsterInfoUIVisible(false);
+
+                }, true);
                 monsterUITimerHandler.IsStayingActive = true;
             }
             else

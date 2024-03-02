@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
+using System.Text;
 using UnityEngine;
 
 namespace CommonRPG
@@ -31,8 +33,8 @@ namespace CommonRPG
         private List<QuestInfo> questInfoList;
         public List<QuestInfo> QuestInfoList { get { return questInfoList; } }
 
-        private Dictionary<string, QuestInfo> questTable = new Dictionary<string, QuestInfo>();
-        public Dictionary<string, QuestInfo> QuestTable { get { return questTable; } }
+        //private Dictionary<string, QuestInfo> questTable = new Dictionary<string, QuestInfo>();
+        //public Dictionary<string, QuestInfo> QuestTable { get { return questTable; } }
 
         public List<QuestInfo> GetData()
         {
@@ -51,6 +53,9 @@ namespace CommonRPG
     [Serializable]
     public class QuestInfo
     {
+        private int questId;
+        public int QuestId { get { return questId; } }
+
         [SerializeField]
         private string questName;
         public string QuestName { get { return questName; } }
@@ -63,11 +68,11 @@ namespace CommonRPG
         private EQuestType questType = EQuestType.None;
         public EQuestType QuestType { get { return questType; } }
 
-        [SerializeField]
-        private EQuestState questState = EQuestState.Unlocked;
-        public EQuestState QuestState { get { return questState; } set { questState = value; } }
+        //[SerializeField]
+        //private EQuestState questState = EQuestState.Unlocked;
+        //public EQuestState QuestState { get { return questState; } set { questState = value; } }
 
-        [Header("Hunt Qeust")]
+        [Header("Hunt Quest")]
         [SerializeField]
         private List<HuntData> huntQuestCompleteCondition = new List<HuntData>();
         private Dictionary<EMonsterName, int> huntQuestConditionTable = new Dictionary<EMonsterName, int>();
@@ -104,7 +109,8 @@ namespace CommonRPG
             questName = other.questName;
             questDescription = other.questDescription;
             questType = other.questType;
-            questState = other.questState;
+
+            questId = other.questId;
 
             huntQuestCompleteCondition.Clear();
 
@@ -136,6 +142,28 @@ namespace CommonRPG
             {
                 huntQuestConditionTable.TryAdd(huntData.MonsterName, huntData.HuntCount);
                 ongoingHuntTable.TryAdd(huntData.MonsterName, 0);
+            }
+
+            byte[] data = Encoding.UTF8.GetBytes($"{questName} {questDescription}");
+
+            using (SHA1 sha = SHA1.Create())
+            {
+                byte[] hash = sha.ComputeHash(data);
+
+                questId = 1;
+
+                foreach (byte b in hash)
+                {
+                    unsafe
+                    {
+                        if (b == 0) 
+                        {
+                            continue;
+                        }
+
+                        questId *= b;
+                    }
+                }
             }
         }
 
@@ -171,4 +199,37 @@ namespace CommonRPG
         public int CollectingItemCount { get { return collectingItemCount; } set { collectingItemCount = value; } }
     }
 
+    public class Quest
+    {
+        private QuestInfo questInfo;
+        public QuestInfo QuestInfo { get { return questInfo; } }
+
+        private EQuestState questState = EQuestState.Locked;
+        public EQuestState QuestState { get { return questState; } set{ questState = value; } }
+
+        public Quest(QuestInfo questInfo)
+        {
+            this.questInfo = questInfo;
+            questState = EQuestState.Locked;
+        }
+    }
 }
+/*
+ * gma..........
+ * 
+ * quest data
+ * id
+ * name
+ * description
+ * type - hunt, destination, interaction
+ * 
+ * npc quest data
+ * id
+ * 
+ * player
+ * 
+ * 
+ * quest manager
+ * 
+ * 
+ */

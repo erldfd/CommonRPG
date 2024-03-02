@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,7 +11,7 @@ namespace CommonRPG
     {
         public bool IsConversationStarted { get { return conversationUI.IsConversationStarted; } }
 
-        [Header("MonsterUI")]
+        [Header("Monster UI")]
         [SerializeField]
         private GameObject monsterInfoUI = null;
 
@@ -20,7 +21,10 @@ namespace CommonRPG
         [SerializeField]
         private ProgressBar monsterHealthBar = null;
 
-        [Header("PlayerUI")]
+        [SerializeField]
+        private float monsterHpBarAfterImageChangeSpeed = 1;
+
+        [Header("Player UI")]
         [SerializeField]
         private GameObject playerInfoUI = null;
 
@@ -34,18 +38,39 @@ namespace CommonRPG
         private ProgressBar playerManaBar = null;
 
         [SerializeField]
+        private ProgressBar playerExpBar = null;
+
+        [SerializeField]
         private TextMeshProUGUI playerLevelText = null;
 
         [SerializeField]
         private GameObject interactionUI = null;
 
-        [Header("Conversation")]
+        [Header("Conversation UI")]
         [SerializeField]
         private ConversationUI conversationUI = null;
+
+        [Header("Billboard UI")]
+        [SerializeField]
+        private Canvas billboardCanvas;
+
+        [SerializeField]
+        private DamageNumber damageNumberPrefab;
 
         [Header("Etc.")]
         [SerializeField]
         private GameObject pauseUI = null;
+
+        private TimerHandler monsterHealthBarAfterimageStayTimerHandler = null;
+
+        private bool isStartedAfterimageHpChanging = false;
+        private float afterimageHpRatio = 0;
+        private float currentHpRatio = 0;
+
+        private MonsterBase lastDisplayedMonster = null;
+
+        private Queue<DamageNumber> activatedDamageNumberQueue = new Queue<DamageNumber>();
+        private Queue<DamageNumber> deactivatedDamageNumberQueue = new Queue<DamageNumber>();
 
         private void Awake()
         {
@@ -62,6 +87,9 @@ namespace CommonRPG
 
             Debug.Assert(conversationUI);
 
+            Debug.Assert(billboardCanvas);
+            Debug.Assert(damageNumberPrefab);
+
             Debug.Assert(pauseUI);
 
             //DontDestroyOnLoad(gameObject);
@@ -75,7 +103,22 @@ namespace CommonRPG
             //Cursor.lockState = (true) ? CursorLockMode.Confined : CursorLockMode.Locked;
         }
 
-        
+        private void Update()
+        {
+            if (isStartedAfterimageHpChanging && currentHpRatio < afterimageHpRatio) 
+            {
+                afterimageHpRatio -= monsterHpBarAfterImageChangeSpeed * Time.deltaTime * 0.1f;
+
+                // index 1 : afterImage hp bar fill ratio
+                SetMonsterHealthBarFillRatio(1, afterimageHpRatio);
+
+                if (currentHpRatio >= afterimageHpRatio) 
+                {
+                    isStartedAfterimageHpChanging = false;
+                    lastDisplayedMonster = null;
+                }
+            }
+        }
 
         public void SetMonsterInfoUIVisible(bool shouldVisible)
         {
@@ -87,10 +130,76 @@ namespace CommonRPG
             monsterNameText.SetText(NewName);
         }
 
-        public void SetMonsterHealthBarFillRatio(float ratio)
+        /// <summary>
+        ///  <para> index : index of progressBarImageList. </para>
+        ///  you can multi progressBar if you want.
+        ///  first progressBar index is 0, second is 1, ect...
+        /// </summary>
+        public void SetMonsterHealthBarFillRatio(int index, float ratio)
         {
             ratio = Mathf.Clamp01(ratio);
-            monsterHealthBar.FillAmount = ratio;
+            monsterHealthBar.SetProgressBarFillAmount(index, ratio);
+        }
+
+        /// <summary>
+        /// <para> Decrease Monster Hp bar with afterimage </para>
+        /// <para> currentRatio : Current Hp ratio </para>
+        /// <para> beforeRatio : hp ration before damage </para>
+        /// <para> afterimageChangeStartTime : after this time, afterimage start to change </para>
+        /// </summary>
+        public void DisplayDecrasingMonsterHealthBar(float currentRatio, float beforeRatio, float afterimageChangeStartTime, MonsterBase monster)
+        {
+            // index 0 : current hp bar fill ratio
+            SetMonsterHealthBarFillRatio(0, currentRatio);
+            currentHpRatio = currentRatio;
+
+            if (lastDisplayedMonster == null || lastDisplayedMonster != monster)
+            {
+                lastDisplayedMonster = monster;
+
+                // index 1 : afterImage hp bar fill ratio
+                SetMonsterHealthBarFillRatio(1, beforeRatio);
+                afterimageHpRatio = beforeRatio;
+                isStartedAfterimageHpChanging = false;
+            }
+            
+            
+            //GameManager.TimerManager.SetTimer(afterimageChangeStartTime, 0, 0, () =>
+            //{
+            //    isStartedAfterimageHpChanging = true;
+
+            //}, true);
+
+            //if (monsterHealthBarAfterimageStayTimerHandler == null)
+            //{
+            //    monsterUITimerHandler = GameManager.SetTimer(3, 1, 0, () => { GameManager.InGameUI.SetMonsterInfoUIVisible(false); }, true);
+            //    monsterUITimerHandler.IsStayingActive = true;
+            //}
+            //else
+            //{
+            //    monsterUITimerHandler.RestartTimer();
+            //}
+
+            if (monsterHealthBarAfterimageStayTimerHandler == null)
+            {
+                monsterHealthBarAfterimageStayTimerHandler = GameManager.TimerManager.SetTimer(afterimageChangeStartTime, 0, 0, () =>
+                {
+                    isStartedAfterimageHpChanging = true;
+
+                }, true);
+            }
+            else
+            {
+                monsterHealthBarAfterimageStayTimerHandler.ResetTimer(afterimageChangeStartTime, 0, 0, () =>
+                {
+                    isStartedAfterimageHpChanging = true;
+
+                }, true);
+
+                monsterHealthBarAfterimageStayTimerHandler.RestartTimer();
+            }
+
+            monsterHealthBarAfterimageStayTimerHandler.IsStayingActive = true;
         }
 
         public void SetPlayerInfoUIVisible(bool shouldVisible)
@@ -106,13 +215,19 @@ namespace CommonRPG
         public void SetPlayerHealthBarFillRatio(float ratio)
         {
             ratio = Mathf.Clamp01(ratio);
-            playerHealthBar.FillAmount = ratio;
+            playerHealthBar.SetProgressBarFillAmount(0, ratio);
         }
 
         public void SetPlayerManaBarFillRatio(float ratio)
         {
             ratio = Mathf.Clamp01(ratio);
-            playerManaBar.FillAmount = ratio;
+            playerManaBar.SetProgressBarFillAmount(0, ratio);
+        }
+
+        public void SetPlayerExpBarFillRatio(float ratio)
+        {
+            ratio = Mathf.Clamp01(ratio);
+            playerExpBar.SetProgressBarFillAmount(0, ratio);
         }
 
         public void SetPlayerLevelText(int NewLevel)
@@ -138,12 +253,61 @@ namespace CommonRPG
 
         public void ReadyToConversate(ConversationDataScriptableObject conversationData)
         {
+            if (conversationData == null) 
+            {
+                return;
+            }
+
             conversationUI.ConversationData = conversationData;
 
             conversationUI.StartConversation();
-            GameManager.TimerManager.PauseGameWorld(true);
-            Cursor.visible = true;
-            Cursor.lockState = (true) ? CursorLockMode.Confined : CursorLockMode.Locked;
+            //GameManager.TimerManager.TryPuaseGameWorld();
+            //Cursor.visible = true;
+            //Cursor.lockState = (true) ? CursorLockMode.Confined : CursorLockMode.Locked;
+            GameManager.TryUseOrNotUIInteractionState();
+        }
+
+        public void DisplayDamageNumber(float damageAmount, Vector3 position)
+        {
+            SpawnDamageNumber(damageAmount, position);
+        }
+
+        private void SpawnDamageNumber(float damageAmount, Vector3 position)
+        {
+            DamageNumber damageNumber = null;
+
+            if (deactivatedDamageNumberQueue.Count > 0) 
+            {
+                damageNumber = deactivatedDamageNumberQueue.Dequeue();
+                damageNumber.gameObject.SetActive(true);
+            }
+            else
+            {
+                damageNumber = Instantiate(damageNumberPrefab);
+            }
+
+            damageNumber.transform.SetParent(billboardCanvas.transform);
+
+            damageNumber.SetDamageText(damageAmount);
+            damageNumber.transform.position = position;
+
+            Quaternion billboardRotation = Camera.main.transform.rotation;
+            billboardRotation = new Quaternion(0, billboardRotation.y, 0, billboardRotation.w);
+            damageNumber.transform.rotation = billboardRotation;
+
+            //activatedDamageNumberQueue.Enqueue(damageNumber);
+
+            GameManager.TimerManager.SetTimer(damageNumber.LifeTime, 0, 0, () =>
+            {
+                DespawnDamageNumber(damageNumber);
+
+            }, true);
+        }
+
+        private void DespawnDamageNumber(DamageNumber damageNumber)
+        {
+            damageNumber.gameObject.SetActive(false);
+            deactivatedDamageNumberQueue.Enqueue(damageNumber);
         }
 
         /// <summary>

@@ -9,24 +9,40 @@ namespace CommonRPG
     public class QuestManager : MonoBehaviour
     {
         /// <summary>
-        /// arg : string Quest Name
+        /// arg : int Quest id
         /// </summary>
-        public Action<string> OnCompleteQuestDelegate;
+        public event Action<int> OnCompleteQuestDelegate;
+
+        /// <summary>
+        /// arg : int Quest id
+        /// </summary>
+        public event Action<int> OnPendingQuestDelegate;
 
         [SerializeField]
         private QuestDataScriptableObject questData;
 
+        private List<Quest> questList = new List<Quest>();
+
         [SerializeField]
         private QuestWindow questWindow;
 
-        private Dictionary<string, QuestInfo> allQuestTable = new Dictionary<string, QuestInfo>();
+        /// <summary>
+        /// int -> quest id
+        /// </summary>
+        private Dictionary<int, Quest> allQuestTable = new Dictionary<int, Quest>();
 
         /// <summary>
         /// use this like -> List[(int)EQuestState][(int)EQuestType], and dictionary key is QuestName
         /// </summary>
-        private List<List<Dictionary<string, QuestInfo>>> classifiedQuestTableList = new List<List<Dictionary<string, QuestInfo>>>();
+        private List<List<Dictionary<int, Quest>>> classifiedQuestTableList = new List<List<Dictionary<int, Quest>>>();
+        
+        private List<int> tableKeyRemoverList = new List<int>();
 
-        private List<string> tableKeyRemoverList = new();
+        /// <summary>
+        /// string : quest name, int : quest id
+        /// </summary>
+        private Dictionary<string, int> questNameIdTable = new Dictionary<string, int>();
+        public Dictionary<string, int> QuestNameIdTable { get { return questNameIdTable; } }
 
         private void Awake()
         {
@@ -62,13 +78,18 @@ namespace CommonRPG
         {
             bool shouldOpen = questWindow.gameObject.activeSelf == false;
             questWindow.gameObject.SetActive(shouldOpen);
-            GameManager.TimerManager.PauseGameWorld(shouldOpen);
+            GameManager.TryUseOrNotUIInteractionState();
         }
 
-        public void UnlockQuest(string questName)
+        public bool IsQuestWindowOpened()
         {
-            QuestInfo questInfo;
-            bool isSucceeded = allQuestTable.TryGetValue(questName, out questInfo);
+            return (questWindow.gameObject.activeSelf);
+        }
+
+        public void UnlockQuest(int questId)
+        {
+            Quest quest;
+            bool isSucceeded = allQuestTable.TryGetValue(questId, out quest);
 
             if (isSucceeded == false)
             {
@@ -76,35 +97,35 @@ namespace CommonRPG
                 return;
             }
 
-            if (questInfo.QuestState == EQuestState.None)
+            if (quest.QuestState == EQuestState.None)
             {
                 Debug.LogAssertion("Weird Quest State");
                 return;
             }
 
-            if (questInfo.QuestState != EQuestState.Locked)
+            if (quest.QuestState != EQuestState.Locked)
             {
                 Debug.LogWarning("This is not Locked Quest");
                 return;
             }
 
-            questInfo.QuestState = EQuestState.Unlocked;
+            quest.QuestState = EQuestState.Unlocked;
 
-            if (classifiedQuestTableList[(int)EQuestState.Unlocked][(int)questInfo.QuestType].TryAdd(questName, questInfo) == false)
+            if (classifiedQuestTableList[(int)EQuestState.Unlocked][(int)quest.QuestInfo.QuestType].TryAdd(questId, quest) == false)
             {
                 Debug.LogAssertion("Quest Receive Failed..");
                 return;
             }
 
-            classifiedQuestTableList[(int)EQuestState.Locked][(int)questInfo.QuestType].Remove(questName);
+            classifiedQuestTableList[(int)EQuestState.Locked][(int)quest.QuestInfo.QuestType].Remove(questId);
 
-            questWindow.QuestNameView.AddQuest(questName, questInfo.QuestDescription, EQuestState.Unlocked);
+            questWindow.QuestNameView.AddQuest(quest.QuestInfo.QuestName, quest.QuestInfo.QuestDescription, EQuestState.Unlocked);
         }
 
-        public bool TryReceiveQuest(string questName)
+        public bool TryReceiveQuest(int questId)
         {
-            QuestInfo questInfo;
-            bool isSucceeded = allQuestTable.TryGetValue(questName, out questInfo);
+            Quest quest;
+            bool isSucceeded = allQuestTable.TryGetValue(questId, out quest);
 
             if (isSucceeded == false)
             {
@@ -112,38 +133,38 @@ namespace CommonRPG
                 return false;
             }
 
-            if (questInfo.QuestState == EQuestState.None)
+            if (quest.QuestState == EQuestState.None)
             {
                 Debug.LogAssertion("Weird Quest State");
                 return false;
             }
 
-            if (questInfo.QuestState != EQuestState.Unlocked)
+            if (quest.QuestState != EQuestState.Unlocked)
             {
                 Debug.LogAssertion("This is not Unlocked Quest");
                 return false;
             }
 
-            questInfo.QuestState = EQuestState.Ongoing;
+            quest.QuestState = EQuestState.Ongoing;
 
-            if (classifiedQuestTableList[(int)EQuestState.Ongoing][(int)questInfo.QuestType].TryAdd(questName, questInfo) == false)
+            if (classifiedQuestTableList[(int)EQuestState.Ongoing][(int)quest.QuestInfo.QuestType].TryAdd(questId, quest) == false)
             {
                 Debug.LogAssertion("Quest Receive Failed..");
                 return false;
             }
 
-            classifiedQuestTableList[(int)EQuestState.Unlocked][(int)questInfo.QuestType].Remove(questName);
+            classifiedQuestTableList[(int)EQuestState.Unlocked][(int)quest.QuestInfo.QuestType].Remove(questId);
 
-            questWindow.QuestNameView.RemoveQuest(questName, EQuestState.Unlocked);
-            questWindow.QuestNameView.AddQuest(questName, questInfo.QuestDescription, EQuestState.Ongoing);
+            questWindow.QuestNameView.RemoveQuest(quest.QuestInfo.QuestName, EQuestState.Unlocked);
+            questWindow.QuestNameView.AddQuest(quest.QuestInfo.QuestName, quest.QuestInfo.QuestDescription, EQuestState.Ongoing);
 
             return true;
         }
 
-        public bool TryCompleteQuest(string questName)
+        public bool TryCompleteQuest(int questId)
         {
-            QuestInfo questInfo;
-            bool isSucceeded = allQuestTable.TryGetValue(questName, out questInfo);
+            Quest quest;
+            bool isSucceeded = allQuestTable.TryGetValue(questId, out quest);
 
             if (isSucceeded == false)
             {
@@ -151,35 +172,34 @@ namespace CommonRPG
                 return false;
             }
 
-            if (questInfo.QuestState == EQuestState.None)
+            if (quest.QuestState == EQuestState.None)
             {
                 Debug.LogAssertion("Weird Quest State");
                 return false;
             }
 
-            if (questInfo.QuestState != EQuestState.Pending)
+            if (quest.QuestState != EQuestState.Pending)
             {
                 Debug.LogAssertion("This is not Pending Quest");
                 return false;
             }
 
-            questInfo.QuestState = EQuestState.Completed;
+            quest.QuestState = EQuestState.Completed;
 
-            if (classifiedQuestTableList[(int)EQuestState.Completed][(int)questInfo.QuestType].TryAdd(questName, questInfo) == false)
+            if (classifiedQuestTableList[(int)EQuestState.Completed][(int)quest.QuestInfo.QuestType].TryAdd(questId, quest) == false)
             {
                 Debug.LogAssertion("Quest Receive Failed..");
                 return false;
             }
 
-            classifiedQuestTableList[(int)EQuestState.Pending][(int)questInfo.QuestType].Remove(questName);
+            classifiedQuestTableList[(int)EQuestState.Pending][(int)quest.QuestInfo.QuestType].Remove(questId);
 
-            questWindow.QuestNameView.RemoveQuest(questName, EQuestState.Pending);
-            questWindow.QuestNameView.AddQuest(questName, questInfo.QuestDescription, EQuestState.Completed);
+            questWindow.QuestNameView.RemoveQuest(quest.QuestInfo.QuestName, EQuestState.Pending);
+            questWindow.QuestNameView.AddQuest(quest.QuestInfo.QuestName, quest.QuestInfo.QuestDescription, EQuestState.Completed);
 
-            //TODO: Receive rewards
-            if (OnCompleteQuestDelegate != null) 
+            if (OnCompleteQuestDelegate != null)
             {
-                OnCompleteQuestDelegate.Invoke(questName);
+                OnCompleteQuestDelegate.Invoke(questId);
             }
 
             return true;
@@ -187,23 +207,28 @@ namespace CommonRPG
 
         public void PrintQuests()
         {
-            foreach (QuestInfo questInfo in allQuestTable.Values)
+            foreach (Quest quest in allQuestTable.Values)
             {
-                
-                if (questInfo.QuestType == EQuestType.Hunt && questInfo.QuestState == EQuestState.Ongoing || questInfo.QuestState == EQuestState.Pending || questInfo.QuestState == EQuestState.Completed) 
+                QuestInfo questInfo = quest.QuestInfo;
+
+                if (questInfo.QuestType == EQuestType.Hunt && quest.QuestState == EQuestState.Ongoing || quest.QuestState == EQuestState.Pending || quest.QuestState == EQuestState.Completed)
                 {
-                    Debug.Log($"Quest Name : {questInfo.QuestName}, Quest Type : {questInfo.QuestType}, Quest State : {questInfo.QuestState}");
-                    foreach (var KeyAndValue in questInfo.OngoingHuntTable) 
+                    Debug.Log($"Quest Name : {questInfo.QuestName}, Quest Type : {questInfo.QuestType}, Quest State : {quest.QuestState}");
+                    foreach (var KeyAndValue in questInfo.OngoingHuntTable)
                     {
                         Debug.Log($"Current Hunt {KeyAndValue.Key} : {KeyAndValue.Value}");
                     }
                 }
+                else
+                {
+                    Debug.Log($"Quest Name : {questInfo.QuestName}, Quest Type : {questInfo.QuestType}, Quest State : {quest.QuestState}");
+                }
             }
         }
 
-        public List<Dictionary<string, QuestInfo>> GetQuestsByState(EQuestState questState)
+        public List<Dictionary<int, Quest>> GetQuestsByState(EQuestState questState)
         {
-            if (classifiedQuestTableList.Count <= (int)questState) 
+            if (classifiedQuestTableList.Count <= (int)questState)
             {
                 return null;
             }
@@ -211,27 +236,57 @@ namespace CommonRPG
             return classifiedQuestTableList[(int)questState];
         }
 
+        public EQuestState GetQuestStateFromQuestName(string questName)
+        {
+            return GetQuestStateFromQuestId(QuestNameIdTable[questName]);
+        }
+
+        public EQuestState GetQuestStateFromQuestId(int questId)
+        {
+            if (allQuestTable.TryGetValue(questId, out Quest quest) == false)
+            {
+                return EQuestState.None;
+            }
+
+            return quest.QuestState;
+        }
+
         private void ArrangeQuestTable()
         {
             List<QuestInfo> questInfos = questData.GetData();
+            
+            questList.Clear();
 
             foreach (QuestInfo questInfo in questInfos)
             {
-                if (questInfo.QuestState == EQuestState.None) 
+                questList.Add(new Quest(questInfo));
+            }
+
+            foreach (Quest quest in questList)
+            {
+                QuestInfo questInfo = quest.QuestInfo;
+
+                if (quest.QuestState == EQuestState.None)
                 {
                     Debug.LogAssertion("Weird Quest State");
                     return;
                 }
 
-                if (allQuestTable.TryAdd(questInfo.QuestName, questInfo) == false) 
+                if (allQuestTable.TryAdd(questInfo.QuestId, quest) == false)
                 {
                     Debug.LogAssertion($"this Quest Name is already exist : {questInfo.QuestName}");
                     return;
                 }
 
-                if (classifiedQuestTableList[(int)questInfo.QuestState][(int)questInfo.QuestType].TryAdd(questInfo.QuestName, questInfo) == false)
+                if (classifiedQuestTableList[(int)quest.QuestState][(int)questInfo.QuestType].TryAdd(quest.QuestInfo.QuestId, quest) == false)
                 {
                     Debug.LogAssertion($"this Quest Name is already exist : {questInfo.QuestName}");
+                    return;
+                }
+
+                if (questNameIdTable.TryAdd(questInfo.QuestName, questInfo.QuestId) == false) 
+                {
+                    Debug.LogAssertion("quest Add Failed");
                     return;
                 }
             }
@@ -241,14 +296,14 @@ namespace CommonRPG
         {
             Debug.Log($"{monster} is killed by {Killer}");
 
-            Dictionary<string, QuestInfo> ongoingHuntQuestTable = classifiedQuestTableList[(int)EQuestState.Ongoing][(int)EQuestType.Hunt];
+            Dictionary<int, Quest> ongoingHuntQuestTable = classifiedQuestTableList[(int)EQuestState.Ongoing][(int)EQuestType.Hunt];
             tableKeyRemoverList.Clear();
 
-            foreach (KeyValuePair<string, QuestInfo> questKeyValuePair in ongoingHuntQuestTable) 
+            foreach (KeyValuePair<int, Quest> questKeyValuePair in ongoingHuntQuestTable)
             {
-                QuestInfo questInfo = questKeyValuePair.Value;
+                QuestInfo questInfo = questKeyValuePair.Value.QuestInfo;
 
-                if (questInfo.OngoingHuntTable.ContainsKey(monster.MonsterName) == false) 
+                if (questInfo.OngoingHuntTable.ContainsKey(monster.MonsterName) == false)
                 {
                     continue;
                 }
@@ -262,9 +317,17 @@ namespace CommonRPG
                     tableKeyRemoverList.Add(questKeyValuePair.Key);
                     questKeyValuePair.Value.QuestState = EQuestState.Pending;
 
-                    Debug.Log($"Hunt Quest Clear : {questKeyValuePair.Value.QuestName}");
+                    Debug.Log($"Hunt Quest Clear : {questKeyValuePair.Value.QuestInfo.QuestName}");
 
-                    if (classifiedQuestTableList[(int)EQuestState.Pending][(int)EQuestType.Hunt].TryAdd(questKeyValuePair.Key, questInfo) == false) 
+                    if (classifiedQuestTableList[(int)EQuestState.Pending][(int)EQuestType.Hunt].TryAdd(questKeyValuePair.Key, questKeyValuePair.Value))
+                    {
+                        if (OnPendingQuestDelegate != null) 
+                        {
+                            OnPendingQuestDelegate.Invoke(questInfo.QuestId);
+                        }
+                        
+                    }
+                    else
                     {
                         Debug.LogAssertion("Add Failed to PendingTable");
                         return;
@@ -272,7 +335,7 @@ namespace CommonRPG
                 }
             }
 
-            foreach (string key in tableKeyRemoverList) 
+            foreach (int key in tableKeyRemoverList)
             {
                 ongoingHuntQuestTable.Remove(key);
             }

@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,26 +10,44 @@ namespace CommonRPG
     public class ProgressBar : MonoBehaviour
     {
         [SerializeField]
-        private float fillAmount = 0.5f;
-        public float FillAmount
+        private List<Image> progressBarImageList = new List<Image>();
+
+        private List<float> fillAmountList = null;
+
+        private bool isInitialized = false;
+
+        public void Init()
         {
-            get
+            Debug.Assert(progressBarImageList.Count > 0);
+
+            fillAmountList = new List<float>(progressBarImageList.Count);
+
+            foreach (Image image in progressBarImageList)
             {
-                return fillAmount;
-            }
-            set
-            {
-                fillAmount = value;
-                progressBarImage.fillAmount = fillAmount;
+                fillAmountList.Add(0);
             }
         }
 
-        [SerializeField]
-        private Image progressBarImage;
-
-        private void Awake()
+        /// <summary>
+        ///  <para> index : index of progressBarImageList. </para>
+        ///  you can multi progressBar if you want.
+        ///  first progressBar index is 0, second is 1, ect...
+        /// </summary>
+        public void SetProgressBarFillAmount(int index, float fillAmount)
         {
-            Debug.Assert(progressBarImage);
+            if (isInitialized == false) 
+            {
+                Init();
+            }
+
+            if (index < 0 || index >= progressBarImageList.Count) 
+            {
+                Debug.LogAssertion("index is out of range");
+                return;
+            }
+            
+            progressBarImageList[index].fillAmount = fillAmount;
+            fillAmountList[index] = fillAmount;
         }
     }
 
