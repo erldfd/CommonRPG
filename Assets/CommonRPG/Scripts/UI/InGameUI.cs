@@ -55,7 +55,10 @@ namespace CommonRPG
         private Canvas billboardCanvas;
 
         [SerializeField]
-        private DamageNumber damageNumberPrefab;
+        private FloatingNumber damageNumberPrefab;
+
+        [SerializeField]
+        private FloatingNumber expNumberPrefab;
 
         [Header("Etc.")]
         [SerializeField]
@@ -69,8 +72,8 @@ namespace CommonRPG
 
         private MonsterBase lastDisplayedMonster = null;
 
-        private Queue<DamageNumber> activatedDamageNumberQueue = new Queue<DamageNumber>();
-        private Queue<DamageNumber> deactivatedDamageNumberQueue = new Queue<DamageNumber>();
+        private Queue<FloatingNumber> deactivatedDamageNumberQueue = new Queue<FloatingNumber>();
+        private Queue<FloatingNumber> deactivatedExpNumberQueue = new Queue<FloatingNumber>();
 
         private void Awake()
         {
@@ -267,14 +270,14 @@ namespace CommonRPG
             GameManager.TryUseOrNotUIInteractionState();
         }
 
-        public void DisplayDamageNumber(float damageAmount, Vector3 position)
+        public void FloatDamageNumber(float damageAmount, Vector3 position)
         {
-            SpawnDamageNumber(damageAmount, position);
+            SpawnFloatingDamageNumber(damageAmount, position);
         }
 
-        private void SpawnDamageNumber(float damageAmount, Vector3 position)
+        private void SpawnFloatingDamageNumber(float damageAmount, Vector3 position)
         {
-            DamageNumber damageNumber = null;
+            FloatingNumber damageNumber = null;
 
             if (deactivatedDamageNumberQueue.Count > 0) 
             {
@@ -288,26 +291,65 @@ namespace CommonRPG
 
             damageNumber.transform.SetParent(billboardCanvas.transform);
 
-            damageNumber.SetDamageText(damageAmount);
+            damageNumber.SetFloatingText(damageAmount);
             damageNumber.transform.position = position;
 
             Quaternion billboardRotation = Camera.main.transform.rotation;
             billboardRotation = new Quaternion(0, billboardRotation.y, 0, billboardRotation.w);
             damageNumber.transform.rotation = billboardRotation;
 
-            //activatedDamageNumberQueue.Enqueue(damageNumber);
-
             GameManager.TimerManager.SetTimer(damageNumber.LifeTime, 0, 0, () =>
             {
-                DespawnDamageNumber(damageNumber);
+                DespawnFloatingDamageNumber(damageNumber);
 
             }, true);
         }
 
-        private void DespawnDamageNumber(DamageNumber damageNumber)
+        private void DespawnFloatingDamageNumber(FloatingNumber damageNumber)
         {
             damageNumber.gameObject.SetActive(false);
             deactivatedDamageNumberQueue.Enqueue(damageNumber);
+        }
+
+        public void FloatExpNumber(float number, Vector3 position)
+        {
+            SpawnFloatingExpNumber(number, position);
+        }
+
+        private void SpawnFloatingExpNumber(float number, Vector3 position)
+        {
+            FloatingNumber expNumber = null;
+
+            if (deactivatedExpNumberQueue.Count > 0)
+            {
+                expNumber = deactivatedExpNumberQueue.Dequeue();
+                expNumber.gameObject.SetActive(true);
+            }
+            else
+            {
+                expNumber = Instantiate(expNumberPrefab);
+            }
+
+            expNumber.transform.SetParent(billboardCanvas.transform);
+
+            expNumber.SetFloatingText($"{number:F1} EXP");
+            expNumber.transform.position = position;
+
+            Quaternion billboardRotation = Camera.main.transform.rotation;
+            billboardRotation = new Quaternion(0, billboardRotation.y, 0, billboardRotation.w);
+            expNumber.transform.rotation = billboardRotation;
+
+            GameManager.TimerManager.SetTimer(expNumber.LifeTime, 0, 0, () =>
+            {
+                DespawnFloatingExpNumber(expNumber);
+
+            }, true);
+        }
+
+        private void DespawnFloatingExpNumber(FloatingNumber expNumber)
+        {
+            expNumber.gameObject.SetActive(false);
+            deactivatedExpNumberQueue.Enqueue(expNumber);
         }
 
         /// <summary>

@@ -51,6 +51,11 @@ namespace CommonRPG
         {
             if (base.isDead)
             {
+                if (aiController.IsAIActivated) 
+                {
+                    ActivateAI(false);
+                }
+
                 if (deathTime < despawnTime)
                 {
                     deathTime += Time.deltaTime;
@@ -110,7 +115,7 @@ namespace CommonRPG
             float currentHpRatio = Mathf.Clamp01(statComponent.CurrentHealthPoint / statComponent.TotalHealth);
             //GameManager.InGameUI.SetMonsterHealthBarFillRatio(0, currentHpRatio);
 
-            float afterimageChangeTime = 1;
+            float afterimageChangeTime = 0.5f;
             GameManager.InGameUI.DisplayDecrasingMonsterHealthBar(currentHpRatio, beforeHpRatio, afterimageChangeTime, this);
             GameManager.InGameUI.SetMonsterInfoUIVisible(true);
             GameManager.InGameUI.SetMonsterNameText(base.unitName);
@@ -118,7 +123,7 @@ namespace CommonRPG
             float offsetY = 1;
             Vector3 damageDisplayPosition = new Vector3(transform.position.x, transform.position.y + offsetY, transform.position.z);
 
-            GameManager.InGameUI.DisplayDamageNumber(actualDamageAmount, damageDisplayPosition);
+            GameManager.InGameUI.FloatDamageNumber(actualDamageAmount, damageDisplayPosition);
 
             if (monsterUITimerHandler == null)
             {
@@ -145,8 +150,11 @@ namespace CommonRPG
                     float obtainingExp = GameManager.GetMonsterData(monsterName).Data.Exp;
                     float expTolerance = GameManager.GetMonsterData(monsterName).Data.ExpTolerance;
 
-                    character.ObtainExp(Random.Range(obtainingExp - expTolerance, obtainingExp + expTolerance));
-                    
+                    float decidedExp = Random.Range(obtainingExp - expTolerance, obtainingExp + expTolerance);
+                    character.ObtainExp(decidedExp);
+
+                    //GameManager.InGameUI.FloatExpNumber(decidedExp, transform.position);
+
                     int obtainingCoins = GameManager.GetMonsterData(MonsterName).Data.HoldingMoney;
                     int coinTolerance = GameManager.GetMonsterData(MonsterName).Data.MoneyTolerance;
 
@@ -175,8 +183,9 @@ namespace CommonRPG
         {
             LayerMask layerMask = LayerMask.GetMask("Character");
             float radius = 0.5f;
-            Collider[] hitColliders = Physics.OverlapCapsule(transform.position, transform.position + transform.forward * attackRange, radius, layerMask);
-
+            float OffsetY = 0.5f;
+            Collider[] hitColliders = Physics.OverlapCapsule(transform.position + transform.up * OffsetY, transform.position + transform.up * OffsetY + transform.forward * attackRange, radius, layerMask);
+            
             if (hitColliders.Length > 0) 
             {
                 IDamageable damageableTarget = hitColliders[0].transform.GetComponent<IDamageable>();

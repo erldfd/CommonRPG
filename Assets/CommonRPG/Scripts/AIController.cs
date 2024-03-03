@@ -29,7 +29,15 @@ namespace CommonRPG
         public bool IsAIActivated
         {
             get { return isAIActivated; }
-            set { isAIActivated = value; }
+            set 
+            { 
+                isAIActivated = value;
+
+                if (agent) 
+                {
+                    agent.isStopped = (value == false);
+                }
+            }
         }
 
         public float CurrentSpeed
@@ -80,7 +88,7 @@ namespace CommonRPG
 
         private void Update()
         {
-            if (isAIActivated == false)
+            if (IsAIActivated == false)
             {
                 return;
             }

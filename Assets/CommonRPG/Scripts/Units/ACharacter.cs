@@ -167,7 +167,7 @@ namespace CommonRPG
         public virtual void ObtainExp(float amount)
         {
             StatComponent.CurrentExp += amount;
-
+            GameManager.InGameUI.FloatExpNumber(amount, transform.position);
             float currentExpRatio = StatComponent.CurrentExp / StatComponent.MaxExpOfCurrentLevel;
             GameManager.InGameUI.SetPlayerExpBarFillRatio(currentExpRatio);
 

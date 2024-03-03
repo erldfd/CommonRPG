@@ -5,17 +5,17 @@ using UnityEngine;
 
 namespace CommonRPG
 {
-    public class DamageNumber : MonoBehaviour
+    public class FloatingNumber : MonoBehaviour
     {
         [SerializeField]
-        private TextMeshProUGUI damageText;
+        private TextMeshProUGUI floatingText;
 
         [SerializeField]
         private float lifeTime;
         public float LifeTime { get { return lifeTime; } }
 
         [SerializeField]
-        private float moveSpeed = 1;
+        private float floatingSpeed = 1;
 
         private void Update()
         {
@@ -23,12 +23,17 @@ namespace CommonRPG
             billboardRotation = new Quaternion(0, billboardRotation.y, 0, billboardRotation.w);
             transform.rotation = billboardRotation;
 
-            transform.Translate(Vector2.up * moveSpeed * Time.deltaTime);
+            transform.Translate(Vector2.up * floatingSpeed * Time.deltaTime);
         }
 
-        public void SetDamageText(float damageAmount)
+        public void SetFloatingText(float number)
         {
-            damageText.text = $"{damageAmount:F1}";
+            SetFloatingText($"{number:F1}");
+        }
+
+        public void SetFloatingText(string text)
+        {
+            floatingText.text = text;
         }
     }
 }

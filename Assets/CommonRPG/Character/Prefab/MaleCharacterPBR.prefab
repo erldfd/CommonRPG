@@ -806,7 +806,7 @@ GameObject:
   - component: {fileID: 1870416446275231784}
   - component: {fileID: 3300511683828448632}
   - component: {fileID: 5195417877010280496}
-  m_Layer: 7
+  m_Layer: 2
   m_Name: InteractionCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}

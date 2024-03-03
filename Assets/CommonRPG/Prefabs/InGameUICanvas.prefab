@@ -4326,6 +4326,7 @@ MonoBehaviour:
   monsterInfoUI: {fileID: 4452514171668632792}
   monsterNameText: {fileID: 7849783787995324055}
   monsterHealthBar: {fileID: 614401614381151346}
+  monsterHpBarAfterImageChangeSpeed: 1
   playerInfoUI: {fileID: 3868696995821667670}
   playerNameText: {fileID: 1222238128423856153}
   playerHealthBar: {fileID: 562163861926382799}
@@ -4336,6 +4337,7 @@ MonoBehaviour:
   conversationUI: {fileID: 8475587893604377809}
   billboardCanvas: {fileID: 0}
   damageNumberPrefab: {fileID: 2055402164186554734, guid: 17c1e0c7ba1ec01468ef24b0b56e585c, type: 3}
+  expNumberPrefab: {fileID: 2055402164186554734, guid: 88c3c24f9f5d322488082360b8681c49, type: 3}
   pauseUI: {fileID: 9119241187907849305}
 --- !u!1 &7038090970745078756
 GameObject:
