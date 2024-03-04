@@ -660,7 +660,7 @@ GameObject:
   - component: {fileID: 1764850479742497535}
   - component: {fileID: 9028772582027945777}
   m_Layer: 5
-  m_Name: EquipmentEnventory
+  m_Name: EquipmentInventory
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

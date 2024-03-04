@@ -14,6 +14,12 @@ namespace CommonRPG
         }
 
         [SerializeField]
+        private Sprite emptyWeaponSlotImage;
+
+        [SerializeField]
+        private Sprite emptyShieldSlotImage;
+
+        [SerializeField]
         private Transform weaponEquipmentTransform;
         public Transform WeaponEquipmentTransform { get { return weaponEquipmentTransform; } set { weaponEquipmentTransform = value; } }
 
@@ -24,6 +30,8 @@ namespace CommonRPG
         protected override void Awake()
         {
             base.Awake();
+            Debug.Assert(emptyWeaponSlotImage);
+            Debug.Assert(emptyShieldSlotImage);
         }
 
         public override void InitInventory()
@@ -102,7 +110,25 @@ namespace CommonRPG
 
         public override void SetSlotItemCount(int slotIndex, int newItemCount)
         {
-            base.SetSlotItemCount(slotIndex, newItemCount);
+            if (newItemCount == 0)
+            {
+                if (slotIndex == (int)EEquipmentSlot.Weapon)
+                {
+                    slotUiList[slotIndex].SetSlotImageSprite(emptyWeaponSlotImage);
+                }
+                else if (slotIndex == (int)EEquipmentSlot.Shield)
+                {
+                    slotUiList[slotIndex].SetSlotImageSprite(emptyShieldSlotImage);
+                }
+                else
+                {
+                    Debug.LogAssertion("Weird slot index");
+                    return;
+                }
+            }
+
+            inventoryItemDataList[slotIndex].CurrentItemCount = newItemCount;
+
             slotUiList[slotIndex].SetSlotItemCountText("");
         }
 
