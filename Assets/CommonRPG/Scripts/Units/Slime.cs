@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace CommonRPG
 {
-    public class Slime : MonsterBase
+    public class Slime : NormalMonster
     {
         protected override void Awake()
         {

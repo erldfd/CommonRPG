@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -17,9 +19,6 @@ namespace CommonRPG
         }
 
         [SerializeField]
-        protected float attackRange = 2;
-
-        [SerializeField]
         protected float despawnTime = 3;
 
         /// <summary>
@@ -27,13 +26,9 @@ namespace CommonRPG
         /// </summary>
         protected float deathTime = 0;
 
-        protected AIController aiController = null;
+        private TimerHandler monsterUITimerHandler = null;
 
-        protected TimerHandler monsterUITimerHandler = null;
-
-        protected float afterImageHpProgressBarFillRatio = 0;
-        public float AfterImageHpProgressBarFillRatio { get; }
-
+        protected AAIController aiController = null;
 
         protected override void Awake()
         {
@@ -42,7 +37,7 @@ namespace CommonRPG
             Debug.Assert(base.statComponent);
             Debug.Assert(base.animController);
 
-            aiController = GetComponent<AIController>();
+            aiController = GetComponent<AAIController>();
             Debug.Assert(aiController);
         }
 
@@ -51,7 +46,7 @@ namespace CommonRPG
         {
             if (base.isDead)
             {
-                if (aiController.IsAIActivated) 
+                if (aiController.IsAIActivated)
                 {
                     ActivateAI(false);
                 }
@@ -70,39 +65,15 @@ namespace CommonRPG
             animController.CurrentMoveSpeed = aiController.CurrentSpeed;
         }
 
-        protected override void OnEnable()
-        {
-            base.OnEnable();
-
-            MonsterAnimController monsterAnimController = (MonsterAnimController)animController;
-            Debug.Assert(monsterAnimController);
-
-            monsterAnimController.OnAttackCheck += DoDamage;
-
-            aiController.OnAttack += Attack;
-        }
-
-        protected override void OnDisable()
-        {
-            base.OnDisable();
-
-            MonsterAnimController monsterAnimController = (MonsterAnimController)animController;
-            Debug.Assert(monsterAnimController);
-
-            monsterAnimController.OnAttackCheck -= DoDamage;
-
-            aiController.OnAttack -= Attack;
-        }
-
         public virtual float TakeDamage(float DamageAmount, AUnit DamageCauser = null)
         {
-            if (IsDead) 
+            if (IsDead)
             {
                 return 0f;
             }
 
             float actualDamageAmount = DamageAmount - statComponent.TotalDefense;
-            if (actualDamageAmount < 1) 
+            if (actualDamageAmount < 1)
             {
                 actualDamageAmount = 1;
             }
@@ -110,12 +81,10 @@ namespace CommonRPG
             float beforeHpRatio = statComponent.CurrentHealthPoint / statComponent.TotalHealth;
 
             statComponent.CurrentHealthPoint -= actualDamageAmount;
-            //Debug.Log($"Damage is Taked : {DamageAmount}, CurrentHp : {statComponent.CurrentHealthPoint}");
 
             float currentHpRatio = Mathf.Clamp01(statComponent.CurrentHealthPoint / statComponent.TotalHealth);
-            //GameManager.InGameUI.SetMonsterHealthBarFillRatio(0, currentHpRatio);
-
             float afterimageChangeTime = 0.5f;
+
             GameManager.InGameUI.DisplayDecrasingMonsterHealthBar(currentHpRatio, beforeHpRatio, afterimageChangeTime, this);
             GameManager.InGameUI.SetMonsterInfoUIVisible(true);
             GameManager.InGameUI.SetMonsterNameText(base.unitName);
@@ -132,6 +101,7 @@ namespace CommonRPG
                     GameManager.InGameUI.SetMonsterInfoUIVisible(false);
 
                 }, true);
+
                 monsterUITimerHandler.IsStayingActive = true;
             }
             else
@@ -152,8 +122,6 @@ namespace CommonRPG
 
                     float decidedExp = Random.Range(obtainingExp - expTolerance, obtainingExp + expTolerance);
                     character.ObtainExp(decidedExp);
-
-                    //GameManager.InGameUI.FloatExpNumber(decidedExp, transform.position);
 
                     int obtainingCoins = GameManager.GetMonsterData(MonsterName).Data.HoldingMoney;
                     int coinTolerance = GameManager.GetMonsterData(MonsterName).Data.MoneyTolerance;
@@ -176,48 +144,7 @@ namespace CommonRPG
                 monsterAnimController.PlayHitAnim();
             }
 
-            return DamageAmount;
-        }
-
-        protected virtual void DoDamage(bool isStartingAttackCheck)
-        {
-            LayerMask layerMask = LayerMask.GetMask("Character");
-            float radius = 0.5f;
-            float OffsetY = 0.5f;
-            Collider[] hitColliders = Physics.OverlapCapsule(transform.position + transform.up * OffsetY, transform.position + transform.up * OffsetY + transform.forward * attackRange, radius, layerMask);
-            
-            if (hitColliders.Length > 0) 
-            {
-                IDamageable damageableTarget = hitColliders[0].transform.GetComponent<IDamageable>();
-                if(damageableTarget == null)
-                {
-                    return;
-                }
-
-                damageableTarget.TakeDamage(StatComponent.BaseAttackPower, this);
-            }
-        }
-
-        protected virtual void Attack(Transform targetTransform)
-        {
-            MonsterAnimController monsterAnimController = (MonsterAnimController)animController;
-            Debug.Assert(monsterAnimController);
-
-            if (isDead)
-            {
-                aiController.IsAIActivated = false;
-                return;
-            }
-
-            if (monsterAnimController.IsHit)
-            {
-                return;
-            }
-
-            Vector3 LookTargetVector = targetTransform.position - transform.position;
-            transform.forward = LookTargetVector;
-
-            monsterAnimController.PlayAttackAnim();
+            return actualDamageAmount;
         }
 
         protected void BeKilled()
@@ -232,5 +159,4 @@ namespace CommonRPG
             aiController.IsAIActivated = shouldActivate;
         }
     }
-
 }

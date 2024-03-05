@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace CommonRPG
 {
-    public class Turtle : MonsterBase
+    public class Turtle : NormalMonster
     {
         
     }

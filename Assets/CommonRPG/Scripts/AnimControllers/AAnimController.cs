@@ -35,7 +35,7 @@ namespace CommonRPG
         /// </summary>
         public event Action<bool> OnAttackCheck = null;
 
-        private void Awake()
+        protected virtual void Awake()
         {
             Debug.Assert(animator);
         }

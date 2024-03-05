@@ -187,7 +187,10 @@ namespace CommonRPG
         }
 
         /// <summary>
-        /// 
+        /// <para>startTime : after this time, function will be called.</para>
+        /// <para>after startTime calling, function will be called again as much as repeatNumber.</para>
+        /// <para>if repeatNumber is -1, function will be called infinitly until calling "ClearTimer" function in TimerHanlder.</para>
+        /// <para>interval : waiting time after calling function.</para>
         /// </summary>
         /// <returns> return value is timerhandler which has been set. </returns>
         public TimerHandler SetTimer(float startTime, float interval, int repeatNumber, Action function, bool isActive)

@@ -7,6 +7,14 @@ namespace CommonRPG
 {
     public class MonsterSpawner : MonoBehaviour
     {
+        protected enum EConditionCheck
+        {
+            Deactivated,
+            Over,
+            Equal,
+            Under
+        }
+
         [SerializeField]
         protected string spawnerName = null;
 
@@ -22,12 +30,88 @@ namespace CommonRPG
         [SerializeField]
         protected float interval = 3;
 
+        [Header("Conditions")]
+        [SerializeField]
+        protected EConditionCheck monsterNumberCheck = EConditionCheck.Deactivated;
+
+        [SerializeField]
+        protected int monsterCountInArea = 0;
+
+        [SerializeField]
+        protected float radius;
+
         protected void Start()
         {
-            GameManager.SetTimer(startTime, interval, spawnCount - 1, () =>
+            switch (monsterNumberCheck)
             {
-                GameManager.SpawnMonster(spawningMonster, transform.position, transform.rotation);
-            }, true);
+                case EConditionCheck.Deactivated:
+                {
+                    GameManager.SetTimer(startTime, interval, spawnCount - 1, () =>
+                    {
+                        SpawnMonster();
+                    }, true);
+
+                    break;
+                }
+                case EConditionCheck.Over:
+                {
+                    LayerMask layerMask = LayerMask.GetMask("Monster");
+
+                    GameManager.SetTimer(startTime, interval, -1, () =>
+                    {
+                        Collider[] overlaps = Physics.OverlapSphere(transform.position, radius, layerMask);
+
+                        if (overlaps.Length > monsterCountInArea)
+                        {
+                            SpawnMonster();
+                        }
+
+                    }, true);
+
+                    break;
+                }
+                case EConditionCheck.Equal:
+                {
+                    LayerMask layerMask = LayerMask.GetMask("Monster");
+
+                    GameManager.SetTimer(startTime, interval, -1, () =>
+                    {
+                        Collider[] overlaps = Physics.OverlapSphere(transform.position, radius, layerMask);
+
+                        if (overlaps.Length == monsterCountInArea)
+                        {
+                            SpawnMonster();
+                        }
+
+                    }, true);
+
+                    break;
+                }
+                case EConditionCheck.Under:
+                {
+                    LayerMask layerMask = LayerMask.GetMask("Monster");
+
+                    GameManager.SetTimer(startTime, interval, -1, () =>
+                    {
+                        Collider[] overlaps = Physics.OverlapSphere(transform.position, radius, layerMask);
+
+                        if (overlaps.Length < monsterCountInArea)
+                        {
+                            SpawnMonster();
+                        }
+
+                    }, true);
+
+                    break;
+                }
+            }
+            
+        }
+
+
+        protected void SpawnMonster()
+        {
+            GameManager.SpawnMonster(spawningMonster, transform.position, transform.rotation);
         }
 
         protected void OnGUI()
