@@ -9,6 +9,7 @@ namespace CommonRPG
         None = -1,
         RedSlime = 0,
         BlueTurtle = 1,
+        RedUsurperBoss = 2,
     }
 
     [CreateAssetMenu(fileName = "MonsterData", menuName = "ScriptableObjects/MonsterDataScriptableObject", order = 2)]

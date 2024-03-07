@@ -19,7 +19,7 @@ namespace CommonRPG
             {
                 isAIActivated = value;
 
-                if (agent)
+                if (agent && agent.isOnNavMesh)
                 {
                     agent.isStopped = (value == false);
                 }

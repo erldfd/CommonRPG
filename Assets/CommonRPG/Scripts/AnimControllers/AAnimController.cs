@@ -17,13 +17,13 @@ namespace CommonRPG
         protected string deathAnimName;
 
         protected float currentMoveSpeed = 0;
-        public float CurrentMoveSpeed
+        public virtual float CurrentMoveSpeed
         {
             get { return currentMoveSpeed; }
             set
             {
                 currentMoveSpeed = value;
-                animator.SetFloat("CurrentMoveSpeed", Mathf.Floor(value));
+                animator.SetFloat("CurrentMoveSpeed", value);
             }
         }
 

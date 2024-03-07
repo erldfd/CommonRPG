@@ -38,7 +38,7 @@ namespace CommonRPG
                 return;
             }
 
-            IDamageable monster = other.GetComponent<IDamageable>();
+            IDamageable monster = other.transform.root.GetComponent<IDamageable>();
             if (monster == null) 
             {
                 return;

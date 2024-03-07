@@ -62,7 +62,6 @@ namespace CommonRPG
             base.OnEnable();
 
             MonsterAnimController monsterAnimController = (MonsterAnimController)animController;
-            Debug.Assert(monsterAnimController);
 
             monsterAnimController.OnAttackCheck += DoDamage;
 
@@ -76,7 +75,6 @@ namespace CommonRPG
             base.OnDisable();
 
             MonsterAnimController monsterAnimController = (MonsterAnimController)animController;
-            Debug.Assert(monsterAnimController);
 
             monsterAnimController.OnAttackCheck -= DoDamage;
 

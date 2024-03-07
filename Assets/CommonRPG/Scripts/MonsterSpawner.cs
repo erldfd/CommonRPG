@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace CommonRPG
 {
@@ -17,6 +18,9 @@ namespace CommonRPG
 
         [SerializeField]
         protected string spawnerName = null;
+
+        [SerializeField]
+        protected float spawnRadius = 0;
 
         [SerializeField]
         protected EMonsterName spawningMonster = EMonsterName.None;
@@ -40,78 +44,91 @@ namespace CommonRPG
         [SerializeField]
         protected float radius;
 
-        protected void Start()
+        private float elapsedTime = 0;
+        private int currentspawnedNumber = 0;
+        private bool isStarted = false;
+
+        protected void Update()
         {
+            elapsedTime += Time.deltaTime;
+
+            if (elapsedTime >= startTime && isStarted == false) 
+            {
+                isStarted = true;
+            }
+
+            if (isStarted == false) 
+            {
+                return;
+            }
+
             switch (monsterNumberCheck)
             {
                 case EConditionCheck.Deactivated:
                 {
-                    GameManager.SetTimer(startTime, interval, spawnCount - 1, () =>
+
+                    if (elapsedTime >= interval && spawnCount > currentspawnedNumber) 
                     {
                         SpawnMonster();
-                    }, true);
+                        elapsedTime = 0;
+                        currentspawnedNumber++;
+                    }
 
                     break;
                 }
                 case EConditionCheck.Over:
                 {
                     LayerMask layerMask = LayerMask.GetMask("Monster");
+                    Collider[] overlaps = Physics.OverlapSphere(transform.position, radius, layerMask);
 
-                    GameManager.SetTimer(startTime, interval, -1, () =>
+                    if (overlaps.Length > monsterCountInArea && interval <= elapsedTime)
                     {
-                        Collider[] overlaps = Physics.OverlapSphere(transform.position, radius, layerMask);
-
-                        if (overlaps.Length > monsterCountInArea)
-                        {
-                            SpawnMonster();
-                        }
-
-                    }, true);
+                        SpawnMonster();
+                        elapsedTime = 0;
+                    }
 
                     break;
                 }
                 case EConditionCheck.Equal:
                 {
                     LayerMask layerMask = LayerMask.GetMask("Monster");
+                    Collider[] overlaps = Physics.OverlapSphere(transform.position, radius, layerMask);
 
-                    GameManager.SetTimer(startTime, interval, -1, () =>
+                    if (overlaps.Length == monsterCountInArea && interval <= elapsedTime)
                     {
-                        Collider[] overlaps = Physics.OverlapSphere(transform.position, radius, layerMask);
-
-                        if (overlaps.Length == monsterCountInArea)
-                        {
-                            SpawnMonster();
-                        }
-
-                    }, true);
+                        SpawnMonster();
+                        elapsedTime = 0;
+                    }
 
                     break;
                 }
                 case EConditionCheck.Under:
                 {
                     LayerMask layerMask = LayerMask.GetMask("Monster");
+                    Collider[] overlaps = Physics.OverlapSphere(transform.position, radius, layerMask);
 
-                    GameManager.SetTimer(startTime, interval, -1, () =>
+                    if (overlaps.Length < monsterCountInArea && interval <= elapsedTime)
                     {
-                        Collider[] overlaps = Physics.OverlapSphere(transform.position, radius, layerMask);
-
-                        if (overlaps.Length < monsterCountInArea)
-                        {
-                            SpawnMonster();
-                        }
-
-                    }, true);
+                        SpawnMonster();
+                        elapsedTime = 0;
+                    }
 
                     break;
                 }
             }
-            
         }
-
 
         protected void SpawnMonster()
         {
-            GameManager.SpawnMonster(spawningMonster, transform.position, transform.rotation);
+            Vector3 spawnPosition = transform.position;
+
+            float randomPosX = Random.Range(-spawnRadius, spawnRadius);
+            float randomPosZ = Mathf.Sqrt((spawnRadius + randomPosX) * (spawnRadius - randomPosX));
+
+            spawnPosition.x = spawnPosition.x + randomPosX;
+            spawnPosition.z = spawnPosition.z + Random.Range(-randomPosZ, randomPosZ);
+
+            GameManager.SpawnMonster(spawningMonster, spawnPosition, transform.rotation);
         }
 
         protected void OnGUI()

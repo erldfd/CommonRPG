@@ -54,8 +54,6 @@ namespace CommonRPG
         private float attackInterval = 3;
         private float elapsedTime_Attack = 0;
 
-        
-
         private EAIState currentAIState = EAIState.None;
 
         protected override void Start()

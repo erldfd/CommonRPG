@@ -132,7 +132,6 @@ namespace CommonRPG
             }
 
             MonsterAnimController monsterAnimController = (MonsterAnimController)animController;
-            Debug.Assert(monsterAnimController);
 
             if (statComponent.CurrentHealthPoint <= 0)
             {
