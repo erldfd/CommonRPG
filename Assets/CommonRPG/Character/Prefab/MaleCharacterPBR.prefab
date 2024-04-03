@@ -2623,11 +2623,11 @@ MonoBehaviour:
   statMpPoint: 0
   statAttackPowerPoint: 0
   statDefensePoint: 0
-  currentHealthPoint: 3
+  currentHealthPoint: 100
   currentManaPoint: 1
-  baseHealthPoint: 3
+  baseHealthPoint: 100
   baseManaPoint: 1
-  baseAttackPower: 1
+  baseAttackPower: 100
   baseDefense: 0
   statBonusHealthPoint: 0
   statBonusManaPoint: 0
@@ -2637,9 +2637,9 @@ MonoBehaviour:
   weaponManaBonus: 0
   weaponAttackPowerBonus: 0
   weaponDefenseBonus: 0
-  totalHealth: 3
+  totalHealth: 100
   totalMana: 1
-  totalAttackPower: 1
+  totalAttackPower: 100
   totalDefense: 0
 --- !u!1 &8206070634150816031
 GameObject:

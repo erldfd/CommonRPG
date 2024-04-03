@@ -1239,6 +1239,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 9105401076085339338, guid: e0af3701fca2c1a408fc2de9284e0ec5, type: 3}
+      propertyPath: vfxPrefabList.Array.data[0]
+      value: 
+      objectReference: {fileID: 198135933826093756, guid: 4697485a536c915439629f9d1f9ffcee, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

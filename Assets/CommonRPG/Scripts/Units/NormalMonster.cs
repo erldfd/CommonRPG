@@ -72,8 +72,6 @@ namespace CommonRPG
 
         protected override void OnDisable()
         {
-            base.OnDisable();
-
             MonsterAnimController monsterAnimController = (MonsterAnimController)animController;
 
             monsterAnimController.OnAttackCheck -= DoDamage;
@@ -81,6 +79,8 @@ namespace CommonRPG
             NormalMonsterAIController normalAIController = (NormalMonsterAIController)aiController;
 
             normalAIController.OnAttack -= Attack;
+
+            base.OnDisable();
         }
 
         public override float TakeDamage(float DamageAmount, AUnit DamageCauser = null)

@@ -24,6 +24,13 @@ MonoBehaviour:
     MonsterName: 1
     ItemProbabilityDataList:
     - ItemName: 0
-      dropProbability: 99
+      dropProbability: 0.5
     - ItemName: 1
-      dropProbability: 99
+      dropProbability: 0.5
+  - name: RedUsurperBoss
+    MonsterName: 2
+    ItemProbabilityDataList:
+    - ItemName: 0
+      dropProbability: 0.1
+    - ItemName: 3
+      dropProbability: 0.9

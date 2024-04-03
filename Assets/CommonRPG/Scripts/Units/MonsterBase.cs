@@ -26,7 +26,7 @@ namespace CommonRPG
         /// </summary>
         protected float deathTime = 0;
 
-        private TimerHandler monsterUITimerHandler = null;
+        protected TimerHandler monsterUITimerHandler = null;
 
         protected AAIController aiController = null;
 
@@ -65,6 +65,16 @@ namespace CommonRPG
             animController.CurrentMoveSpeed = aiController.CurrentSpeed;
         }
 
+        protected override void OnDestroy()
+        {
+            if (monsterUITimerHandler != null) 
+            {
+                monsterUITimerHandler.IsStayingActive = false;
+            }
+
+            base.OnDestroy();
+        }
+
         public virtual float TakeDamage(float DamageAmount, AUnit DamageCauser = null)
         {
             if (IsDead)
@@ -96,7 +106,7 @@ namespace CommonRPG
 
             if (monsterUITimerHandler == null)
             {
-                monsterUITimerHandler = GameManager.SetTimer(3, 1, 0, () => {
+                monsterUITimerHandler = GameManager.TimerManager.SetTimer(3, 1, 0, () => {
 
                     GameManager.InGameUI.SetMonsterInfoUIVisible(false);
 
@@ -151,6 +161,11 @@ namespace CommonRPG
             base.isDead = true;
             deathTime = 0;
             ActivateAI(false);
+
+            if (monsterUITimerHandler != null) 
+            {
+                monsterUITimerHandler.IsStayingActive = false;
+            }
         }
 
         public void ActivateAI(bool shouldActivate)

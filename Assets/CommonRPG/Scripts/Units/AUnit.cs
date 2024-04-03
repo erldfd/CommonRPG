@@ -59,6 +59,11 @@ namespace CommonRPG
         {
 
         }
+
+        protected virtual void OnDestroy()
+        {
+            
+        }
     }
 }
 

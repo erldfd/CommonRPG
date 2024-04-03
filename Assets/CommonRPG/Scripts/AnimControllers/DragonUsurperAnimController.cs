@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
 namespace CommonRPG
@@ -10,16 +11,19 @@ namespace CommonRPG
         private enum ELayer
         {
             Land,
-            Flying
+            Flying,
+            NeckHead
         }
 
         public event Action OnWakeUpEndedDelegate = null;
+        public event Action<bool> OnCheckMouthAttackDelegate = null;
+        public event Action<bool> OnCheckHandAttackDelegate = null;
+        public event Action<bool> OnCheckAttackFlameDelegate = null;
 
         /// <summary>
         /// bool : begunAttack..
         /// </summary>
         public event Action<bool> OnBeginAttack = null;
-
 
         [SerializeField]
         private string takeOffAnimName;
@@ -36,10 +40,19 @@ namespace CommonRPG
         [SerializeField]
         private string attackFlameAnimName_Ground;
 
+        [SerializeField]
+        private string attackFlameAnimName_Air;
+
+        [SerializeField]
+        private Transform flameMouthTransform;
+
         /// <summary>
         ///  sleep rate 1 -> play sleep anim, sleep rate 0 -> play idle or move anim
         /// </summary>
         protected float sleepRate = 1;
+
+        private bool isAttacking = false;
+
         public float SleepRate
         {
             get { return sleepRate; }
@@ -84,6 +97,8 @@ namespace CommonRPG
         private float idleToMoveChangeTime = 1;
         private float elapsedTime_ChangeTime = 0;
 
+        private ParticleSystem flameVFX = null;
+
         protected override void Awake()
         {
             base.Awake();
@@ -94,9 +109,15 @@ namespace CommonRPG
 
             //}, true);
 
-            //GameManager.TimerManager.SetTimer(10, 16, -1, () =>
+            //GameManager.TimerManager.SetTimer(1, 16, 0, () =>
             //{
-            //    Land();
+            //    PlayWakeUpAnim();
+
+            //}, true);
+
+            //GameManager.TimerManager.SetTimer(5, 5, -1, () =>
+            //{
+            //    PlayAttackFlame_Ground();
 
             //}, true);
         }
@@ -198,27 +219,84 @@ namespace CommonRPG
 
         public void PlayAttackMouth()
         {
+            if (isAttacking)
+            {
+                return;
+            }
+
             animator.Play(attackMouthAnimName, (int)ELayer.Land);
         }
 
         public void PlayAttackHand()
         {
+            if (isAttacking)
+            {
+                return;
+            }
+
             animator.Play(attackHandAnimName, (int)ELayer.Land);
         }
 
         public void PlayAttackFlame_Ground()
         {
+            if (isAttacking) 
+            {
+                return;
+            }
+
             animator.Play(attackFlameAnimName_Ground, (int)ELayer.Land);
         }
 
         public void PlayAttackFlame_Flying()
         {
+            if (isAttacking)
+            {
+                return;
+            }
 
+            animator.Play(attackFlameAnimName_Air, (int)ELayer.NeckHead);
         }
 
         public void CheckAttackAnimBegin(int bIsBeginningAttackAnim)
         {
-            OnBeginAttack.Invoke((bIsBeginningAttackAnim != 0));
+            isAttacking = (bIsBeginningAttackAnim != 0);
+            OnBeginAttack.Invoke(isAttacking);
+        }
+
+        public override void StartAttackCheck(int bIsCheckingAttack)
+        {
+            base.StartAttackCheck(bIsCheckingAttack);
+        }
+
+        public void CheckMouthAttack(int bIsAttacking)
+        {
+            bool isAttacking = (bIsAttacking != 0);
+
+            OnCheckMouthAttackDelegate.Invoke(isAttacking);
+        }
+
+        public void CheckHandAttack(int bIsAttacking)
+        {
+            bool isAttacking = (bIsAttacking != 0);
+
+            OnCheckHandAttackDelegate.Invoke(isAttacking);
+        }
+
+        public void CheckFlameAttack(int bIsAttacking)
+        {
+            bool isAttacking = (bIsAttacking != 0);
+
+            if (isAttacking)
+            {
+                flameVFX = GameManager.VFXManager.SpawnVFX(flameMouthTransform, EVFXName.DragonUsurperFlame_Ground, true);
+            }
+            else
+            {
+                GameManager.VFXManager.DespawnVFX(flameVFX);
+                flameVFX = null;
+            }
+
+            OnCheckAttackFlameDelegate.Invoke(isAttacking);
         }
     }
 }

@@ -34,6 +34,10 @@ namespace CommonRPG
         private UnitManager unitManager = null;
         public static UnitManager UnitManager { get { return instance.unitManager; } }
 
+        [SerializeField]
+        private VFXManager vfxManager = null;
+        public static VFXManager VFXManager { get { return instance.vfxManager; } }
+
         [Header("UIs")]
         [SerializeField]
         private InGameUI inGameUI = null;
@@ -97,8 +101,8 @@ namespace CommonRPG
             //Cursor.lockState = CursorLockMode.Locked;
             //Cursor.visible = false;
 
-            SetTimer(1, 0, 0, () => { InventoryManager.ObtainItem(EInventoryType.Equipment, 1, 1, itemData.ItemDataList[(int)EItemName.TheSecondSword].Data); }, true);
-            SetTimer(2, 0, 0, () =>
+            TimerManager.SetTimer(1, 0, 0, () => { InventoryManager.ObtainItem(EInventoryType.Equipment, 1, 1, itemData.ItemDataList[(int)EItemName.TheSecondSword].Data); }, true);
+            TimerManager.SetTimer(2, 0, 0, () =>
             {
 
                 int count = InventoryManager.ObtainItem(EInventoryType.Equipment, 5, itemData.ItemDataList[(int)EItemName.TheFirstSword].Data);
@@ -113,18 +117,18 @@ namespace CommonRPG
         //private void Update()
         //{
         //    EventSystem eventSystem = EventSystem.current;
-        //    if (eventSystem == null) 
+        //    if (eventSystem == null)
         //    {
         //        Debug.Log("eventSystem == null");
         //        return;
         //    }
 
         //    GameObject obj = eventSystem.currentSelectedGameObject;
-        //    if(obj)
+        //    if (obj)
         //    {
         //        Debug.Log(obj.name);
         //    }
-            
+
         //}
 
         private void OnEnable()
@@ -142,11 +146,6 @@ namespace CommonRPG
             instance.inGameUI.gameObject.SetActive(shouldVisible);
         }
 
-
-        public static TimerHandler SetTimer(float startTime, float interval, int repeatNumber, Action function, bool isActive)
-        {
-            return instance.timerManager.SetTimer(startTime, interval, repeatNumber, function, isActive);
-        }
 
         public static ItemData GetItemData(EItemName itemName)
         {
@@ -347,6 +346,8 @@ namespace CommonRPG
             //Cursor.visible = false;
 
             TryUseOrNotUIInteractionState();
+
+            VFXManager.InitVFXTable();
         }
     }
 }

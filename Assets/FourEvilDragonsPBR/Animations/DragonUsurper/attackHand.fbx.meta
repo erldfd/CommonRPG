@@ -795,6 +795,13 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
+      - time: 0.05306122
+        functionName: CheckAttackAnimBegin
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 1
+        messageOptions: 0
       - time: 0.3850493
         functionName: StartAttackCheck
         data: 
@@ -809,15 +816,22 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.05306122
+      - time: 0.9801193
         functionName: CheckAttackAnimBegin
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.4
+        functionName: CheckHandAttack
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 1
         messageOptions: 0
-      - time: 0.96326536
-        functionName: CheckAttackAnimBegin
+      - time: 0.6081633
+        functionName: CheckHandAttack
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
