@@ -4,11 +4,8 @@ using UnityEngine;
 
 namespace CommonRPG
 {
-    public class VillageSceneStartingScript : ALevelStartingScript
+    public class VillageSceneStartingScript : LevelStartingScript
     {
-        [SerializeField]
-        private Vector3 itemSpawnPosition;
-
         //private EquipmentScreen equipmentScreen = null;
         public override void StartScript()
         {
@@ -28,6 +25,8 @@ namespace CommonRPG
             //{
             //    equipmentScreen.ShieldEquipmentTransform = GameManager.GetPlayerCharacter().ShieldEquipmentTransform;
             //}
+
+            base.StartScript();
 
             GameManager.InGameUI.SetPlayerInfoUIVisible(true);
         }

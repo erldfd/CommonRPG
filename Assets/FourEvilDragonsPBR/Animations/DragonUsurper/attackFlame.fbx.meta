@@ -795,6 +795,27 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
+      - time: 0.057142857
+        functionName: CheckAttackAnimBegin
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 1
+        messageOptions: 0
+      - time: 0.20408164
+        functionName: CheckFlameAttack
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 1
+        messageOptions: 0
+      - time: 0.22316386
+        functionName: OnPlayingFlameAttackSound
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       - time: 0.2489796
         functionName: StartAttackCheck
         data: 
@@ -809,29 +830,15 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.057142857
-        functionName: CheckAttackAnimBegin
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 1
-        messageOptions: 0
-      - time: 0.9102041
-        functionName: CheckAttackAnimBegin
+      - time: 0.8857143
+        functionName: CheckFlameAttack
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.20408164
-        functionName: CheckFlameAttack
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 1
-        messageOptions: 0
-      - time: 0.8857143
-        functionName: CheckFlameAttack
+      - time: 0.989774
+        functionName: CheckAttackAnimBegin
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0

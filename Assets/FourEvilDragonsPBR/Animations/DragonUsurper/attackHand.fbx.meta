@@ -802,8 +802,22 @@ ModelImporter:
         floatParameter: 0
         intParameter: 1
         messageOptions: 0
+      - time: 0.3700565
+        functionName: OnPlayingHandAttackSound
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       - time: 0.3850493
         functionName: StartAttackCheck
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 1
+        messageOptions: 0
+      - time: 0.4
+        functionName: CheckHandAttack
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
@@ -816,22 +830,15 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.9801193
-        functionName: CheckAttackAnimBegin
+      - time: 0.6081633
+        functionName: CheckHandAttack
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.4
-        functionName: CheckHandAttack
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 1
-        messageOptions: 0
-      - time: 0.6081633
-        functionName: CheckHandAttack
+      - time: 0.98442036
+        functionName: CheckAttackAnimBegin
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0

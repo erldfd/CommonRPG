@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
 namespace CommonRPG
@@ -63,7 +64,7 @@ namespace CommonRPG
 
             MonsterAnimController monsterAnimController = (MonsterAnimController)animController;
 
-            monsterAnimController.OnAttackCheck += DoDamage;
+            monsterAnimController.OnAttackCheckDelegate += DoDamage;
 
             NormalMonsterAIController normalAIController = (NormalMonsterAIController)aiController;
 
@@ -74,7 +75,7 @@ namespace CommonRPG
         {
             MonsterAnimController monsterAnimController = (MonsterAnimController)animController;
 
-            monsterAnimController.OnAttackCheck -= DoDamage;
+            monsterAnimController.OnAttackCheckDelegate -= DoDamage;
 
             NormalMonsterAIController normalAIController = (NormalMonsterAIController)aiController;
 
@@ -83,7 +84,7 @@ namespace CommonRPG
             base.OnDisable();
         }
 
-        public override float TakeDamage(float DamageAmount, AUnit DamageCauser = null)
+        public override float TakeDamage(float DamageAmount, AUnit DamageCauser = null, Object extraData = null)
         {
 
             //if (IsDead) 

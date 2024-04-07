@@ -33,7 +33,7 @@ namespace CommonRPG
         /// <summary>
         /// params : bool bIsStartingAttackCheck
         /// </summary>
-        public event Action<bool> OnAttackCheck = null;
+        public event Action<bool> OnAttackCheckDelegate = null;
 
         protected virtual void Awake()
         {
@@ -58,12 +58,12 @@ namespace CommonRPG
 
         public virtual void StartAttackCheck(int bIsCheckingAttack)
         {
-            OnAttackCheck.Invoke(bIsCheckingAttack != 0);
+            OnAttackCheckDelegate.Invoke(bIsCheckingAttack != 0);
         }
 
         public virtual void OnAnimStart()
         {
-            OnAttackCheck.Invoke(false);
+            OnAttackCheckDelegate.Invoke(false);
         }
     }
 }

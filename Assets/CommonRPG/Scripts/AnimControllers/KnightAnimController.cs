@@ -38,12 +38,12 @@ namespace CommonRPG
         /// <summary>
         /// bool isCheckingComboInitiate
         /// </summary>
-        public event Action<bool> OnComboCheck = null;
+        public event Action<bool> OnComboCheckDelegate = null;
 
         /// <summary>
         /// int : combo index
         /// </summary>
-        public event Action<int> OnStartPlayingComboAttack = null;
+        public event Action<int> OnStartPlayingComboAttackDelegate = null;
 
         private bool isBeginningAttackAnim = false;
         public bool IsBeginningAttackAnim
@@ -69,19 +69,19 @@ namespace CommonRPG
         public void PlayComboAttackAnim(int playIndex)
         {
             base.animator.Play(comboAttackAnimList[playIndex], 0);
-            OnStartPlayingComboAttack.Invoke(playIndex);
+            OnStartPlayingComboAttackDelegate.Invoke(playIndex);
         }
 
         public override void StartAttackCheck(int bIsCheckingAttack)
         {
             base.StartAttackCheck(bIsCheckingAttack);
 
-            OnComboCheck.Invoke(false);
+            OnComboCheckDelegate.Invoke(false);
         }
 
         public void StartComboCheck(int bIsCheckingComboInitiate)
         {
-            OnComboCheck.Invoke(bIsCheckingComboInitiate != 0);
+            OnComboCheckDelegate.Invoke(bIsCheckingComboInitiate != 0);
         }
 
         public void CheckAttackAnimBegin(int bIsBeginningAttackAnim)
@@ -105,7 +105,7 @@ namespace CommonRPG
         {
             base.OnAnimStart();
 
-            OnComboCheck.Invoke(false);
+            OnComboCheckDelegate.Invoke(false);
             isBeginningAttackAnim = false;
             shouldPlayNextComboAttack = false;
         }

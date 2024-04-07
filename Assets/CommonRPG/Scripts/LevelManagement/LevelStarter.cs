@@ -6,8 +6,13 @@ namespace CommonRPG
 {
     public class LevelStarter : MonoBehaviour
     {
-        [SerializeField]
-        private ALevelStartingScript levelStartingScript = null;
+        private LevelStartingScript levelStartingScript = null;
+
+        private void Awake()
+        {
+            levelStartingScript = GetComponent<LevelStartingScript>();
+            Debug.AssertFormat(levelStartingScript, "Level Starter Must Have ALevelStartingScript Component");
+        }
 
         private void Start()
         {

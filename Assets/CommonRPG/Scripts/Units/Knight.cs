@@ -47,9 +47,9 @@ namespace CommonRPG
             KnightAnimController knightAnimController = (KnightAnimController)animController;
             Debug.Assert(knightAnimController);
 
-            knightAnimController.OnAttackCheck += EnableCollider;
-            knightAnimController.OnComboCheck += CheckCombo;
-            knightAnimController.OnStartPlayingComboAttack += OnStartComboAttack;
+            knightAnimController.OnAttackCheckDelegate += OnAttackCheck;
+            knightAnimController.OnComboCheckDelegate += OnCheckCombo;
+            knightAnimController.OnStartPlayingComboAttackDelegate += OnStartComboAttack;
         }
 
         protected override void OnDisable()
@@ -57,12 +57,12 @@ namespace CommonRPG
             KnightAnimController knightAnimController = (KnightAnimController)animController;
             Debug.Assert(knightAnimController);
 
-            knightAnimController.OnAttackCheck -= EnableCollider;
-            knightAnimController.OnComboCheck -= CheckCombo;
-            knightAnimController.OnStartPlayingComboAttack -= OnStartComboAttack;
+            knightAnimController.OnAttackCheckDelegate -= OnAttackCheck;
+            knightAnimController.OnComboCheckDelegate -= OnCheckCombo;
+            knightAnimController.OnStartPlayingComboAttackDelegate -= OnStartComboAttack;
         }
 
-        public override float TakeDamage(float DamageAmount, AUnit DamageCauser = null)
+        public override float TakeDamage(float DamageAmount, AUnit DamageCauser = null, Object extraData = null)
         {
             float actualDamageAmount = DamageAmount - statComponent.TotalDefense;
             if (actualDamageAmount < 1)
@@ -149,20 +149,23 @@ namespace CommonRPG
             transform.forward = moveDirection;
         }
 
-        private void EnableCollider(bool shouldEnable)
+        private void OnAttackCheck(bool isStarted)
         {
-            if (base.characterWeapon == null) 
+            if (base.characterWeapon) 
             {
-                return;
+                base.characterWeapon.EnableCollider(isStarted);
             }
 
-            base.characterWeapon.EnableCollider(shouldEnable);
+            if (isStarted) 
+            {
+                GameManager.AudioManager.PlayAudio3D(audioContainer.AudioClipList[0], 1, base.characterWeapon.transform.position);
+            }
         }
 
         /// <summary>
         /// check if combo is possible now
         /// </summary>
-        private void CheckCombo(bool canCombo)
+        private void OnCheckCombo(bool canCombo)
         {
             this.canCombo = canCombo;
         }

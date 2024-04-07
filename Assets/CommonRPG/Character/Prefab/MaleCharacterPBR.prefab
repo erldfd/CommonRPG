@@ -2440,6 +2440,7 @@ GameObject:
   - component: {fileID: 4092898106349061587}
   - component: {fileID: 2477105950301527178}
   - component: {fileID: 1261190126354225858}
+  - component: {fileID: 5390311127945641667}
   m_Layer: 7
   m_Name: MaleCharacterPBR
   m_TagString: Player
@@ -2556,6 +2557,7 @@ MonoBehaviour:
   statComponent: {fileID: 1261190126354225858}
   movementComponent: {fileID: 4092898106349061587}
   animController: {fileID: 2477105950301527178}
+  audioContainer: {fileID: 5390311127945641667}
   characterWeapon: {fileID: 0}
   weaponEquipmentTransform: {fileID: 6508871864379605767}
   shieldEquipmentTransform: {fileID: 5514248043482254508}
@@ -2641,6 +2643,20 @@ MonoBehaviour:
   totalMana: 1
   totalAttackPower: 100
   totalDefense: 0
+--- !u!114 &5390311127945641667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8189980434977739222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cfd7b529cdb36946974a7ad4c982b8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioClipList:
+  - {fileID: 8300000, guid: 150c6194a11e4c442844a6995d50760b, type: 3}
 --- !u!1 &8206070634150816031
 GameObject:
   m_ObjectHideFlags: 0

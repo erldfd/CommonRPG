@@ -55,12 +55,9 @@ namespace CommonRPG
 
             enterUnitSet.Add(other);
 
-            Debug.LogWarning($"Enter : {other.name}");
-
             IDamageable damageableUnit = other.GetComponent<AUnit>() as IDamageable;
 
             OnEnterDelgate.Invoke(damageableUnit);
-
         }
 
         private void OnTriggerExit(Collider other)
@@ -108,8 +105,6 @@ namespace CommonRPG
                 canDamage = true;
 
             }, true);
-
-            Debug.LogWarning($"Stay : {other.name}");
 
             IDamageable damageableUnit = other.GetComponent<AUnit>() as IDamageable;
 

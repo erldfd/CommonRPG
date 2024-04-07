@@ -38,6 +38,10 @@ namespace CommonRPG
         private VFXManager vfxManager = null;
         public static VFXManager VFXManager { get { return instance.vfxManager; } }
 
+        [SerializeField]
+        private AudioManager audioManager = null;
+        public static AudioManager AudioManager { get { return instance.audioManager; } }
+
         [Header("UIs")]
         [SerializeField]
         private InGameUI inGameUI = null;
@@ -70,6 +74,9 @@ namespace CommonRPG
         [SerializeField]
         private CraftingRecipeDataScriptableObject craftingRecipeData = null;
         private Dictionary<string, SItemRecipeResultInfo> itemRecipeTable = null;
+
+        private LevelStarter currentLevelStarter = null;
+        public LevelStarter LevelStarter { get { return currentLevelStarter; } }
 
         //[Header("etc.")]
         //[SerializeField]
@@ -342,12 +349,17 @@ namespace CommonRPG
                 return;
             }
 
+            currentLevelStarter = GameObject.Find("LevelStarter").GetComponent<LevelStarter>();
+            Debug.AssertFormat(currentLevelStarter, "Scene Must Have LevelStarter");
+
             //Cursor.lockState = CursorLockMode.Locked;
             //Cursor.visible = false;
 
             TryUseOrNotUIInteractionState();
 
             VFXManager.InitVFXTable();
+
+            AudioManager.StopAllAudios();
         }
     }
 }

@@ -37,9 +37,12 @@ namespace CommonRPG
         protected AAnimController animController = null;
         public AAnimController AnimController { get { return animController; } }
 
+        [SerializeField]
+        protected AudioContainer audioContainer;
+
         protected virtual void Awake()
         {
-            
+   
         }
 
         protected virtual void Start()

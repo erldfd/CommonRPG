@@ -6,6 +6,21 @@ namespace CommonRPG
 {
     public class DragonUsurper : BossMonster
     {
+        private enum EAudioClipList
+        {
+            Walk1, Walk2, Walk3, Walk4, Walk5,
+            Run1, Run2, Run3,
+            Sleep1, Sleep2,
+            BitesTarget,
+            HandAttack,
+            MouthAttack,
+            BreathFire,
+            Death,
+            Wings1, Wings2, Wings3, Wings4,
+            Landing,
+            Awake
+        }
+
         [Header("MeleeAttack Settings")]
         [SerializeField]
         private DamageCollider mouthAttackCollider;
@@ -63,13 +78,22 @@ namespace CommonRPG
             DragonUsurperAnimController dragonUsurperAnimController = (DragonUsurperAnimController)base.animController;
 
             dragonUsurperAnimController.OnWakeUpEndedDelegate += OnWakeUpEnded;
-            dragonUsurperAnimController.OnAttackCheck += DoDamage;
+            dragonUsurperAnimController.OnAttackCheckDelegate += DoDamage;
             dragonUsurperAnimController.OnBeginAttack += CheckBeginAttack;
 
             dragonUsurperAnimController.OnCheckMouthAttackDelegate += OnCheckMouthAttack;
             dragonUsurperAnimController.OnCheckHandAttackDelegate += OnCheckHandAttack;
             dragonUsurperAnimController.OnCheckAttackFlameDelegate += OnCheckFlameAttack;
-            
+
+            dragonUsurperAnimController.OnPlayingMoveSoundDelegate += PlayFootStepAudio;
+            dragonUsurperAnimController.OnPlayingMoveSoundDelegate += PlayFlyingWingSound;
+            dragonUsurperAnimController.OnPlayingLandSoundDelegate += PlayLandSound;
+            dragonUsurperAnimController.OnPlayingHandAttackSoundDelegate += PlayHandAttackSound;
+            dragonUsurperAnimController.OnPlayingMouthAttackSoundDelegate += PlayMouthAttackSound;
+            dragonUsurperAnimController.OnPlayingFlameAttackSoundDelegate += PlayFlameAttackSound;
+            dragonUsurperAnimController.OnPlayingSleepSoundDelegate += PlaySleepSound;
+            dragonUsurperAnimController.OnPlayingDeathSoundDelegate += PlayDeathSound;
+
             mouthAttackCollider.OnEnterDelgate += OnDamageMouthAttack;
             handAttackCollider.OnEnterDelgate += OnDamageHandAttack;
             flameCollider.OnStayDelegate += OnDamageFlameAttack;
@@ -90,19 +114,28 @@ namespace CommonRPG
             DragonUsurperAnimController dragonUsurperAnimController = (DragonUsurperAnimController)base.animController;
 
             dragonUsurperAnimController.OnWakeUpEndedDelegate -= OnWakeUpEnded;
-            dragonUsurperAnimController.OnAttackCheck -= DoDamage;
+            dragonUsurperAnimController.OnAttackCheckDelegate -= DoDamage;
             dragonUsurperAnimController.OnBeginAttack -= CheckBeginAttack;
 
             dragonUsurperAnimController.OnCheckMouthAttackDelegate -= OnCheckMouthAttack;
             dragonUsurperAnimController.OnCheckHandAttackDelegate -= OnCheckHandAttack;
             dragonUsurperAnimController.OnCheckAttackFlameDelegate -= OnCheckFlameAttack;
 
+            dragonUsurperAnimController.OnPlayingMoveSoundDelegate -= PlayFootStepAudio;
+            dragonUsurperAnimController.OnPlayingMoveSoundDelegate -= PlayFlyingWingSound;
+            dragonUsurperAnimController.OnPlayingLandSoundDelegate -= PlayLandSound;
+            dragonUsurperAnimController.OnPlayingHandAttackSoundDelegate -= PlayHandAttackSound;
+            dragonUsurperAnimController.OnPlayingMouthAttackSoundDelegate -= PlayMouthAttackSound;
+            dragonUsurperAnimController.OnPlayingFlameAttackSoundDelegate -= PlayFlameAttackSound;
+            dragonUsurperAnimController.OnPlayingSleepSoundDelegate -= PlaySleepSound;
+            dragonUsurperAnimController.OnPlayingDeathSoundDelegate -= PlayDeathSound;
+
             mouthAttackCollider.OnEnterDelgate -= OnDamageMouthAttack;
             handAttackCollider.OnEnterDelgate -= OnDamageHandAttack;
             flameCollider.OnStayDelegate -= OnDamageFlameAttack;
         }
 
-        public override float TakeDamage(float DamageAmount, AUnit DamageCauser = null)
+        public override float TakeDamage(float DamageAmount, AUnit DamageCauser = null, Object extraData = null)
         {
             if (IsDead)
             {
@@ -203,6 +236,8 @@ namespace CommonRPG
 
             dragonUsurperAnimController.PlayWakeUpAnim();
 
+            GameManager.AudioManager.StopAllAudio3Ds();
+            PlayAwakeSound();
         }
 
         private void OnWakeUpEnded()
@@ -229,14 +264,15 @@ namespace CommonRPG
         {
             DragonUsurperAnimController dragonUsurperAnimController = (DragonUsurperAnimController)base.animController;
 
-            GameManager.TimerManager.SetTimer(1, 0.1f, 0, () =>
+            GameManager.TimerManager.SetTimer(1, 0.02f, 100, () =>
             {
                 if (transform == null)
                 {
                     return;
                 }
 
-                transform.LookAt(lookTransform, transform.up);
+                //transform.LookAt(lookTransform, transform.up);
+                LookTarget(lookTransform, 10);
 
             }, true);
 
@@ -256,14 +292,15 @@ namespace CommonRPG
         {
             DragonUsurperAnimController dragonUsurperAnimController = (DragonUsurperAnimController)base.animController;
 
-            GameManager.TimerManager.SetTimer(0.1f, 0.1f, 20, () =>
+            GameManager.TimerManager.SetTimer(0.1f, 0.02f, 100, () =>
             {
                 if (transform == null) 
                 {
                     return;
                 }
 
-                transform.LookAt(lookTransform, transform.up);
+                //transform.LookAt(lookTransform, transform.up);
+                LookTarget(lookTransform, 10);
 
             }, true);
 
@@ -368,6 +405,91 @@ namespace CommonRPG
             damagedUnit.TakeDamage(flameDamage, this);
         }
 
+        private void PlayFootStepAudio(float currentSpeed, bool isFlying)
+        {
+            if (isFlying) 
+            {
+                return;
+            }
+
+            int audioClipIndex;
+
+            if (currentSpeed < 0.5f) 
+            {
+                audioClipIndex = Random.Range((int)EAudioClipList.Walk1, (int)EAudioClipList.Walk5 + 1);
+            }
+            else
+            {
+                audioClipIndex = Random.Range((int)EAudioClipList.Run1, (int)EAudioClipList.Run3 + 1);
+            }
+
+            GameManager.AudioManager.PlayAudio3D(audioContainer.AudioClipList[audioClipIndex], 1, transform.position);
+        }
+
+        private void PlayFlyingWingSound(float currentSpeed, bool isFlying)
+        {
+            if (isFlying == false) 
+            {
+                return;
+            }
+
+            int audioClipIndex = Random.Range((int)EAudioClipList.Wings1, (int)EAudioClipList.Wings4 + 1);
+
+            GameManager.AudioManager.PlayAudio3D(audioContainer.AudioClipList[audioClipIndex], 1, transform.position);
+        }
+
+        private void PlayLandSound(bool isLandingCompleted)
+        {
+            int audioClipIndex;
+
+            if (isLandingCompleted) 
+            {
+                audioClipIndex = (int)EAudioClipList.Landing;
+            }
+            else
+            {
+                audioClipIndex = Random.Range((int)EAudioClipList.Wings1, (int)EAudioClipList.Wings4 + 1);
+            }
+
+            GameManager.AudioManager.PlayAudio3D(audioContainer.AudioClipList[audioClipIndex], 1, transform.position);
+        }
+
+        private void PlayHandAttackSound()
+        {
+            int audioClipIndex = (int)EAudioClipList.HandAttack;
+            GameManager.AudioManager.PlayAudio3D(audioContainer.AudioClipList[audioClipIndex], 1, transform.position);
+        }
+
+        private void PlayMouthAttackSound()
+        {
+            int audioClipIndex = (int)EAudioClipList.MouthAttack;
+            GameManager.AudioManager.PlayAudio3D(audioContainer.AudioClipList[audioClipIndex], 1, transform.position);
+        }
+
+        private void PlayFlameAttackSound()
+        {
+            int audioClipIndex = (int)EAudioClipList.BreathFire;
+            GameManager.AudioManager.PlayAudio3D(audioContainer.AudioClipList[audioClipIndex], 1, transform.position);
+        }
+
+        private void PlaySleepSound()
+        {
+            int audioClipIndex = Random.Range((int)EAudioClipList.Sleep1, (int)EAudioClipList.Sleep2 + 1);
+            GameManager.AudioManager.PlayAudio3D(audioContainer.AudioClipList[audioClipIndex], 1, transform.position);
+        }
+
+        private void PlayDeathSound()
+        {
+            int audioClipIndex = (int)EAudioClipList.Death;
+            GameManager.AudioManager.PlayAudio3D(audioContainer.AudioClipList[audioClipIndex], 1, transform.position);
+        }
+
+        private void PlayAwakeSound()
+        {
+            int audioClipIndex = (int)EAudioClipList.Awake;
+            GameManager.AudioManager.PlayAudio3D(audioContainer.AudioClipList[audioClipIndex], 1, transform.position);
+        }
+
         private void DoDamage(bool isStartingAttackCheck)
         {
             Debug.Log($"damage : {isStartingAttackCheck}");
@@ -379,6 +501,10 @@ namespace CommonRPG
             dragonUsurperAIController.IsAttacking = BeganAttack;
         }
 
-
+        private void LookTarget(Transform targetTransform, float rotationSpeed)
+        {
+            Vector3 actualForward = Vector3.Lerp(transform.forward, (targetTransform.position - transform.position).normalized, Time.deltaTime * rotationSpeed);
+            transform.forward = actualForward;
+        }
     }
 }

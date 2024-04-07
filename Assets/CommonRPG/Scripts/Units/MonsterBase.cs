@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
 namespace CommonRPG
@@ -75,7 +76,7 @@ namespace CommonRPG
             base.OnDestroy();
         }
 
-        public virtual float TakeDamage(float DamageAmount, AUnit DamageCauser = null)
+        public virtual float TakeDamage(float DamageAmount, AUnit DamageCauser = null, Object extraData = null)
         {
             if (IsDead)
             {

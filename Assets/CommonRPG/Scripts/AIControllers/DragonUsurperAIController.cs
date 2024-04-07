@@ -110,6 +110,8 @@ namespace CommonRPG
         [SerializeField]
         private List<Transform> flyingStartTransformList;
 
+        private float rotationSpeed = 10;
+
         private EAIState currentAIState = EAIState.None;
         public EAIState CurrentAIState { get { return currentAIState; } set { currentAIState = value; } }
 
@@ -440,18 +442,20 @@ namespace CommonRPG
                 return;
             }
 
-            transform.LookAt(targetTransform, transform.up);
+            //transform.LookAt(targetTransform, transform.up);
+            //transform.LookAt();
+            LookTarget(rotationSpeed);
 
             if (CurrentPhase == EAIPhase.Phase1)
             {
                 currentAIState = EAIState.Walk;
             }
-            else if (CurrentPhase > EAIPhase.Phase1) 
+            else if (CurrentPhase > EAIPhase.Phase1)
             {
                 currentAIState = EAIState.Run;
             }
-            
-            if (elapsedTime_MouthAttack < mouthAttackInterval) 
+
+            if (elapsedTime_MouthAttack < mouthAttackInterval)
             {
                 return;
             }
@@ -474,7 +478,9 @@ namespace CommonRPG
                 return;
             }
 
-            transform.LookAt(targetTransform, transform.up);
+            //transform.LookAt(targetTransform, transform.up);
+
+            LookTarget(rotationSpeed);
 
             if (CurrentPhase == EAIPhase.Phase1)
             {
@@ -515,7 +521,8 @@ namespace CommonRPG
                 return;
             }
 
-            transform.LookAt(lookTransform, transform.up);
+            //transform.LookAt(lookTransform, transform.up);
+            LookTarget(rotationSpeed);
 
             if (CurrentPhase == EAIPhase.Phase1)
             {
@@ -549,7 +556,7 @@ namespace CommonRPG
                 return;
             }
 
-            transform.LookAt(lookTransform, transform.up);
+            //transform.LookAt(lookTransform, transform.up);
 
             currentAIState = EAIState.Fly;
 
@@ -558,6 +565,14 @@ namespace CommonRPG
             elapsedTime_AirFlameAttack = 0;
             OnAttackAirFlameDelegate?.Invoke(lookTransform);
         }
+
+        private void LookTarget(float rotationSpeed)
+        {
+            Vector3 actualForward = Vector3.Lerp(transform.forward, (targetTransform.position - transform.position).normalized, Time.deltaTime * rotationSpeed);
+
+            transform.forward = actualForward;
+        }
+
         /*
          * sleep
          * 

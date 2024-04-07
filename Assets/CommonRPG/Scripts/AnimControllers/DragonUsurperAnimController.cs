@@ -15,10 +15,33 @@ namespace CommonRPG
             NeckHead
         }
 
+        private enum EMoveState
+        {
+            Walk,
+            Run,
+            Fly
+        }
+
         public event Action OnWakeUpEndedDelegate = null;
         public event Action<bool> OnCheckMouthAttackDelegate = null;
         public event Action<bool> OnCheckHandAttackDelegate = null;
         public event Action<bool> OnCheckAttackFlameDelegate = null;
+        
+        /// <summary>
+        /// float : currentMoveSpeed, bool : isFlying
+        /// </summary>
+        public event Action<float, bool> OnPlayingMoveSoundDelegate = null;
+
+        /// <summary>
+        /// bool : need LandingCompleted Sound?
+        /// </summary>
+        public event Action<bool> OnPlayingLandSoundDelegate = null;
+
+        public event Action OnPlayingHandAttackSoundDelegate = null;
+        public event Action OnPlayingMouthAttackSoundDelegate = null;
+        public event Action OnPlayingFlameAttackSoundDelegate = null;
+        public event Action OnPlayingSleepSoundDelegate = null;
+        public event Action OnPlayingDeathSoundDelegate = null;
 
         /// <summary>
         /// bool : begunAttack..
@@ -99,6 +122,8 @@ namespace CommonRPG
 
         private ParticleSystem flameVFX = null;
 
+        private bool isUsingFlyingLayer = false;
+
         protected override void Awake()
         {
             base.Awake();
@@ -139,7 +164,8 @@ namespace CommonRPG
             }
             else if (isStartingChange) 
             {
-                elapsedTime_ChangeTime += Time.deltaTime;
+                float changeSpeed = 2;
+                elapsedTime_ChangeTime += changeSpeed * Time.deltaTime;
 
                 if (shouldChangeToMove) 
                 {
@@ -163,6 +189,13 @@ namespace CommonRPG
                     isStartingChange = false;
                 }
             }
+        }
+
+        public override void PlayDeathAnim()
+        {
+            base.PlayDeathAnim();
+
+            animator.Play(deathAnimName, (int)ELayer.Land);
         }
 
         public void PlayWakeUpAnim()
@@ -193,6 +226,8 @@ namespace CommonRPG
 
         public void UseFlyingLayer(bool shouldUse)
         {
+            isUsingFlyingLayer = shouldUse;
+
             if (shouldUse)
             {
                 animator.SetLayerWeight((int)ELayer.Land, 0);
@@ -297,6 +332,61 @@ namespace CommonRPG
             }
 
             OnCheckAttackFlameDelegate.Invoke(isAttacking);
+        }
+
+        public void OnPlayingMoveSound(int moveState)
+        {
+            if (isUsingFlyingLayer)
+            {
+                OnPlayingMoveSoundDelegate?.Invoke(CurrentMoveSpeed, true);
+                return;
+            }
+
+            // to seperate walk state footstep and runt state footstep
+            if (moveState == (int)EMoveState.Walk && CurrentMoveSpeed < 0.5f)
+            {
+                OnPlayingMoveSoundDelegate?.Invoke(CurrentMoveSpeed, false);
+            }
+            else if (moveState == (int)EMoveState.Run && currentMoveSpeed >= 0.5f)
+            {
+                OnPlayingMoveSoundDelegate?.Invoke(CurrentMoveSpeed, false);
+            }
+        }
+
+        public void OnPlayingLandSound(int bIsLandingCompleted)
+        {
+            OnPlayingLandSoundDelegate?.Invoke(bIsLandingCompleted != 0);
+        }
+
+        public void OnPlayingHandAttackSound()
+        {
+            OnPlayingHandAttackSoundDelegate?.Invoke();
+        }
+
+        public void OnPlayingMouthAttackSound()
+        {
+            OnPlayingMouthAttackSoundDelegate?.Invoke();
+        }
+
+        public void OnPlayingFlameAttackSound()
+        {
+            OnPlayingFlameAttackSoundDelegate?.Invoke();
+        }
+
+        public void OnPlayingSleepSound()
+        {
+            if (SleepRate < 1) 
+            {
+                return;
+            }
+
+            OnPlayingSleepSoundDelegate?.Invoke();
+        }
+
+        public void OnPlayingDeathSound()
+        {
+            GameManager.AudioManager.StopAllAudio3Ds();
+            OnPlayingDeathSoundDelegate?.Invoke();
         }
     }
 }

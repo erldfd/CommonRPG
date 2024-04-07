@@ -2,6 +2,7 @@ using System;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Object = UnityEngine.Object;
 
 namespace CommonRPG
 {
@@ -75,7 +76,7 @@ namespace CommonRPG
         [SerializeField]
         protected InteractionDetector interactionDetector = null;
 
-        public abstract float TakeDamage(float DamageAmount, AUnit DamageCauser = null);
+        public abstract float TakeDamage(float DamageAmount, AUnit DamageCauser = null, Object extraData = null);
 
         protected bool isNormalAttackPressed = false;
 
@@ -247,7 +248,6 @@ namespace CommonRPG
         {
             interactionDetector.Interact();
             Debug.Log($"{context.control.name}, {context.control.displayName}");
-            
         }
 
         protected virtual void OnUseQuickSlot(InputAction.CallbackContext context)

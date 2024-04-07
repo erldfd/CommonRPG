@@ -2862,6 +2862,7 @@ GameObject:
   - component: {fileID: 2203445900195201380}
   - component: {fileID: 2863498529894019737}
   - component: {fileID: 7977634352824224446}
+  - component: {fileID: 2859962410708271620}
   m_Layer: 6
   m_Name: RedDragonUsurper
   m_TagString: Untagged
@@ -2921,7 +2922,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 9201093963651529740}
   hitAnimName: 
-  deathAnimName: 
+  deathAnimName: Die
   takeOffAnimName: Take Off
   landingAnimName: Land
   attackMouthAnimName: Basic Attack
@@ -2946,6 +2947,7 @@ MonoBehaviour:
   statComponent: {fileID: 2870554891316722337}
   movementComponent: {fileID: 0}
   animController: {fileID: 3611335390729101612}
+  audioContainer: {fileID: 2859962410708271620}
   monsterName: 2
   despawnTime: 3
   mouthAttackCollider: {fileID: 3574362320881483227}
@@ -3031,7 +3033,7 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6835454899193970425}
   m_Enabled: 1
-  m_AgentTypeID: -334000983
+  m_AgentTypeID: 1479372276
   m_Radius: 2.69
   m_Speed: 3.5
   m_Acceleration: 8
@@ -3039,12 +3041,12 @@ NavMeshAgent:
   m_AngularSpeed: 120
   m_StoppingDistance: 8
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
+  m_AutoBraking: 0
   m_AutoRepath: 1
   m_Height: 2.92
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 0
 --- !u!54 &7977634352824224446
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3053,11 +3055,11 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6835454899193970425}
   serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
+  m_Mass: 0.01
+  m_Drag: 9999999
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaTensor: {x: 0, y: 0, z: 0}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
     serializedVersion: 2
@@ -3066,12 +3068,46 @@ Rigidbody:
     serializedVersion: 2
     m_Bits: 0
   m_ImplicitCom: 1
-  m_ImplicitTensor: 1
+  m_ImplicitTensor: 0
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 0
+--- !u!114 &2859962410708271620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6835454899193970425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cfd7b529cdb36946974a7ad4c982b8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioClipList:
+  - {fileID: 8300000, guid: 1bac3ced57842a24fb33500dd1c62e5a, type: 3}
+  - {fileID: 8300000, guid: 1b832d88141cfda46bc0866be7b1d165, type: 3}
+  - {fileID: 8300000, guid: aa51fb53445061f4bb3a917f7548898f, type: 3}
+  - {fileID: 8300000, guid: de8cebceedab29c4ba41844f9c2721ec, type: 3}
+  - {fileID: 8300000, guid: 9d09c9684220f5f4d9223819b736f2b3, type: 3}
+  - {fileID: 8300000, guid: e42c26c6ed2b470409bd2450d9beffc2, type: 3}
+  - {fileID: 8300000, guid: 62858ffd4e2704c4c9da04bca3e826d9, type: 3}
+  - {fileID: 8300000, guid: d50bfaa7763060445acd241de1b58777, type: 3}
+  - {fileID: 8300000, guid: d79318b6025388d4d95f117c167bff80, type: 3}
+  - {fileID: 8300000, guid: 319dddef71229514eaf9f8fd55e6b642, type: 3}
+  - {fileID: 8300000, guid: efdf6e26356b19e45adfbe7870698862, type: 3}
+  - {fileID: 8300000, guid: af2f19ac325679b41a8c2b246eb1672c, type: 3}
+  - {fileID: 8300000, guid: 1ae7bf2b988cb0d43b6aafa63e1569d7, type: 3}
+  - {fileID: 8300000, guid: f2a2a4c0e9a319c45bc891e2daf66192, type: 3}
+  - {fileID: 8300000, guid: 515a2747653c82744a6ad629be61c54f, type: 3}
+  - {fileID: 8300000, guid: 15287adfccf76d14d8726f4efb298059, type: 3}
+  - {fileID: 8300000, guid: 393f653f45e43de44b7aa4b6411297e9, type: 3}
+  - {fileID: 8300000, guid: 1e4af610c3181044b8e70cc98f7984ee, type: 3}
+  - {fileID: 8300000, guid: 441f321d06c29d64893f60cf1326414c, type: 3}
+  - {fileID: 8300000, guid: c8a2bd8a91bb8ab4f897a9ac85d7eaa9, type: 3}
+  - {fileID: 8300000, guid: d2f63a72ee2cf21478957bd93661fabc, type: 3}
 --- !u!1 &6879501115136922524
 GameObject:
   m_ObjectHideFlags: 0
