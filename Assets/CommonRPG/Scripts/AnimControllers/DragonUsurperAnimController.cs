@@ -44,6 +44,11 @@ namespace CommonRPG
         public event Action OnPlayingDeathSoundDelegate = null;
 
         /// <summary>
+        /// bool : true -> frontMove, false -> backMove
+        /// </summary>
+        public event Action<bool> OnPlayingHandAttackFrontLandingSoundDelegate = null;
+
+        /// <summary>
         /// bool : begunAttack..
         /// </summary>
         public event Action<bool> OnBeginAttack = null;
@@ -363,6 +368,12 @@ namespace CommonRPG
             OnPlayingHandAttackSoundDelegate?.Invoke();
         }
 
+        public void OnPlayingHandAttackLandingSound(int bIsFront)
+        {
+            bool isFront = (bIsFront != 0);
+            OnPlayingHandAttackFrontLandingSoundDelegate?.Invoke(isFront);
+        }
+
         public void OnPlayingMouthAttackSound()
         {
             OnPlayingMouthAttackSoundDelegate?.Invoke();
@@ -388,5 +399,7 @@ namespace CommonRPG
             GameManager.AudioManager.StopAllAudio3Ds();
             OnPlayingDeathSoundDelegate?.Invoke();
         }
+
+        
     }
 }

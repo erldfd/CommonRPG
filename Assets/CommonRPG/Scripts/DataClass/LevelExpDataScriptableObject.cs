@@ -13,7 +13,7 @@ namespace CommonRPG
 
         public float GetLevelMaxExp(int level)
         {
-            if (levelMaxExpList.Count >= level) 
+            if (levelMaxExpList.Count <= level)
             {
                 Debug.Log(" You reached max level..");
                 return float.MaxValue;

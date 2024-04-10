@@ -84,7 +84,7 @@ namespace CommonRPG
             base.OnDisable();
         }
 
-        public override float TakeDamage(float DamageAmount, AUnit DamageCauser = null, Object extraData = null)
+        public override float TakeDamage(float DamageAmount, AUnit DamageCauser = null, ADamageEventInfo damageEventInfo = null)
         {
 
             //if (IsDead) 

@@ -5,6 +5,12 @@ namespace CommonRPG
 {
     public class Knight : ACharacter
     {
+        private enum EAudioClipList
+        {
+            DragonBitesTarget,
+            Hit1, Hit2, Hit3, Hit4, Hit5
+        }
+
         private bool canCombo = false;
 
         protected override void Awake()
@@ -62,7 +68,7 @@ namespace CommonRPG
             knightAnimController.OnStartPlayingComboAttackDelegate -= OnStartComboAttack;
         }
 
-        public override float TakeDamage(float DamageAmount, AUnit DamageCauser = null, Object extraData = null)
+        public override float TakeDamage(float DamageAmount, AUnit DamageCauser = null, ADamageEventInfo damageEventInfo = null)
         {
             float actualDamageAmount = DamageAmount - statComponent.TotalDefense;
             if (actualDamageAmount < 1)
@@ -87,6 +93,37 @@ namespace CommonRPG
             {
                 knightAnimController.PlayDeathAnim();
                 isDead = true;
+            }
+
+            if (DamageCauser is DragonUsurper && damageEventInfo != null)  
+            {
+                DragonUserperDamageEventInfo dragonUserperDamageEventInfo = (DragonUserperDamageEventInfo)damageEventInfo;
+
+                switch (dragonUserperDamageEventInfo.damageType)
+                {
+                    case DragonUserperDamageEventInfo.EAttackType.MouthAttack:
+                    {
+                        GameManager.AudioManager.PlayAudio3D(audioContainer.AudioClipList[(int)EAudioClipList.DragonBitesTarget], 1, transform.position);
+                        break;
+                    }
+                    case DragonUserperDamageEventInfo.EAttackType.HandAttack:
+                    {
+                        GameManager.AudioManager.PlayAudio3D(audioContainer.AudioClipList[(int)EAudioClipList.DragonBitesTarget], 1, transform.position);
+                        break;
+                    }
+                    case DragonUserperDamageEventInfo.EAttackType.FlameAttack:
+                    {
+                        int audioIndex = Random.Range((int)EAudioClipList.Hit1, (int)EAudioClipList.Hit5 + 1);
+                        GameManager.AudioManager.PlayAudio3D(audioContainer.AudioClipList[audioIndex], 1, transform.position);
+
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                int audioIndex = Random.Range((int)EAudioClipList.Hit1, (int)EAudioClipList.Hit5 + 1);
+                GameManager.AudioManager.PlayAudio3D(audioContainer.AudioClipList[audioIndex], 1, transform.position);
             }
 
             return DamageAmount;
@@ -158,7 +195,7 @@ namespace CommonRPG
 
             if (isStarted) 
             {
-                GameManager.AudioManager.PlayAudio3D(audioContainer.AudioClipList[0], 1, base.characterWeapon.transform.position);
+                base.characterWeapon.PlaySwingSound();
             }
         }
 

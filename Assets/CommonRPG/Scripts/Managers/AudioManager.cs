@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 namespace CommonRPG
@@ -32,11 +33,11 @@ namespace CommonRPG
                     audio3DOriginalVolumeQueue.Enqueue(originalVolume);
                 }
 
-                foreach (AudioSource source in longAudio2DQueue)
+                foreach (AudioSource source in bgmAudioQueue)
                 {
-                    float originalVolume = longAudio2DOriginalVolumeQueue.Dequeue();
-                    source.volume = masterVolume * longAudio2DVolume * originalVolume;
-                    longAudio2DOriginalVolumeQueue.Enqueue(originalVolume);
+                    float originalVolume = bgmAudioOriginalVolumeQueue.Dequeue();
+                    source.volume = masterVolume * bgmAudioVolume * originalVolume;
+                    bgmAudioOriginalVolumeQueue.Enqueue(originalVolume);
                 }
             }
         }
@@ -87,22 +88,22 @@ namespace CommonRPG
 
         [Range(0f, 1f)]
         [SerializeField]
-        private float longAudio2DVolume = 1;
-        public float LongAudio2DVolume
+        private float bgmAudioVolume = 1;
+        public float BGMAudioVolume
         {
             get
             {
-                return longAudio2DVolume;
+                return bgmAudioVolume;
             }
             set
             {
-                longAudio2DVolume = Mathf.Clamp01(value);
+                bgmAudioVolume = Mathf.Clamp01(value);
 
-                foreach (AudioSource source in longAudio2DQueue)
+                foreach (AudioSource source in bgmAudioQueue)
                 {
-                    float originalVolume = longAudio2DOriginalVolumeQueue.Dequeue();
-                    source.volume = MasterVolume * longAudio2DVolume * originalVolume;
-                    longAudio2DOriginalVolumeQueue.Enqueue(originalVolume);
+                    float originalVolume = bgmAudioOriginalVolumeQueue.Dequeue();
+                    source.volume = MasterVolume * bgmAudioVolume * originalVolume;
+                    bgmAudioOriginalVolumeQueue.Enqueue(originalVolume);
                 }
             }
         }
@@ -114,28 +115,56 @@ namespace CommonRPG
         private int audio3DCount = 8;
 
         [SerializeField]
-        private int longAudio2DCount = 2;
+        private float bgmFadeOutTime = 2;
+
+        private float elapsedTime_FadeOut = float.MaxValue;
 
         private GameObject audioCollector = null;
 
         private Queue<AudioSource> audio2DQueue = new Queue<AudioSource>();
         private Queue<float> audio2DOriginalVolumeQueue = new Queue<float>();
-        //private Queue<AudioSource> deactivatedAudio2DQueue = new Queue<AudioSource>();
 
         private Queue<AudioSource> audio3DQueue = new Queue<AudioSource>();
         private Queue<float> audio3DOriginalVolumeQueue = new Queue<float>();
-        //private Queue<AudioSource> deactivatedAudio3DQueue = new Queue<AudioSource>();
 
-        private Queue<AudioSource> longAudio2DQueue = new Queue<AudioSource>();
-        private Queue<float> longAudio2DOriginalVolumeQueue = new Queue<float>();
-        //private Queue<AudioSource> deactivatedLongAudio2DQueue = new Queue<AudioSource>();
+        private Queue<AudioSource> bgmAudioQueue = new Queue<AudioSource>();
+        private Queue<float> bgmAudioOriginalVolumeQueue = new Queue<float>();
+
+        private AudioSource nextBGM = null;
+        private float currentBGMVolume = 1;
 
         private void Awake()
         {
             InitAudioManager();
         }
 
-        public void PlayAudio2D(AudioClip audioClip, float volume)
+        private void Update()
+        {
+            if (bgmFadeOutTime > elapsedTime_FadeOut) 
+            {
+                elapsedTime_FadeOut += Time.unscaledDeltaTime;
+
+                float lerpTime = elapsedTime_FadeOut / bgmFadeOutTime;
+
+                AudioSource currentBGM = bgmAudioQueue.Peek();
+                currentBGM.volume = Mathf.Lerp(currentBGMVolume, 0, lerpTime);
+
+                if (bgmFadeOutTime <= elapsedTime_FadeOut) 
+                {
+                    currentBGM.Stop();
+
+                    currentBGM = nextBGM;
+                    currentBGM.Play();
+
+                    bgmAudioQueue.Enqueue(currentBGM);
+                    currentBGMVolume = currentBGM.volume;
+
+                    nextBGM = bgmAudioQueue.Dequeue();
+                }
+            }
+        }
+
+        public void PlayAudio2D(AudioClip audioClip, float volume, float pitch = 1)
         {
             Debug.Assert(audio2DQueue.Count > 0);
             Debug.Assert(audio2DOriginalVolumeQueue.Count > 0);
@@ -146,31 +175,49 @@ namespace CommonRPG
 
             source.volume = MasterVolume * Audio2DVolume * volume;
             source.clip = audioClip;
+            source.pitch = Mathf.Clamp(pitch, -3, 3);
             source.Play();
 
             audio2DQueue.Enqueue(source);
             audio2DOriginalVolumeQueue.Enqueue(volume);
         }
 
-        public void PlayLongAudio2D(AudioClip audioClip, float volume, bool shouldLoop = false)
+        public void PlayBGM(AudioClip audioClip, float volume, bool shouldLoop = false, float pitch = 1)
         {
-            Debug.Assert(longAudio2DQueue.Count > 0);
-            Debug.Assert(longAudio2DOriginalVolumeQueue.Count > 0);
-            Debug.Assert(longAudio2DQueue.Count == longAudio2DOriginalVolumeQueue.Count);
+            Debug.Assert(bgmAudioQueue.Count > 0);
+            Debug.Assert(bgmAudioOriginalVolumeQueue.Count > 0);
+            Debug.Assert(bgmAudioQueue.Count == bgmAudioOriginalVolumeQueue.Count);
 
-            AudioSource source = longAudio2DQueue.Dequeue();
-            longAudio2DOriginalVolumeQueue.Dequeue();
+            AudioSource currentBGM = bgmAudioQueue.Peek();
 
-            source.volume = MasterVolume * LongAudio2DVolume * volume;
-            source.clip = audioClip;
-            source.Play();
-            source.loop = shouldLoop;
+            nextBGM.clip = audioClip;
 
-            longAudio2DQueue.Enqueue(source);
-            longAudio2DOriginalVolumeQueue.Enqueue(volume);
+            nextBGM.volume = MasterVolume * BGMAudioVolume * volume;
+
+            nextBGM.pitch = Mathf.Clamp(pitch, -3, 3);
+            nextBGM.loop = shouldLoop;
+
+            if (currentBGM.isPlaying) 
+            {
+                // ready to bgm fade out and play next bgm
+                if (bgmFadeOutTime <= elapsedTime_FadeOut) 
+                {
+                    elapsedTime_FadeOut = 0;
+                }
+            }
+            else
+            {
+                currentBGM = nextBGM;
+                currentBGM.Play();
+
+                bgmAudioQueue.Enqueue(currentBGM);
+                currentBGMVolume = currentBGM.volume;
+
+                nextBGM = bgmAudioQueue.Dequeue();
+            }
         }
 
-        public void PlayAudio3D(AudioClip audioClip, float volume, Vector2 position)
+        public void PlayAudio3D(AudioClip audioClip, float volume, Vector2 position, float pitch = 1)
         {
             Debug.Assert(audio3DQueue.Count > 0);
             Debug.Assert(audio3DOriginalVolumeQueue.Count > 0);
@@ -182,6 +229,7 @@ namespace CommonRPG
             source.volume = MasterVolume * Audio3DVolume * volume;
             source.clip = audioClip;
             source.transform.position = position;
+            source.pitch = Mathf.Clamp(pitch, -3, 3);
             source.Play();
 
             audio3DQueue.Enqueue(source);
@@ -200,7 +248,7 @@ namespace CommonRPG
 
             StopAllAudio3Ds();
 
-            foreach (AudioSource source in longAudio2DQueue)
+            foreach (AudioSource source in bgmAudioQueue)
             {
                 if (source.isPlaying)
                 {
@@ -223,11 +271,11 @@ namespace CommonRPG
         private void InitAudioManager()
         {
             audio2DQueue.Clear();
-            longAudio2DQueue.Clear();
+            bgmAudioQueue.Clear();
             audio3DQueue.Clear();
 
             audio2DOriginalVolumeQueue.Clear();
-            longAudio2DOriginalVolumeQueue.Clear();
+            bgmAudioOriginalVolumeQueue.Clear();
             audio3DOriginalVolumeQueue.Clear();
 
             if (audioCollector == null)
@@ -249,16 +297,24 @@ namespace CommonRPG
                 audio2DOriginalVolumeQueue.Enqueue(new float());
             }
 
-            for (int i = 0; i < longAudio2DCount; ++i)
             {
-                AudioSource source = new GameObject("longAudio2D").AddComponent<AudioSource>();
+                AudioSource source = new GameObject("BGMAudio1").AddComponent<AudioSource>();
                 source.transform.parent = transform;
 
                 source.playOnAwake = false;
+                source.Stop();
 
                 source.transform.SetParent(audioCollector.transform);
-                longAudio2DQueue.Enqueue(source);
-                longAudio2DOriginalVolumeQueue.Enqueue(new float());
+                bgmAudioQueue.Enqueue(source);
+                bgmAudioOriginalVolumeQueue.Enqueue(new float());
+
+                nextBGM  = new GameObject("BGMAudio2").AddComponent<AudioSource>();
+                nextBGM.transform.parent = transform;
+
+                nextBGM.playOnAwake = false;
+                nextBGM.Stop();
+
+                nextBGM.transform.SetParent(audioCollector.transform);
             }
 
             for (int i = 0; i < audio3DCount; ++i)

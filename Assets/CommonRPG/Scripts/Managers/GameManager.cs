@@ -359,7 +359,8 @@ namespace CommonRPG
 
             VFXManager.InitVFXTable();
 
-            AudioManager.StopAllAudios();
+            //AudioManager.StopAllAudios();
+            AudioManager.StopAllAudio3Ds();
         }
     }
 }

@@ -431,6 +431,7 @@ GameObject:
   - component: {fileID: 8690946085632455872}
   - component: {fileID: 8036984009479632090}
   - component: {fileID: 8142977164877517767}
+  - component: {fileID: -6924469539879402535}
   m_Layer: 6
   m_Name: RedSlimePBR
   m_TagString: Untagged
@@ -543,9 +544,10 @@ MonoBehaviour:
   statComponent: {fileID: 8690946085632455872}
   movementComponent: {fileID: 0}
   animController: {fileID: 7699671152328820728}
+  audioContainer: {fileID: -6924469539879402535}
   monsterName: -1
-  attackRange: 2
   despawnTime: 3
+  attackRange: 2
 --- !u!114 &7699671152328820728
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -615,7 +617,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8b96605475433d4fb6a4cd269e288eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tempTargetTransform: {fileID: 0}
   isAIActivated: 0
   detectInterval: 1
   detectRange: 10
@@ -644,3 +645,21 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &-6924469539879402535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1931298151966786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cfd7b529cdb36946974a7ad4c982b8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioClipList:
+  - {fileID: 8300000, guid: a19ae136db3bf8c48a676457a621297d, type: 3}
+  - {fileID: 8300000, guid: 4c6b108f5f7ccf84aad768939363fd08, type: 3}
+  - {fileID: 8300000, guid: c929474d63de6ef46bcc3daec2b94f66, type: 3}
+  - {fileID: 8300000, guid: 3d60ade9c2d50084d83a18891df4db14, type: 3}
+  - {fileID: 8300000, guid: a2bbe2c5fc9f06b4caccd75ee2aae73c, type: 3}

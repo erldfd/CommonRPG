@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6259195511646583590}
   - component: {fileID: 1067059000613417895}
   - component: {fileID: 7657546599954280174}
+  - component: {fileID: 3631204832695344028}
   m_Layer: 10
   m_Name: OHS03PBR
   m_TagString: Untagged
@@ -133,6 +134,24 @@ MonoBehaviour:
     BuyPrice: 0
     SellPrice: 0
     ItemDiscription: 
+--- !u!114 &3631204832695344028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5610884078883986163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cfd7b529cdb36946974a7ad4c982b8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioClipList:
+  - {fileID: 8300000, guid: 150c6194a11e4c442844a6995d50760b, type: 3}
+  - {fileID: 8300000, guid: cb2f5b56bd64fcf4ab7d10d85f60439d, type: 3}
+  - {fileID: 8300000, guid: fdfd3421f46464946ae7fa72daa455ce, type: 3}
+  - {fileID: 8300000, guid: 22815668ee05290498aba66485a5fa06, type: 3}
+  - {fileID: 8300000, guid: 9f8d5305adf9be046bf79035287954bd, type: 3}
 --- !u!1 &7458690080791557300
 GameObject:
   m_ObjectHideFlags: 0

@@ -9767,6 +9767,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   portalCollider: {fileID: 506222071168382395}
   destinationSceneName: 
+  portalAudioClip: {fileID: 8300000, guid: 8f109b7d0813feb4c86cf5c663f4255a, type: 3}
 --- !u!1 &6842134302800741127
 GameObject:
   m_ObjectHideFlags: 0

@@ -76,7 +76,7 @@ namespace CommonRPG
             base.OnDestroy();
         }
 
-        public virtual float TakeDamage(float DamageAmount, AUnit DamageCauser = null, Object extraData = null)
+        public virtual float TakeDamage(float DamageAmount, AUnit DamageCauser = null, ADamageEventInfo damageEventInfo = null)
         {
             if (IsDead)
             {

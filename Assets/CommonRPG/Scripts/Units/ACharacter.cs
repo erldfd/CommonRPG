@@ -76,7 +76,7 @@ namespace CommonRPG
         [SerializeField]
         protected InteractionDetector interactionDetector = null;
 
-        public abstract float TakeDamage(float DamageAmount, AUnit DamageCauser = null, Object extraData = null);
+        public abstract float TakeDamage(float DamageAmount, AUnit DamageCauser = null, ADamageEventInfo damageEventInfo = null);
 
         protected bool isNormalAttackPressed = false;
 

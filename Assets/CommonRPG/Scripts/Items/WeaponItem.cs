@@ -7,11 +7,14 @@ namespace CommonRPG
 {
     public class WeaponItem : AItem
     {
+
         private BoxCollider boxCollider = null;
         private HashSet<IDamageable> hitMonsterSet = new HashSet<IDamageable>();
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             boxCollider = GetComponent<BoxCollider>();
             Debug.Assert(boxCollider);
             boxCollider.enabled = false;
@@ -29,6 +32,19 @@ namespace CommonRPG
             {
                 hitMonsterSet.Clear();
             }
+        }
+
+        public void PlaySwingSound()
+        {
+            int audioClipCount = audioContainer.AudioClipList.Count;
+
+            if (audioClipCount == 0) 
+            {
+                return;
+            }
+
+            int audioClipIndex = Random.Range(0, audioClipCount);
+            GameManager.AudioManager.PlayAudio3D(audioContainer.AudioClipList[audioClipIndex], 1, transform.position);
         }
 
         private void OnTriggerEnter(Collider other)

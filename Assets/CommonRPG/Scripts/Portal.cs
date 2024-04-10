@@ -13,7 +13,15 @@ namespace CommonRPG
         [SerializeField]
         private string destinationSceneName;
 
+        [SerializeField]
+        private AudioClip portalAudioClip;
+
         private AsyncOperation asyncSceneLoadOperation = null;
+
+        private void Awake()
+        {
+            Debug.Assert(portalAudioClip);
+        }
 
         private void OnTriggerEnter(Collider other)
         {
@@ -25,6 +33,8 @@ namespace CommonRPG
 
         private void MoveToDestinationScene()
         {
+            GameManager.AudioManager.PlayAudio2D(portalAudioClip, 1);
+
             asyncSceneLoadOperation = SceneManager.LoadSceneAsync(destinationSceneName);
             StartCoroutine(CheckSceneLoad());
         }

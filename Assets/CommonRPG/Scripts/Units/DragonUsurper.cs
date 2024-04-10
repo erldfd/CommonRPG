@@ -17,8 +17,9 @@ namespace CommonRPG
             BreathFire,
             Death,
             Wings1, Wings2, Wings3, Wings4,
-            Landing,
-            Awake
+            Landing1, Landing2,
+            Awake,
+            Hit1, Hit2, Hit3, Hit4, Hit5
         }
 
         [Header("MeleeAttack Settings")]
@@ -40,6 +41,8 @@ namespace CommonRPG
 
         [SerializeField]
         private float flameDamage = 3;
+
+        private DragonUserperDamageEventInfo damageEventInfo = new DragonUserperDamageEventInfo();
 
         protected override void Awake()
         {
@@ -93,6 +96,7 @@ namespace CommonRPG
             dragonUsurperAnimController.OnPlayingFlameAttackSoundDelegate += PlayFlameAttackSound;
             dragonUsurperAnimController.OnPlayingSleepSoundDelegate += PlaySleepSound;
             dragonUsurperAnimController.OnPlayingDeathSoundDelegate += PlayDeathSound;
+            dragonUsurperAnimController.OnPlayingHandAttackFrontLandingSoundDelegate += PlayHandAttackLandingSound;
 
             mouthAttackCollider.OnEnterDelgate += OnDamageMouthAttack;
             handAttackCollider.OnEnterDelgate += OnDamageHandAttack;
@@ -129,13 +133,14 @@ namespace CommonRPG
             dragonUsurperAnimController.OnPlayingFlameAttackSoundDelegate -= PlayFlameAttackSound;
             dragonUsurperAnimController.OnPlayingSleepSoundDelegate -= PlaySleepSound;
             dragonUsurperAnimController.OnPlayingDeathSoundDelegate -= PlayDeathSound;
+            dragonUsurperAnimController.OnPlayingHandAttackFrontLandingSoundDelegate -= PlayHandAttackLandingSound;
 
             mouthAttackCollider.OnEnterDelgate -= OnDamageMouthAttack;
             handAttackCollider.OnEnterDelgate -= OnDamageHandAttack;
             flameCollider.OnStayDelegate -= OnDamageFlameAttack;
         }
 
-        public override float TakeDamage(float DamageAmount, AUnit DamageCauser = null, Object extraData = null)
+        public override float TakeDamage(float DamageAmount, AUnit DamageCauser = null, ADamageEventInfo damageEventInfo = null)
         {
             if (IsDead)
             {
@@ -224,6 +229,10 @@ namespace CommonRPG
             }
             else
             {
+                int audioClipIndex = Random.Range((int)EAudioClipList.Hit1, (int)EAudioClipList.Hit5 + 1);
+                Debug.LogWarning(audioClipIndex);
+                float hitSoundPitch = 0.7f;
+                GameManager.AudioManager.PlayAudio3D(audioContainer.AudioClipList[audioClipIndex], 1, transform.position, hitSoundPitch);
                 //monsterAnimController.PlayHitAnim();
             }
 
@@ -382,7 +391,9 @@ namespace CommonRPG
                 return;
             }
 
-            damagedUnit.TakeDamage(flameDamage, this);
+            damageEventInfo.damageType = DragonUserperDamageEventInfo.EAttackType.MouthAttack;
+
+            damagedUnit.TakeDamage(flameDamage, this, damageEventInfo);
         }
 
         private void OnDamageHandAttack(IDamageable damagedUnit)
@@ -392,7 +403,9 @@ namespace CommonRPG
                 return;
             }
 
-            damagedUnit.TakeDamage(flameDamage, this);
+            damageEventInfo.damageType = DragonUserperDamageEventInfo.EAttackType.HandAttack;
+
+            damagedUnit.TakeDamage(flameDamage, this, damageEventInfo);
         }
 
         private void OnDamageFlameAttack(IDamageable damagedUnit)
@@ -402,7 +415,9 @@ namespace CommonRPG
                 return;
             }
 
-            damagedUnit.TakeDamage(flameDamage, this);
+            damageEventInfo.damageType = DragonUserperDamageEventInfo.EAttackType.FlameAttack;
+
+            damagedUnit.TakeDamage(flameDamage, this, damageEventInfo);
         }
 
         private void PlayFootStepAudio(float currentSpeed, bool isFlying)
@@ -444,7 +459,7 @@ namespace CommonRPG
 
             if (isLandingCompleted) 
             {
-                audioClipIndex = (int)EAudioClipList.Landing;
+                audioClipIndex = (int)EAudioClipList.Landing1;
             }
             else
             {
@@ -488,6 +503,18 @@ namespace CommonRPG
         {
             int audioClipIndex = (int)EAudioClipList.Awake;
             GameManager.AudioManager.PlayAudio3D(audioContainer.AudioClipList[audioClipIndex], 1, transform.position);
+        }
+
+        private void PlayHandAttackLandingSound(bool isFront)
+        {
+            if (isFront) 
+            {
+                GameManager.AudioManager.PlayAudio3D(audioContainer.AudioClipList[(int)EAudioClipList.Landing2], 1, transform.position);
+            }
+            else
+            {
+                GameManager.AudioManager.PlayAudio3D(audioContainer.AudioClipList[(int)EAudioClipList.Landing1], 1, transform.position);
+            }
         }
 
         private void DoDamage(bool isStartingAttackCheck)

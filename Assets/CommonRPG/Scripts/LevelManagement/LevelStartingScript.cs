@@ -19,7 +19,7 @@ namespace CommonRPG
         {
             if (levelBGMList != null && levelBGMList.Count > 0)
             {
-                GameManager.AudioManager.PlayLongAudio2D(levelBGMList[0], 1, true);
+                GameManager.AudioManager.PlayBGM(levelBGMList[0], 1, true);
             }
         }
 

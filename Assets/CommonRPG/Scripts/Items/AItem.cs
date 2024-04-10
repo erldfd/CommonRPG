@@ -1,12 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace CommonRPG
 {
     public class AItem : MonoBehaviour
     {
-
         public bool IsFieldItem { get; set; }
 
         [SerializeField]
@@ -17,9 +14,17 @@ namespace CommonRPG
             set { data = value; }
         }
 
+        protected AudioContainer audioContainer = null;
+
+        protected virtual void Awake()
+        {
+            audioContainer = GetComponent<AudioContainer>();
+            Debug.Assert(audioContainer);
+        }
+
         public virtual void EnableCollider(bool ShouldEnable)
         {
-            
+
         }
     }
 }
