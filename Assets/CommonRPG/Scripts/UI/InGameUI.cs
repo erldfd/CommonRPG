@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Xml;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,6 +11,8 @@ namespace CommonRPG
 {
     public class InGameUI : MonoBehaviour
     {
+        private const float TEXT_SETTING_INTERVAL = 0.1f;
+
         public bool IsConversationStarted { get { return conversationUI.IsConversationStarted; } }
 
         [Header("Monster UI")]
@@ -74,6 +78,13 @@ namespace CommonRPG
 
         private Queue<FloatingNumber> deactivatedDamageNumberQueue = new Queue<FloatingNumber>();
         private Queue<FloatingNumber> deactivatedExpNumberQueue = new Queue<FloatingNumber>();
+
+
+        private WaitForSecondsRealtime textSettingInterval = new WaitForSecondsRealtime(TEXT_SETTING_INTERVAL);
+
+        private IEnumerator setTextCoroutine = null;
+        private bool isSettingText = false;
+        public bool IsSettingText { get { return isSettingText; } }
 
         private void Awake()
         {
@@ -383,6 +394,52 @@ namespace CommonRPG
         {
             conversationUI.OnConversationFinishedDelegate -= actionToRemove;
         }
-    }
 
+        public void SetTextSequentially(TextMeshProUGUI textMeshPro, char[] sourceText)
+        {
+            if (textMeshPro == null) 
+            {
+                return;
+            }
+
+            if (setTextCoroutine != null) 
+            {
+                StopCoroutine(setTextCoroutine);
+            }
+
+            setTextCoroutine = SetTextSequentially_Co(textMeshPro, sourceText);
+            StartCoroutine(setTextCoroutine);
+        }
+
+        public void SetTextAtOnce(TextMeshProUGUI textMeshPro, char[] sourceText)
+        {
+            if (textMeshPro == null)
+            {
+                return;
+            }
+
+            if (setTextCoroutine != null)
+            {
+                StopCoroutine(setTextCoroutine);
+            }
+
+            textMeshPro.SetText(sourceText);
+            isSettingText = false;
+        }
+
+        private IEnumerator SetTextSequentially_Co(TextMeshProUGUI textMeshPro, char[] sourceText)
+        {
+            int sourceTextLength = sourceText.Length;
+
+            isSettingText = true;
+
+            for (int i = 0; i <= sourceTextLength; ++i)
+            {
+                textMeshPro.SetText(sourceText, 0, i + 1);
+                yield return textSettingInterval;
+            }
+
+            isSettingText = false;
+        }
+    }
 }

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 1625.8846, g: 1808.8292, b: 2260.6191, a: 1}
+  m_IndirectSpecularColor: {r: 1255.7249, g: 1497.5663, b: 1984.5093, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -788,29 +788,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1771589465808541355, guid: e0af3701fca2c1a408fc2de9284e0ec5, type: 3}
-      propertyPath: longAudio2DVolume
-      value: 0.41
-      objectReference: {fileID: 0}
-    - target: {fileID: 2559615748211877162, guid: e0af3701fca2c1a408fc2de9284e0ec5, type: 3}
+    - target: {fileID: 2701577931480922797, guid: e0af3701fca2c1a408fc2de9284e0ec5, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 3222088540121299138, guid: e0af3701fca2c1a408fc2de9284e0ec5, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3222088540121299138, guid: e0af3701fca2c1a408fc2de9284e0ec5, type: 3}
-      propertyPath: m_AnchoredPosition.y
+    - target: {fileID: 3574958150182588806, guid: e0af3701fca2c1a408fc2de9284e0ec5, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4524318132807879589, guid: e0af3701fca2c1a408fc2de9284e0ec5, type: 3}
       propertyPath: m_Name
       value: GameManager
-      objectReference: {fileID: 0}
-    - target: {fileID: 5592210751162750550, guid: e0af3701fca2c1a408fc2de9284e0ec5, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7144394540234113546, guid: e0af3701fca2c1a408fc2de9284e0ec5, type: 3}
       propertyPath: m_LocalPosition.x

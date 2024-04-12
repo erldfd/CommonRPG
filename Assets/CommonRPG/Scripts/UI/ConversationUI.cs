@@ -90,6 +90,12 @@ namespace CommonRPG
             Dictionary<int, ConversationNode> conversationTable = conversationData.ConversationTable;
             ConversationNode conversationNode = conversationTable[currentConversationId];
 
+            if (GameManager.InGameUI.IsSettingText) 
+            {
+                GameManager.InGameUI.SetTextAtOnce(normalConversationText, conversationNode.Conversations[0].ToCharArray());
+                return;
+            }
+
             if (conversationNode.ChildrenIDs.Count == 1)
             {
                 currentConversationId = conversationNode.ChildrenIDs[0];
@@ -138,7 +144,9 @@ namespace CommonRPG
 
             if (childrenCount == 1)
             {
-                normalConversationText.text = conversationNode.Conversations[0];
+                //normalConversationText.text = conversationNode.Conversations[0];
+                GameManager.InGameUI.SetTextSequentially(normalConversationText, conversationNode.Conversations[0].ToCharArray());
+
                 normalConversationText.gameObject.SetActive(true);
                 choiceConversationTextButtonsGameObject.SetActive(false);
 
