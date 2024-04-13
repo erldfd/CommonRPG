@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace CommonRPG
 {
     public class EquipmentInventory : AInventory
@@ -37,18 +33,18 @@ namespace CommonRPG
             int inventoryItemDataListCount = inventoryItemDataList.Count;
 
             // merge
-            for (int i = 1; i < inventoryItemDataListCount; ++i) 
+            for (int i = 1; i < inventoryItemDataListCount; ++i)
             {
                 if (inventoryItemDataList[i].CurrentItemCount == 0)
                 {
                     continue;
                 }
 
-                if (standardItem.ItemData.ItemName == inventoryItemDataList[i].ItemData.ItemName) 
+                if (standardItem.ItemData.ItemName == inventoryItemDataList[i].ItemData.ItemName)
                 {
                     int remainingSpace = standardItem.ItemData.MaxItemCount - standardItem.CurrentItemCount;
 
-                    if (remainingSpace >= inventoryItemDataList[i].CurrentItemCount) 
+                    if (remainingSpace >= inventoryItemDataList[i].CurrentItemCount)
                     {
                         standardItem.CurrentItemCount += inventoryItemDataList[i].CurrentItemCount;
                         inventoryItemDataList[i].CurrentItemCount = 0;
@@ -69,7 +65,7 @@ namespace CommonRPG
 
             inventoryItemDataList.Sort();
 
-            for (int i = 0; i < inventoryItemDataListCount; ++i) 
+            for (int i = 0; i < inventoryItemDataListCount; ++i)
             {
                 if (inventoryItemDataList[i].CurrentItemCount == 0)
                 {
@@ -83,5 +79,4 @@ namespace CommonRPG
             }
         }
     }
-
 }

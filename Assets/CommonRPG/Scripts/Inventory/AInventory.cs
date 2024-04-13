@@ -276,9 +276,16 @@ namespace CommonRPG
 
         public int CompareTo(InventorySlotItemData other)
         {
-            if (other == null || other.CurrentItemCount == 0) 
+            if (other == null || other.CurrentItemCount == 0)
             {
-                return -1;
+                if (CurrentItemCount == 0) 
+                {
+                    return 0;
+                }
+                else
+                {
+                    return -1;
+                }
             }
 
             if (itemData.ItemGrade < other.itemData.ItemGrade) 

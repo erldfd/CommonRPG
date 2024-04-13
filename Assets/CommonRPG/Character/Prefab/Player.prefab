@@ -68,10 +68,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: MaleCharacterPBR
       objectReference: {fileID: 0}
-    - target: {fileID: 8189980434977739222, guid: 03e3dd7f1c29c0d429d341124e457061, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8855052669661678444, guid: 03e3dd7f1c29c0d429d341124e457061, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

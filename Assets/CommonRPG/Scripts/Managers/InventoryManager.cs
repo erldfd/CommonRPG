@@ -120,7 +120,7 @@ namespace CommonRPG
                 }
             }
 
-            tradeAmountDecisionWindow.OnTradeAcceptButtonClickedDelegate += OnTradeSucceeded;
+            tradeAmountDecisionWindow.OnTradeAcceptButtonClickedDelegate -= OnTradeSucceeded;
         }
 
         public void ExchangeOrMoveOrMergeItem(int firstSlotIndex, int secondSlotIndex, EInventoryType firstInventoryType, EInventoryType secondInventoryType)

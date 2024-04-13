@@ -10,7 +10,16 @@ namespace CommonRPG
 {
     public class ConversationUI : MonoBehaviour
     {
+
         private const int MAX_CHOICE_BUTTON_COUNT = 4;
+
+        private enum EAudioClipList
+        {
+            NextConversation
+        }
+
+        [SerializeField]
+        private AudioContainer conversationSoundContainer;
 
         /// <summary>
         /// string : ConversationName, int : Covnersation Node Id
@@ -63,6 +72,8 @@ namespace CommonRPG
 
         private void Awake()
         {
+            Debug.Assert(conversationSoundContainer);
+
             choiceButtonTextList.Clear();
 
             foreach (Button button in choiceButtonList) 
@@ -121,6 +132,8 @@ namespace CommonRPG
         {
             Dictionary<int, ConversationNode> conversationTable = conversationData.ConversationTable;
             ConversationNode conversationNode = conversationTable[currentConversationId];
+
+            GameManager.AudioManager.PlayAudio2D(conversationSoundContainer.AudioClipList[(int)EAudioClipList.NextConversation], 1);
 
             if (conversationNode.MyID == 0)
             {

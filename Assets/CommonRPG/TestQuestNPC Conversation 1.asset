@@ -69,7 +69,6 @@ MonoBehaviour:
     Conversations:
     - 'These days, There are So Many Red Slime in GreenField..
 
-
       Can You Hunt
       Slimes for our Village?'
   - SpeakerName: TestQuestNPC
@@ -86,7 +85,6 @@ MonoBehaviour:
       height: 200
     Conversations:
     - 'Thanks. I think 10 Slime is proper.
-
 
       Good Luck.'
   - SpeakerName: Player

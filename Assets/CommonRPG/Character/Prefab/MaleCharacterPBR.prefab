@@ -806,6 +806,7 @@ GameObject:
   - component: {fileID: 1870416446275231784}
   - component: {fileID: 3300511683828448632}
   - component: {fileID: 5195417877010280496}
+  - component: {fileID: 4265129469601759129}
   m_Layer: 2
   m_Name: InteractionCollider
   m_TagString: Untagged
@@ -864,6 +865,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionCollider: {fileID: 3300511683828448632}
+  interactionSoundContainer: {fileID: 4265129469601759129}
+--- !u!114 &4265129469601759129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2176824540074984451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cfd7b529cdb36946974a7ad4c982b8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioClipList:
+  - {fileID: 8300000, guid: 870a81cef49e66e40b56788a5c30d474, type: 3}
+  - {fileID: 8300000, guid: 7aa8a5d6a2fc96d4582d35e0818261de, type: 3}
 --- !u!1 &2341758691510156735
 GameObject:
   m_ObjectHideFlags: 0

@@ -410,6 +410,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1427713881161444776}
   - component: {fileID: 3501979725946926638}
+  - component: {fileID: 8830729326421113242}
   m_Layer: 5
   m_Name: ConversationUI
   m_TagString: Untagged
@@ -449,6 +450,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dabaf844fc920944e88c8808c9434639, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  conversationSoundContainer: {fileID: 8830729326421113242}
   background: {fileID: 3927008052449745550}
   nameText: {fileID: 7796302841746322920}
   normalConversationText: {fileID: 6901761581873600941}
@@ -460,6 +462,20 @@ MonoBehaviour:
   - {fileID: 3989905966696190892}
   nextConversationButton: {fileID: 4851970898116978993}
   conversationData: {fileID: 11400000, guid: 0070f6ad028de3e4f96f0f70637252f0, type: 2}
+--- !u!114 &8830729326421113242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2494618899088978341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cfd7b529cdb36946974a7ad4c982b8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioClipList:
+  - {fileID: 8300000, guid: 7aa8a5d6a2fc96d4582d35e0818261de, type: 3}
 --- !u!1 &3804809130353850495
 GameObject:
   m_ObjectHideFlags: 0
@@ -870,7 +886,13 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uB300\uD654 \uC0C1\uC790"
+  m_text: 'English
+
+    English
+
+    English
+
+    English'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4d04dfc40afa610438d42e81049d39f2, type: 2}
   m_sharedMaterial: {fileID: -8269459887847424135, guid: 4d04dfc40afa610438d42e81049d39f2, type: 2}
@@ -897,8 +919,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 74
-  m_fontSizeBase: 74
+  m_fontSize: 43
+  m_fontSizeBase: 43
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

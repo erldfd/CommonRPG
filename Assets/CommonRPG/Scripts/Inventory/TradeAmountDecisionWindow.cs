@@ -9,6 +9,14 @@ namespace CommonRPG
 {
     public class TradeAmountDecisionWindow : MonoBehaviour
     {
+        private enum EAudioClipList
+        {
+            Trade
+        }
+
+        [SerializeField]
+        private AudioContainer audioContainer;
+
         [SerializeField]
         private TextMeshProUGUI totalPriceInfoText = null;
 
@@ -66,6 +74,7 @@ namespace CommonRPG
             Debug.Assert(tradeCancelButton);
             Debug.Assert(amountIncreaseButton);
             Debug.Assert(amountDecreaseButton);
+            Debug.Assert(audioContainer);
         }
 
         private void OnEnable()
@@ -104,10 +113,11 @@ namespace CommonRPG
 
         public void ReadyToShowWindow(int tradeSlotIndexFrom, InventorySlotItemData tradeSlotItemData, EInventoryType tradeInventoryTypeFrom, EInventoryType tradeInventoryTypeTo, int currnetHoldingCoins, int itemPriceAPiece)
         {
-            amountInputField.text = "0";
-            AmountDecisionSlider.value = 0;
-            decidedAmount = 0;
-            totalPriceInfoText.text = "0";
+            AmountDecisionSlider.value = 1;
+            decidedAmount = 1;
+
+            amountInputField.text = decidedAmount.ToString();
+            totalPriceInfoText.text = (decidedAmount * ItemPriceAPiece).ToString();
 
             int maxItemTradeAmount;
 
@@ -171,9 +181,9 @@ namespace CommonRPG
 
         private void OnMinButtonClicked()
         {
-            AmountDecisionSlider.value = 0;
-            decidedAmount = 0;
-            amountInputField.text = "0";
+            AmountDecisionSlider.value = 1;
+            decidedAmount = 1;
+            amountInputField.text = decidedAmount.ToString();
         }
 
         private void OnMaxButtonClicked()
@@ -185,6 +195,8 @@ namespace CommonRPG
 
         private void OnTradeAcceptButtonClicked()
         {
+            GameManager.AudioManager.PlayAudio2D(audioContainer.AudioClipList[(int)EAudioClipList.Trade], 1);
+
             OnTradeAcceptButtonClickedDelegate.Invoke(tradeSlotIndex, tradeSlotItemData, tradeInventoryTypeFrom, tradeInventoryTypeTo, DecidedAmount * ItemPriceAPiece, DecidedAmount);
 
             amountInputField.text = "0";
